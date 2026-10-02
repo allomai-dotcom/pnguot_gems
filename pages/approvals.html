@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pending Approvals — PNGUOT GEMS</title>
+  <link rel="stylesheet" href="../assets/css/main.css">
+</head>
+<body>
+<div id="app-shell">
+  <aside id="sidebar">
+    <div class="sidebar-header">
+      <div class="sidebar-avatar" id="sidebar-footer-av">JD</div>
+      <div class="sidebar-workspace"><div class="ws-name" id="sidebar-ws-name">…</div><div class="ws-sub" id="sidebar-ws-sub">PNGUOT</div></div>
+      <button class="sidebar-add-btn" onclick="location.href='ge-form.html'">+</button>
+    </div>
+    <nav class="sidebar-nav">
+      <a class="nav-item" href="dashboard.html"     data-page="dashboard.html"><span class="nav-icon">📊</span><span class="nav-label">Overview</span></a>
+      <a class="nav-item" href="notifications.html" data-page="notifications.html"><span class="nav-icon">🔔</span><span class="nav-label">Notifications</span><span class="nav-badge hidden notif-badge">0</span></a>
+      <div class="sidebar-section-label">Expenses</div>
+      <a class="nav-item" href="ge-form.html" data-page="ge-form.html"><span class="nav-icon">➕</span><span class="nav-label">New GE</span></a>
+      <a class="nav-item" href="my-ges.html"  data-page="my-ges.html"><span class="nav-icon">📋</span><span class="nav-label">My GE Forms</span></a>
+      <div class="sidebar-section-label">Approvals</div>
+      <a class="nav-item" href="approvals.html" data-page="approvals.html"><span class="nav-icon">✅</span><span class="nav-label">Pending Approvals</span><span class="nav-badge hidden" id="pending-task-count">0</span></a>
+      <div class="sidebar-section-label admin-only hidden">Administration</div>
+      <a class="nav-item admin-only hidden" href="admin-users.html"     data-page="admin-users.html"><span class="nav-icon">👥</span><span class="nav-label">Users</span></a>
+      <a class="nav-item admin-only hidden" href="admin-delegates.html" data-page="admin-delegates.html"><span class="nav-icon">🔗</span><span class="nav-label">Delegates</span></a>
+      <a class="nav-item admin-only hidden" href="admin-reports.html"   data-page="admin-reports.html"><span class="nav-icon">📈</span><span class="nav-label">Reports</span></a>
+    </nav>
+    <div class="sidebar-footer">
+      <div class="footer-icon">💰</div>
+      <div><div class="footer-name" id="sidebar-footer-name">PNGUOT GEMS</div><div class="footer-version">ver. 1.0.0</div></div>
+      <div class="dropdown"><button class="footer-menu" data-dropdown="sb-um">•••</button>
+        <div class="dropdown-menu" id="sb-um"><div class="dropdown-item danger" onclick="Auth.logout()">🚪 Sign Out</div></div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-overlay" id="sidebar-overlay"></div>
+
+  <div id="main-area">
+    <header id="topbar">
+      <button class="hamburger" id="hamburger-btn">☰</button>
+      <span class="topbar-page-title">Pending Approvals</span>
+      <div class="topbar-actions" style="margin-left:auto">
+        <button class="btn btn-ghost btn-sm" onclick="Workflow.loadMyTasks()">🔄 Refresh</button>
+        <div class="topbar-user">
+          <div class="user-avatar" id="topbar-avatar">JD</div>
+          <div><div class="user-name" id="topbar-user-name">…</div><div class="user-role" id="topbar-user-role"></div></div>
+        </div>
+      </div>
+    </header>
+
+    <main id="page-content">
+      <div class="card">
+        <div class="card-header">
+          <span class="card-title">GE Forms Awaiting Your Approval</span>
+          <span id="pending-task-count" class="nav-badge green" style="margin-left:8px">0</span>
+        </div>
+        <div id="tasks-container"></div>
+      </div>
+    </main>
+  </div>
+</div>
+
+<!-- Task review modal -->
+<div class="modal-overlay" id="task-modal">
+  <div class="modal modal-xl">
+    <div class="modal-header">
+      <span class="modal-title">Review GE Form</span>
+      <button class="modal-close" onclick="Modal.close('task-modal')">✕</button>
+    </div>
+    <div class="modal-body" id="task-modal-body"></div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost btn-sm" id="btn-query" style="margin-right:auto">❓ Raise Query</button>
+      <button class="btn btn-secondary" onclick="Modal.close('task-modal')">Close</button>
+      <button class="btn btn-danger"    id="btn-reject">✕ Reject</button>
+      <button class="btn btn-primary"   id="btn-approve">✅ Approve</button>
+    </div>
+  </div>
+</div>
+
+<!-- HOD Certification Modal -->
+<div class="modal-overlay hidden" id="hod-cert-modal">
+  <div class="modal" style="max-width:560px">
+    <div class="modal-header">
+      <span class="modal-title">HOD Certification</span>
+    </div>
+    <div class="modal-body">
+      <p style="font-size:13px;color:var(--text-muted);margin-bottom:12px">
+        As Head of School, please sign below and confirm your designation to certify this GE.
+      </p>
+      <div class="form-group">
+        <label class="form-label">Signature <span class="required">*</span></label>
+        <canvas id="hod-sig-canvas" width="500" height="150"
+          style="border:1px solid var(--border);border-radius:6px;background:#fff;display:block;max-width:100%"></canvas>
+        <div class="mt-8">
+          <button type="button" id="btn-clear-hod-sig" class="btn btn-ghost btn-sm">🗑 Clear</button>
+        </div>
+      </div>
+      <div class="form-group mt-12">
+        <label class="form-label">Designation / Title <span class="required">*</span></label>
+        <input id="hod-designation" type="text" class="form-control" placeholder="e.g. Head of School — Business Studies">
+      </div>
+      <div class="form-group mt-12">
+        <label class="form-label">Certification Date</label>
+        <input id="hod-cert-date" type="text" class="form-control" readonly>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" id="btn-hod-cancel">Cancel</button>
+      <button class="btn btn-primary"   id="btn-hod-confirm">✅ Confirm &amp; Submit</button>
+    </div>
+  </div>
+</div>
+
+<script src="../assets/js/api.js"></script>
+<script src="../assets/js/app.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/signature_pad@4.1.7/dist/signature_pad.umd.min.js"></script>
+<script src="../assets/js/workflow.js"></script>
+<script>
+(async () => {
+  const ok = await requireAuth(['HEAD_OF_SCHOOL','DEAN','ICT_DIRECTOR',
+    'PROCUREMENT_MANAGER','ACCOUNTS_OFFICER','VICE_CHANCELLOR','SYSTEM_ADMIN']);
+  if (!ok) return;
+  Sidebar.setActive('approvals.html');
+  await Workflow.loadMyTasks();
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GE Form — PNGUOT GEMS</title>
+  <link rel="stylesheet" href="../assets/css/main.css">
+</head>
+<body>
+<div id="app-shell">
+  <aside id="sidebar">
+    <div class="sidebar-header">
+      <div class="sidebar-avatar" id="sidebar-footer-av">JD</div>
+      <div class="sidebar-workspace"><div class="ws-name" id="sidebar-ws-name">Loading…</div><div class="ws-sub" id="sidebar-ws-sub">PNGUOT</div></div>
+      <button class="sidebar-add-btn" onclick="window.location.href='ge-form.html'" title="New GE">+</button>
+    </div>
+    <nav class="sidebar-nav">
+      <a class="nav-item" data-page="dashboard.html"    href="dashboard.html"><span class="nav-icon">📊</span><span class="nav-label">Overview</span></a>
+      <a class="nav-item" data-page="notifications.html" href="notifications.html"><span class="nav-icon">🔔</span><span class="nav-label">Notifications</span></a>
+      <div class="sidebar-section-label">Expenses</div>
+      <a class="nav-item" data-page="ge-form.html"  href="ge-form.html"><span class="nav-icon">➕</span><span class="nav-label">New GE</span></a>
+      <a class="nav-item" data-page="my-ges.html"   href="my-ges.html"><span class="nav-icon">📋</span><span class="nav-label">My GE Forms</span></a>
+      <div class="sidebar-section-label approver-only hidden">Approvals</div>
+      <a class="nav-item approver-only hidden" data-page="approvals.html" href="approvals.html"><span class="nav-icon">✅</span><span class="nav-label">Pending Approvals</span></a>
+      <div class="sidebar-section-label admin-only hidden">Administration</div>
+      <a class="nav-item admin-only hidden" data-page="admin-users.html"     href="admin-users.html"><span class="nav-icon">👥</span><span class="nav-label">Users</span></a>
+      <a class="nav-item admin-only hidden" data-page="admin-delegates.html" href="admin-delegates.html"><span class="nav-icon">🔗</span><span class="nav-label">Delegates</span></a>
+      <a class="nav-item admin-only hidden" data-page="admin-reports.html"   href="admin-reports.html"><span class="nav-icon">📈</span><span class="nav-label">Reports</span></a>
+    </nav>
+    <div class="sidebar-footer">
+      <div class="footer-icon">💰</div>
+      <div><div class="footer-name" id="sidebar-footer-name">PNGUOT GEMS</div><div class="footer-version">ver. 1.0.0</div></div>
+      <div class="dropdown"><button class="footer-menu" data-dropdown="sb-um">•••</button>
+        <div class="dropdown-menu" id="sb-um">
+          <div class="dropdown-item" onclick="location.href='profile.html'">👤 Profile</div>
+          <div class="dropdown-divider"></div>
+          <div class="dropdown-item danger" onclick="Auth.logout()">🚪 Sign Out</div>
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-overlay" id="sidebar-overlay"></div>
+
+  <div id="main-area">
+    <header id="topbar">
+      <button class="hamburger" id="hamburger-btn">☰</button>
+      <span class="topbar-page-title" id="page-title">New GE Form</span>
+      <div class="topbar-actions" style="margin-left:auto">
+        <span id="save-indicator" class="hidden" style="font-size:12px;color:var(--primary);margin-right:8px">✅ Saved</span>
+        <div class="topbar-user dropdown" data-dropdown="um2">
+          <div class="user-avatar" id="topbar-avatar">JD</div>
+          <div><div class="user-name" id="topbar-user-name">…</div><div class="user-role" id="topbar-user-role"></div></div>
+        </div>
+        <div class="dropdown-menu" id="um2"><div class="dropdown-item danger" onclick="Auth.logout()">🚪 Sign Out</div></div>
+      </div>
+    </header>
+
+    <main id="page-content">
+      <!-- Readonly alert -->
+      <div id="ge-form-readonly-alert" class="alert alert-warning hidden mb-16">
+        <span class="alert-icon">⚠️</span>
+        This GE is no longer editable in its current status.
+      </div>
+
+      <!-- Step progress -->
+      <div class="step-bar mb-24" id="step-bar">
+        <div class="step-item active" id="step-1">
+          <div class="step-circle">1</div>
+          <div class="step-label">GE Details</div>
+        </div>
+        <div class="step-item" id="step-2">
+          <div class="step-circle">2</div>
+          <div class="step-label">Documents</div>
+        </div>
+        <div class="step-item" id="step-3">
+          <div class="step-circle">3</div>
+          <div class="step-label">Submit</div>
+        </div>
+      </div>
+
+      <form id="ge-form">
+        <!-- Header card -->
+        <div class="card mb-24">
+          <div class="card-header">
+            <span class="card-title">GE Header Information</span>
+            <span id="ge-status-badge"></span>
+            <span class="font-mono text-muted" style="font-size:12px" id="ge-number"></span>
+          </div>
+          <div class="card-body">
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">Payee Name <span class="required">*</span></label>
+                <input id="payee-name" type="text" class="form-control" placeholder="e.g. ABC Computer Supplies Ltd">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Departmental Reference <span class="required">*</span></label>
+                <input id="dept-ref" type="text" class="form-control" placeholder="e.g. ICT-EQUIPMENT-2026">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Claimant Reference</label>
+                <input id="claimant-ref" type="text" class="form-control" placeholder="e.g. TEST-001">
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">Procurement Type <span class="required">*</span></label>
+                <select id="procurement-type" class="form-control">
+                  <option value="STANDARD">Standard Purchase</option>
+                  <option value="ICT">ICT Purchase</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Capital Item?</label>
+                <select id="is-capital-item" class="form-control">
+                  <option value="0">No</option>
+                  <option value="1">Yes (AC, Laptop &gt; K3,000, Vehicle, Major Repairs)</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Description / Purpose</label>
+              <textarea id="description" class="form-control" rows="2" placeholder="Briefly describe the purpose of this expense…"></textarea>
+            </div>
+
+            <!-- Claimant Declaration & Signature -->
+            <div class="card mb-24" id="claimant-sig-card">
+              <div class="card-header">
+                <span class="card-title">Claimant Declaration &amp; Signature</span>
+              </div>
+              <div class="card-body">
+                <p style="font-size:13px;margin-bottom:12px;color:var(--text-muted)">
+                  I certify that the expenses listed above are correct and have been incurred for official University purposes.
+                </p>
+                <canvas id="claimant-sig-canvas" width="600" height="150"
+                  style="border:1px solid var(--border);border-radius:6px;background:#fff;display:block;max-width:100%"></canvas>
+                <div class="flex gap-8 mt-8">
+                  <button type="button" id="btn-clear-sig" class="btn btn-ghost btn-sm">🗑 Clear Signature</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Finance-only (hidden for claimants) -->
+            <div class="form-row finance-only hidden">
+              <div class="form-group">
+                <label class="form-label">CFC Number <span class="text-muted">(Finance Only)</span></label>
+                <input id="cfc-number" type="text" class="form-control font-mono" placeholder="CFC-XXXX">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Commitment Number <span class="text-muted">(Finance Only)</span></label>
+                <input id="commitment-number" type="text" class="form-control font-mono" placeholder="COMM-XXXX">
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Line items -->
+        <div class="card mb-24">
+          <div class="card-header">
+            <span class="card-title">Particulars / Line Items</span>
+          </div>
+          <div class="card-body">
+            <div style="display:grid;grid-template-columns:1fr 80px 120px 110px 36px;gap:8px;margin-bottom:8px">
+              <div class="form-label">Description</div>
+              <div class="form-label">Qty</div>
+              <div class="form-label">Unit Price (K)</div>
+              <div class="form-label text-right">Total</div>
+              <div></div>
+            </div>
+            <div id="line-items-container"></div>
+            <div class="flex-between mt-8">
+              <button type="button" id="add-line-item" class="btn btn-ghost btn-sm">+ Add Line Item</button>
+              <div class="total-row">
+                <span>GE Total:</span>
+                <span class="ge-total-display" data-raw="0">K 0.00</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Accounting lines -->
+        <div class="card mb-24">
+          <div class="card-header">
+            <span class="card-title">Accounting / Cost Allocation</span>
+            <span class="text-muted" style="font-size:12px">Must equal GE total</span>
+          </div>
+          <div class="card-body">
+            <div style="display:grid;grid-template-columns:60px 60px 60px 60px 60px 60px 1fr 120px 36px;gap:6px;margin-bottom:8px">
+              <div class="form-label">Div</div>
+              <div class="form-label">FN</div>
+              <div class="form-label">Act</div>
+              <div class="form-label">Item</div>
+              <div class="form-label">SI</div>
+              <div class="form-label">D</div>
+              <div class="form-label">Account Name</div>
+              <div class="form-label">Amount (K)</div>
+              <div></div>
+            </div>
+            <div id="acct-lines-container"></div>
+            <div class="flex-between mt-8">
+              <button type="button" id="add-acct-line" class="btn btn-ghost btn-sm">+ Add Line</button>
+              <div class="total-row">
+                <span>Accounting Total:</span>
+                <span class="acct-total-display">K 0.00</span>
+                <span id="acct-diff" style="font-size:12px"></span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Audit trail (shown when editing) -->
+        <div class="card mb-24 hidden" id="audit-card">
+          <div class="card-header"><span class="card-title">Audit Trail</span></div>
+          <div class="card-body"><div class="timeline" id="audit-trail-container"></div></div>
+        </div>
+
+        <!-- Actions -->
+        <div class="ge-form-actions flex-between">
+          <div class="flex gap-8">
+            <button type="button" id="btn-cancel-ge" class="btn btn-danger hidden">Cancel GE</button>
+            <a href="my-ges.html" class="btn btn-secondary">← Back</a>
+          </div>
+          <div class="flex gap-8">
+            <button type="button" id="btn-save-draft" class="btn btn-secondary">💾 Save Draft</button>
+            <button type="button" id="btn-ready-for-docs" class="btn btn-primary">Continue to Supporting Documents →</button>
+          </div>
+        </div>
+      </form>
+    </main>
+  </div>
+</div>
+
+<script src="../assets/js/api.js"></script>
+<script src="../assets/js/app.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/signature_pad@4.1.7/dist/signature_pad.umd.min.js"></script>
+<script src="../assets/js/ge-form.js"></script>
+<script>
+(async () => {
+  const ok = await requireAuth();
+  if (!ok) return;
+  Sidebar.setActive('ge-form.html');
+
+  const params = new URLSearchParams(window.location.search);
+  const geId   = params.get('id');
+
+  if (geId) {
+    document.getElementById('page-title').textContent = 'Edit GE Form';
+    document.getElementById('btn-cancel-ge').classList.remove('hidden');
+    document.getElementById('audit-card').classList.remove('hidden');
+  }
+
+  await GEForm.init(geId);
+
+  // Update total display data-raw on change
+  const observer = new MutationObserver(() => {
+    const totalEl = document.querySelector('.ge-total-display');
+    if (totalEl) {
+      const val = GEForm.lineItems.reduce((s,li) => s + li.quantity * li.unit_price, 0);
+      totalEl.dataset.raw = val;
+      GEForm.updateAcctTotal();
+    }
+  });
+  const container = document.getElementById('line-items-container');
+  if (container) observer.observe(container, { childList: true, subtree: true });
+})();
+</script>
+</body>
+</html>
