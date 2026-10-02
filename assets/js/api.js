@@ -49,6 +49,7 @@ const API = {
   geSubmit:            d  => API.post('ge/submit.php', d),
   geReadiness:         id => API.get('ge/submission_readiness.php', { id }),
   geSendToAccounts:    d  => API.post('ge/send_to_accounts.php', d),
+  quotations:          () => API.get('ge/quotations.php'),
 
   // Documents
   docUpload:   (geId, type, file) => {
@@ -77,6 +78,7 @@ const API = {
   adminDelegateAdd: d  => API.post('admin/delegates.php', d),
   adminDelegateRemove: d => API.delete('admin/delegates.php', d),
   reports:          () => API.get('admin/reports.php'),
+  reportsExpenditure: (params) => API.get('admin/reports.php', { report: 'expenditure', ...params }),
   notifications:    () => API.get('admin/notifications.php'),
   markNotifRead:    d  => API.post('admin/notifications.php', d),
 };

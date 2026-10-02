@@ -1,0 +1,658 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Expenditure Reports — PNGUOT GEMS</title>
+  <link rel="stylesheet" href="../assets/css/main.css">
+</head>
+<body>
+<div id="app-shell">
+  <aside id="sidebar">
+    <div class="sidebar-header">
+      <div class="sidebar-avatar" id="sidebar-footer-av">JD</div>
+      <div class="sidebar-workspace"><div class="ws-name" id="sidebar-ws-name">…</div><div class="ws-sub" id="sidebar-ws-sub">PNGUOT</div></div>
+    </div>
+    <nav class="sidebar-nav">
+      <a class="nav-item" href="dashboard.html" data-page="dashboard.html"><span class="nav-icon">📊</span><span class="nav-label">Overview</span></a>
+      <div class="sidebar-section-label">Expenses</div>
+      <a class="nav-item" href="ge-form.html" data-page="ge-form.html"><span class="nav-icon">➕</span><span class="nav-label">New GE</span></a>
+      <a class="nav-item" href="my-ges.html"  data-page="my-ges.html"><span class="nav-icon">📋</span><span class="nav-label">My GE Forms</span></a>
+      <div class="sidebar-section-label">Administration</div>
+      <a class="nav-item" href="admin-users.html"     data-page="admin-users.html"><span class="nav-icon">👥</span><span class="nav-label">Users</span></a>
+      <a class="nav-item" href="admin-delegates.html" data-page="admin-delegates.html"><span class="nav-icon">🔗</span><span class="nav-label">Delegates</span></a>
+      <a class="nav-item" href="admin-reports.html"   data-page="admin-reports.html"><span class="nav-icon">📈</span><span class="nav-label">Reports</span></a>
+    </nav>
+    <div class="sidebar-footer">
+      <div class="footer-icon">💰</div>
+      <div><div class="footer-name" id="sidebar-footer-name">PNGUOT GEMS</div><div class="footer-version">ver. 4.0.0</div></div>
+      <div class="dropdown"><button class="footer-menu" data-dropdown="sb-um">•••</button>
+        <div class="dropdown-menu" id="sb-um"><div class="dropdown-item danger" onclick="Auth.logout()">🚪 Sign Out</div></div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-overlay" id="sidebar-overlay"></div>
+
+  <div id="main-area">
+    <header id="topbar">
+      <button class="hamburger" id="hamburger-btn">☰</button>
+      <span class="topbar-page-title">Expenditure Reports</span>
+      <div class="topbar-actions" style="margin-left:auto">
+        <button class="btn btn-ghost btn-sm" onclick="loadReports()">🔄 Refresh</button>
+        <button class="btn btn-primary btn-sm" onclick="generateReports()">📊 Generate Reports</button>
+        <div class="user-avatar" id="topbar-avatar">JD</div>
+        <div><div class="user-name" id="topbar-user-name">…</div><div class="user-role" id="topbar-user-role"></div></div>
+      </div>
+    </header>
+
+    <main id="page-content">
+
+      <!-- ── Filter Bar ──────────────────────────────────── -->
+      <div class="card mb-20" id="filter-card">
+        <div class="card-header"><span class="card-title">Filter Reports</span></div>
+        <div class="card-body" style="padding:16px 20px">
+          <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+            <span style="font-size:13px;font-weight:600;color:var(--text-secondary)">Period:</span>
+            <div class="period-btn-group" id="period-btn-group">
+              <button class="period-btn" data-period="today">Today</button>
+              <button class="period-btn" data-period="week">This Week</button>
+              <button class="period-btn active" data-period="month">This Month</button>
+              <button class="period-btn" data-period="year">This Year</button>
+              <button class="period-btn" data-period="custom">Custom</button>
+            </div>
+            <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-left:auto">
+              <select id="filter-status" class="form-select" style="font-size:13px;min-width:170px">
+                <option value="">All Statuses</option>
+                <option value="DRAFT">Draft</option>
+                <option value="READY_FOR_DOCUMENTS">Ready for Documents</option>
+                <option value="SUBMITTED">Submitted</option>
+                <option value="PENDING_HOS">Pending HOS Approval</option>
+                <option value="PENDING_DEAN">Pending Dean Approval</option>
+                <option value="PENDING_ICT">Pending ICT Approval</option>
+                <option value="PENDING_PROCUREMENT">Pending Procurement</option>
+                <option value="PENDING_ACCOUNTS_VERIFICATION">Pending Accounts Verification</option>
+                <option value="PENDING_VC">Pending Vice Chancellor</option>
+                <option value="PENDING_PAYMENT">Pending Payment</option>
+                <option value="PENDING_ACCOUNTS_PROCESSING">Pending Accounts Processing</option>
+                <option value="QUERIED">Queried</option>
+                <option value="COMPLETED">Completed</option>
+                <option value="CANCELLED">Cancelled</option>
+              </select>
+              <select id="filter-type" class="form-select" style="font-size:13px;min-width:130px">
+                <option value="">All Types</option>
+                <option value="STANDARD">STANDARD</option>
+                <option value="ICT">ICT</option>
+              </select>
+              <button class="btn btn-primary btn-sm" onclick="generateReports()" id="generate-btn">
+                📊 Generate Reports
+              </button>
+            </div>
+          </div>
+          <div class="custom-dates hidden" id="custom-dates">
+            <label style="font-size:13px;color:var(--text-secondary)">From:</label>
+            <input type="date" id="filter-date-from" class="form-input" style="width:150px">
+            <label style="font-size:13px;color:var(--text-secondary)">To:</label>
+            <input type="date" id="filter-date-to" class="form-input" style="width:150px">
+          </div>
+        </div>
+      </div>
+
+      <!-- ── Section 1: GE Claims ───────────────────────── -->
+      <div class="card mb-20" id="section-claims">
+        <div class="card-header">
+          <span class="card-title">Section 1 — GE Claims Report</span>
+          <button class="btn btn-ghost btn-sm no-print" onclick="printSection(1, reportData, currentFilters)">🖨 Print Section 1</button>
+        </div>
+        <div id="claims-content">
+          <div class="text-center text-muted" style="padding:40px">
+            <div style="font-size:32px;margin-bottom:8px">📊</div>
+            <div>Apply filters and click <strong>Generate Reports</strong></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── Section 2: Linked Quotations ──────────────── -->
+      <div class="card mb-20" id="section-quotations">
+        <div class="card-header">
+          <span class="card-title">Section 2 — Linked Quotations</span>
+          <button class="btn btn-ghost btn-sm no-print" onclick="printSection(2, reportData, currentFilters)">🖨 Print Section 2</button>
+        </div>
+        <div id="quotations-content">
+          <div class="text-center text-muted" style="padding:40px">
+            <div style="font-size:32px;margin-bottom:8px">📊</div>
+            <div>Apply filters and click <strong>Generate Reports</strong></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── Section 3: Expenditure by Category ────────── -->
+      <div class="card mb-20" id="section-category">
+        <div class="card-header">
+          <span class="card-title">Section 3 — Expenditure by Category</span>
+          <button class="btn btn-ghost btn-sm no-print" onclick="printSection(3, reportData, currentFilters)">🖨 Print Section 3</button>
+        </div>
+        <div id="category-content">
+          <div class="text-center text-muted" style="padding:40px">
+            <div style="font-size:32px;margin-bottom:8px">📊</div>
+            <div>Apply filters and click <strong>Generate Reports</strong></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── Section 4: System Overview (existing) ──────── -->
+      <div class="card mb-20" id="section-overview">
+        <div class="card-header"><span class="card-title">System Overview</span></div>
+        <div id="reports-content">
+          <div class="page-loader"><div class="spinner"></div> Loading overview…</div>
+        </div>
+      </div>
+
+    </main>
+  </div>
+</div>
+
+<script src="../assets/js/api.js"></script>
+<script src="../assets/js/app.js"></script>
+<script>
+// ── State ──────────────────────────────────────────────────────
+let reportData = null;
+let currentFilters = {};
+
+// ── Initialise ─────────────────────────────────────────────────
+(async () => {
+  const ok = await requireAuth(['SYSTEM_ADMIN','ACCOUNTS_OFFICER']);
+  if (!ok) return;
+  Sidebar.setActive('admin-reports.html');
+  initPeriodButtons();
+  loadReports();
+})();
+
+// ── Period buttons ──────────────────────────────────────────────
+function initPeriodButtons() {
+  document.querySelectorAll('.period-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.period-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      const customDiv = document.getElementById('custom-dates');
+      if (btn.dataset.period === 'custom') {
+        customDiv.classList.remove('hidden');
+      } else {
+        customDiv.classList.add('hidden');
+        const { date_from, date_to } = getPeriodDates(btn.dataset.period);
+        document.getElementById('filter-date-from').value = date_from;
+        document.getElementById('filter-date-to').value   = date_to;
+      }
+    });
+  });
+
+  // Set initial "This Month" dates
+  const { date_from, date_to } = getPeriodDates('month');
+  document.getElementById('filter-date-from').value = date_from;
+  document.getElementById('filter-date-to').value   = date_to;
+}
+
+function getPeriodDates(period) {
+  const today = new Date();
+  const fmt = d => d.toISOString().slice(0, 10);
+
+  if (period === 'today') {
+    return { date_from: fmt(today), date_to: fmt(today) };
+  }
+  if (period === 'week') {
+    const day   = today.getDay(); // 0=Sun
+    const diff  = (day === 0) ? -6 : 1 - day; // Monday
+    const mon   = new Date(today);
+    mon.setDate(today.getDate() + diff);
+    return { date_from: fmt(mon), date_to: fmt(today) };
+  }
+  if (period === 'month') {
+    const first = new Date(today.getFullYear(), today.getMonth(), 1);
+    return { date_from: fmt(first), date_to: fmt(today) };
+  }
+  if (period === 'year') {
+    const jan1 = new Date(today.getFullYear(), 0, 1);
+    return { date_from: fmt(jan1), date_to: fmt(today) };
+  }
+  // custom — caller reads from inputs
+  return {
+    date_from: document.getElementById('filter-date-from').value,
+    date_to:   document.getElementById('filter-date-to').value,
+  };
+}
+
+function getFilterValues() {
+  const activeBtn = document.querySelector('.period-btn.active');
+  const period    = activeBtn ? activeBtn.dataset.period : 'month';
+  const { date_from, date_to } = period === 'custom'
+    ? getPeriodDates('custom')
+    : getPeriodDates(period);
+
+  const params = { date_from, date_to };
+  const status = document.getElementById('filter-status').value;
+  const type   = document.getElementById('filter-type').value;
+  if (status) params.status = status;
+  if (type)   params.type   = type;
+  return params;
+}
+
+// ── Generate Reports ────────────────────────────────────────────
+async function generateReports() {
+  const btn = document.getElementById('generate-btn');
+  const filters = getFilterValues();
+
+  if (!filters.date_from || !filters.date_to) {
+    Toast.error('Please select a valid date range.');
+    return;
+  }
+
+  currentFilters = filters;
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner" style="width:14px;height:14px;border-width:2px"></span> Generating…';
+
+  try {
+    const res = await API.reportsExpenditure(filters);
+    reportData = res.report_data;
+    renderClaims(reportData);
+    renderQuotations(reportData);
+    renderCategory(reportData);
+  } catch (err) {
+    Toast.error(err.message || 'Failed to generate reports.');
+    setPlaceholder('claims-content');
+    setPlaceholder('quotations-content');
+    setPlaceholder('category-content');
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = '📊 Generate Reports';
+  }
+}
+
+// ── Placeholder helper ──────────────────────────────────────────
+function setPlaceholder(id) {
+  document.getElementById(id).innerHTML = `
+    <div class="text-center text-muted" style="padding:40px">
+      <div style="font-size:32px;margin-bottom:8px">📊</div>
+      <div>Apply filters and click <strong>Generate Reports</strong></div>
+    </div>`;
+}
+
+// ── Render Section 1 ────────────────────────────────────────────
+function renderClaims(data) {
+  const container = document.getElementById('claims-content');
+  const claims    = data.claims || [];
+
+  if (claims.length === 0) {
+    container.innerHTML = `<div class="text-center text-muted" style="padding:40px">No GE claims found for the selected period.</div>`;
+    return;
+  }
+
+  const total = data.total_expenditure || 0;
+  const summary = `<div style="padding:12px 20px;font-size:13px;color:var(--text-secondary);border-bottom:1px solid var(--card-border)">
+    <strong>${claims.length}</strong> claim${claims.length !== 1 ? 's' : ''} &nbsp;·&nbsp;
+    Total: <strong>${Fmt.currency(total)}</strong> &nbsp;·&nbsp;
+    Period: <strong>${fmtDisplayDate(data.date_from)}</strong> – <strong>${fmtDisplayDate(data.date_to)}</strong>
+  </div>`;
+
+  const rows = claims.map((ge, i) => `
+    <tr>
+      <td>${i + 1}</td>
+      <td class="font-mono">${esc(ge.ge_number)}</td>
+      <td>${esc(ge.payee_name || '—')}</td>
+      <td>${esc(ge.department_name || '—')}</td>
+      <td>${esc(ge.claimant_full_name || ge.claimant_name || '—')}</td>
+      <td>${ge.procurement_type === 'ICT' ? 'ICT' : 'Standard'}</td>
+      <td>${ge.is_capital_item == 1 ? '<span class="status-badge status-QUERIED">Yes</span>' : 'No'}</td>
+      <td class="text-right fw-600">${Fmt.currency(ge.total_amount)}</td>
+      <td>${statusBadge(ge.status, ge.status_label)}</td>
+      <td>${Fmt.date(ge.submitted_at || ge.created_at)}</td>
+    </tr>`).join('');
+
+  container.innerHTML = summary + `
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>#</th><th>GE Number</th><th>Payee / Dr. To</th>
+            <th>Department</th><th>Claimant</th><th>Type</th>
+            <th>Capital</th><th class="text-right">Amount</th>
+            <th>Status</th><th>Submitted</th>
+          </tr>
+        </thead>
+        <tbody>${rows}</tbody>
+        <tfoot>
+          <tr>
+            <td colspan="7" style="text-align:right;font-weight:600;padding-right:8px">Total:</td>
+            <td class="text-right fw-600">${Fmt.currency(total)}</td>
+            <td colspan="2"></td>
+          </tr>
+        </tfoot>
+      </table>
+    </div>`;
+}
+
+// ── Render Section 2 ────────────────────────────────────────────
+function renderQuotations(data) {
+  const container  = document.getElementById('quotations-content');
+  const quotations = data.quotations || [];
+
+  if (quotations.length === 0) {
+    container.innerHTML = `<div class="text-center text-muted" style="padding:40px">No quotations linked to the filtered GE claims.</div>`;
+    return;
+  }
+
+  const rows = quotations.map((q, i) => `
+    <tr>
+      <td>${i + 1}</td>
+      <td class="font-mono">${esc(q.auto_reference)}</td>
+      <td class="font-mono">${esc(q.ge_number)}</td>
+      <td>${esc(q.payee_name || '—')}</td>
+      <td>${esc(q.original_name || q.label || '—')}</td>
+      <td>${Fmt.fileSize(q.file_size)}</td>
+      <td>${Fmt.date(q.uploaded_at)}</td>
+      <td><a href="${API.docView(q.id)}" target="_blank" class="btn btn-ghost btn-xs">View</a></td>
+    </tr>`).join('');
+
+  container.innerHTML = `
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>#</th><th>Reference</th><th>GE Number</th><th>Payee</th>
+            <th>Document</th><th>File Size</th><th>Uploaded</th><th>Action</th>
+          </tr>
+        </thead>
+        <tbody>${rows}</tbody>
+      </table>
+    </div>`;
+}
+
+// ── Render Section 3 ────────────────────────────────────────────
+function renderCategory(data) {
+  const container  = document.getElementById('category-content');
+  const byCategory = data.by_category   || [];
+  const byDept     = data.by_department || [];
+
+  function pctBar(pct) {
+    return `<div>
+      <div style="font-size:12px;margin-bottom:3px">${pct}%</div>
+      <div class="pct-bar-container">
+        <div style="background:var(--primary);height:6px;border-radius:3px;width:${Math.min(pct,100)}%"></div>
+      </div>
+    </div>`;
+  }
+
+  const catRows = byCategory.map(c => `
+    <tr>
+      <td>${esc(c.label)}</td>
+      <td class="text-right">${c.ge_count}</td>
+      <td class="text-right fw-600">${Fmt.currency(c.total_amount)}</td>
+      <td>${pctBar(c.percentage)}</td>
+    </tr>`).join('');
+
+  const deptRows = byDept.map(d => `
+    <tr>
+      <td>${esc(d.department_name)}</td>
+      <td class="text-right">${d.ge_count}</td>
+      <td class="text-right fw-600">${Fmt.currency(d.total_amount)}</td>
+      <td>${pctBar(d.percentage)}</td>
+    </tr>`).join('');
+
+  container.innerHTML = `
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;padding:16px 20px">
+      <div>
+        <div style="font-weight:600;margin-bottom:10px;font-size:13px">By Procurement Type</div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Category</th><th class="text-right">Count</th><th class="text-right">Amount</th><th>%</th></tr></thead>
+            <tbody>${catRows || '<tr><td colspan="4" class="text-center text-muted">No data</td></tr>'}</tbody>
+          </table>
+        </div>
+      </div>
+      <div>
+        <div style="font-weight:600;margin-bottom:10px;font-size:13px">By Department</div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Department</th><th class="text-right">Count</th><th class="text-right">Amount</th><th>%</th></tr></thead>
+            <tbody>${deptRows || '<tr><td colspan="4" class="text-center text-muted">No data</td></tr>'}</tbody>
+          </table>
+        </div>
+      </div>
+    </div>`;
+}
+
+// ── Print Section ───────────────────────────────────────────────
+function printSection(n, data, filters) {
+  if (!data) { Toast.warning('Generate reports first before printing.'); return; }
+
+  const titles = {
+    1: 'Section 1 — GE Claims Report',
+    2: 'Section 2 — Linked Quotations',
+    3: 'Section 3 — Expenditure by Category',
+  };
+
+  let bodyHTML = '';
+
+  if (n === 1) {
+    const claims = data.claims || [];
+    const total  = data.total_expenditure || 0;
+    const rows = claims.map((ge, i) => `
+      <tr>
+        <td>${i+1}</td>
+        <td>${esc(ge.ge_number)}</td>
+        <td>${esc(ge.payee_name || '—')}</td>
+        <td>${esc(ge.department_name || '—')}</td>
+        <td>${esc(ge.claimant_full_name || ge.claimant_name || '—')}</td>
+        <td>${ge.procurement_type === 'ICT' ? 'ICT' : 'Standard'}</td>
+        <td>${ge.is_capital_item == 1 ? 'Yes' : 'No'}</td>
+        <td style="text-align:right">${Fmt.currency(ge.total_amount)}</td>
+        <td>${esc(ge.status_label)}</td>
+        <td>${Fmt.date(ge.submitted_at || ge.created_at)}</td>
+      </tr>`).join('');
+
+    bodyHTML = `
+      <p><strong>${claims.length}</strong> claim(s) &nbsp;·&nbsp; Total: <strong>${Fmt.currency(total)}</strong></p>
+      <table>
+        <thead><tr><th>#</th><th>GE Number</th><th>Payee / Dr. To</th><th>Department</th>
+          <th>Claimant</th><th>Type</th><th>Capital</th><th>Amount</th><th>Status</th><th>Submitted</th></tr></thead>
+        <tbody>${rows}</tbody>
+        <tfoot>
+          <tr>
+            <td colspan="7" style="text-align:right;font-weight:bold">Total:</td>
+            <td style="text-align:right;font-weight:bold">${Fmt.currency(total)}</td>
+            <td colspan="2"></td>
+          </tr>
+        </tfoot>
+      </table>`;
+  }
+
+  if (n === 2) {
+    const quotations = data.quotations || [];
+    const rows = quotations.map((q, i) => `
+      <tr>
+        <td>${i+1}</td>
+        <td>${esc(q.auto_reference)}</td>
+        <td>${esc(q.ge_number)}</td>
+        <td>${esc(q.payee_name || '—')}</td>
+        <td>${esc(q.original_name || q.label || '—')}</td>
+        <td>${Fmt.fileSize(q.file_size)}</td>
+        <td>${Fmt.date(q.uploaded_at)}</td>
+      </tr>`).join('');
+
+    bodyHTML = `
+      <table>
+        <thead><tr><th>#</th><th>Reference</th><th>GE Number</th><th>Payee</th>
+          <th>Document</th><th>File Size</th><th>Uploaded</th></tr></thead>
+        <tbody>${rows || '<tr><td colspan="7" style="text-align:center">No quotations</td></tr>'}</tbody>
+      </table>`;
+  }
+
+  if (n === 3) {
+    const byCategory = data.by_category   || [];
+    const byDept     = data.by_department || [];
+
+    const catRows = byCategory.map(c => `
+      <tr>
+        <td>${esc(c.label)}</td>
+        <td style="text-align:right">${c.ge_count}</td>
+        <td style="text-align:right">${Fmt.currency(c.total_amount)}</td>
+        <td>${c.percentage}%</td>
+      </tr>`).join('');
+
+    const deptRows = byDept.map(d => `
+      <tr>
+        <td>${esc(d.department_name)}</td>
+        <td style="text-align:right">${d.ge_count}</td>
+        <td style="text-align:right">${Fmt.currency(d.total_amount)}</td>
+        <td>${d.percentage}%</td>
+      </tr>`).join('');
+
+    bodyHTML = `
+      <h3 style="margin:0 0 8px">By Procurement Type</h3>
+      <table style="margin-bottom:24px">
+        <thead><tr><th>Category</th><th>Count</th><th>Amount</th><th>%</th></tr></thead>
+        <tbody>${catRows || '<tr><td colspan="4" style="text-align:center">No data</td></tr>'}</tbody>
+      </table>
+      <h3 style="margin:0 0 8px">By Department</h3>
+      <table>
+        <thead><tr><th>Department</th><th>Count</th><th>Amount</th><th>%</th></tr></thead>
+        <tbody>${deptRows || '<tr><td colspan="4" style="text-align:center">No data</td></tr>'}</tbody>
+      </table>`;
+  }
+
+  const periodLine = `Period: ${data.date_from} to ${data.date_to} &nbsp;&nbsp; Generated: ${data.generated_at}`;
+
+  const doc = window.open('', '_blank');
+  doc.document.write(`<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>${titles[n]} — PNGUOT GEMS</title>
+  <style>
+    body { font-family: Arial, sans-serif; font-size: 13px; color: #000; background: #fff; margin: 24px; }
+    h1   { font-size: 15px; text-align: center; margin: 0 0 4px; }
+    h2   { font-size: 13px; text-align: center; margin: 0 0 8px; font-weight: normal; }
+    .period-line { font-size: 12px; color: #555; text-align: center; margin-bottom: 16px; }
+    table { border-collapse: collapse; width: 100%; margin-top: 12px; }
+    th, td { border: 1px solid #ccc; padding: 6px 8px; text-align: left; font-size: 12px; }
+    th { background: #f0f0f0; font-weight: 700; }
+    tfoot td { font-weight: 700; background: #f9f9f9; }
+    .print-btn { margin-bottom: 16px; padding: 6px 16px; background: #22c55e; color: #fff;
+                 border: none; border-radius: 6px; cursor: pointer; font-size: 13px; }
+    @media print { .no-print { display: none; } }
+  </style>
+</head>
+<body>
+  <button class="print-btn no-print" onclick="window.print()">🖨 Print / Save as PDF</button>
+  <h1>PNGUOT GEMS — Papua New Guinea University of Technology</h1>
+  <h2>${titles[n]}</h2>
+  <div class="period-line">${periodLine}</div>
+  ${bodyHTML}
+  <script>setTimeout(() => window.print(), 500);<\/script>
+</body>
+</html>`);
+  doc.document.close();
+}
+
+// ── Utility helpers ─────────────────────────────────────────────
+function esc(str) {
+  return String(str || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+function fmtDisplayDate(dateStr) {
+  if (!dateStr) return '—';
+  const d = new Date(dateStr + 'T00:00:00');
+  return d.toLocaleDateString('en-PG', { day: '2-digit', month: 'short', year: 'numeric' });
+}
+
+// ── Section 4: Existing System Overview ─────────────────────────
+async function loadReports() {
+  const c = document.getElementById('reports-content');
+  c.innerHTML = `<div class="page-loader"><div class="spinner"></div></div>`;
+  try {
+    const r = await API.reports();
+
+    const totalGEs  = Object.values(r.by_status).reduce((s,v) => s+v.count, 0);
+    const totalAmt  = Object.values(r.by_status).reduce((s,v) => s+(v.total||0), 0);
+    const completed = r.by_status.COMPLETED?.count || 0;
+    const pending   = Object.entries(r.by_status)
+      .filter(([k]) => k.startsWith('PENDING'))
+      .reduce((s,[,v]) => s+v.count, 0);
+
+    c.innerHTML = `
+      <div style="padding:16px 20px">
+        <div class="stat-grid mb-24">
+          <div class="stat-card"><div class="stat-icon blue">📋</div><div class="stat-label">Total GEs</div><div class="stat-value">${totalGEs}</div></div>
+          <div class="stat-card"><div class="stat-icon green">✅</div><div class="stat-label">Completed</div><div class="stat-value">${completed}</div></div>
+          <div class="stat-card"><div class="stat-icon yellow">⏳</div><div class="stat-label">In Workflow</div><div class="stat-value">${pending}</div></div>
+          <div class="stat-card"><div class="stat-icon purple">💰</div><div class="stat-label">Total Value</div><div class="stat-value" style="font-size:16px">${Fmt.currency(totalAmt)}</div></div>
+          <div class="stat-card"><div class="stat-icon blue">👥</div><div class="stat-label">Active Users</div><div class="stat-value">${r.user_count}</div></div>
+        </div>
+
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:20px">
+          <div>
+            <div style="font-weight:600;margin-bottom:10px">By Status</div>
+            <div class="table-wrap"><table>
+              <thead><tr><th>Status</th><th class="text-right">Count</th><th class="text-right">Total Amount</th></tr></thead>
+              <tbody>
+                ${Object.entries(r.by_status).map(([s,v]) => `
+                  <tr>
+                    <td>${statusBadge(s, v.label)}</td>
+                    <td class="text-right fw-600">${v.count}</td>
+                    <td class="text-right">${Fmt.currency(v.total||0)}</td>
+                  </tr>`).join('')}
+              </tbody>
+            </table></div>
+          </div>
+
+          <div>
+            <div style="font-weight:600;margin-bottom:10px">Pending by Role</div>
+            <div class="table-wrap"><table>
+              <thead><tr><th>Role</th><th class="text-right">Pending Tasks</th></tr></thead>
+              <tbody>
+                ${(r.pending_by_role||[]).map(p => `
+                  <tr>
+                    <td>${p.role_required.replace(/_/g,' ')}</td>
+                    <td class="text-right"><span class="nav-badge" style="display:inline-flex">${p.cnt}</span></td>
+                  </tr>`).join('') || '<tr><td colspan="2" class="text-center text-muted">No pending tasks</td></tr>'}
+              </tbody>
+            </table></div>
+          </div>
+        </div>
+
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px">
+          <div>
+            <div style="font-weight:600;margin-bottom:10px">Top Departments by Expenditure</div>
+            <div class="table-wrap"><table>
+              <thead><tr><th>Department</th><th class="text-right">GEs</th><th class="text-right">Amount</th></tr></thead>
+              <tbody>
+                ${(r.by_department||[]).map(d => `
+                  <tr>
+                    <td>${d.department}</td>
+                    <td class="text-right">${d.ge_count}</td>
+                    <td class="text-right fw-600">${Fmt.currency(d.total_amount)}</td>
+                  </tr>`).join('') || '<tr><td colspan="3" class="text-center text-muted">No data</td></tr>'}
+              </tbody>
+            </table></div>
+          </div>
+
+          <div>
+            <div style="font-weight:600;margin-bottom:10px">Monthly Trend (Last 12 Months)</div>
+            <div class="table-wrap"><table>
+              <thead><tr><th>Month</th><th class="text-right">GEs</th><th class="text-right">Amount</th></tr></thead>
+              <tbody>
+                ${(r.monthly_trends||[]).map(m => `
+                  <tr>
+                    <td>${m.month}</td>
+                    <td class="text-right">${m.cnt}</td>
+                    <td class="text-right fw-600">${Fmt.currency(m.total)}</td>
+                  </tr>`).join('') || '<tr><td colspan="3" class="text-center text-muted">No data</td></tr>'}
+              </tbody>
+            </table></div>
+          </div>
+        </div>
+      </div>`;
+  } catch (err) {
+    c.innerHTML = `<div class="alert alert-error" style="margin:16px"><span>❌</span>${err.message}</div>`;
+  }
+}
+</script>
+</body>
+</html>
