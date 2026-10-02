@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>User Management — PNGUOT GEMS</title>
+  <link rel="stylesheet" href="../assets/css/main.css">
+</head>
+<body>
+<div id="app-shell">
+  <aside id="sidebar">
+    <div class="sidebar-header">
+      <div class="sidebar-avatar" id="sidebar-footer-av">JD</div>
+      <div class="sidebar-workspace"><div class="ws-name" id="sidebar-ws-name">…</div><div class="ws-sub" id="sidebar-ws-sub">PNGUOT</div></div>
+    </div>
+    <nav class="sidebar-nav">
+      <a class="nav-item" href="dashboard.html"     data-page="dashboard.html"><span class="nav-icon">📊</span><span class="nav-label">Overview</span></a>
+      <a class="nav-item" href="notifications.html" data-page="notifications.html"><span class="nav-icon">🔔</span><span class="nav-label">Notifications</span></a>
+      <div class="sidebar-section-label">Expenses</div>
+      <a class="nav-item" href="ge-form.html" data-page="ge-form.html"><span class="nav-icon">➕</span><span class="nav-label">New GE</span></a>
+      <a class="nav-item" href="my-ges.html"  data-page="my-ges.html"><span class="nav-icon">📋</span><span class="nav-label">My GE Forms</span></a>
+      <a class="nav-item" href="quotation-tracker.html" data-page="quotation-tracker.html"><span class="nav-icon">📎</span><span class="nav-label">Quotation Tracker</span></a>
+      <div class="sidebar-section-label">Administration</div>
+      <a class="nav-item" href="admin-users.html"     data-page="admin-users.html"><span class="nav-icon">👥</span><span class="nav-label">Users</span></a>
+      <a class="nav-item" href="admin-delegates.html" data-page="admin-delegates.html"><span class="nav-icon">🔗</span><span class="nav-label">Delegates</span></a>
+      <a class="nav-item" href="admin-reports.html"   data-page="admin-reports.html"><span class="nav-icon">📈</span><span class="nav-label">Reports</span></a>
+    </nav>
+    <div class="sidebar-footer">
+      <div class="footer-icon">💰</div>
+      <div><div class="footer-name" id="sidebar-footer-name">PNGUOT GEMS</div><div class="footer-version">ver. 1.0.0</div></div>
+      <div class="dropdown"><button class="footer-menu" data-dropdown="sb-um">•••</button>
+        <div class="dropdown-menu" id="sb-um"><div class="dropdown-item danger" onclick="Auth.logout()">🚪 Sign Out</div></div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-overlay" id="sidebar-overlay"></div>
+
+  <div id="main-area">
+    <header id="topbar">
+      <button class="hamburger" id="hamburger-btn">☰</button>
+      <span class="topbar-page-title">User Management</span>
+      <div class="topbar-search">
+        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+        <input type="text" placeholder="Search users…" id="user-search">
+      </div>
+      <div class="topbar-actions">
+        <button class="btn btn-primary btn-sm" onclick="openCreateUser()">+ New User</button>
+        <div class="user-avatar" id="topbar-avatar">JD</div>
+        <div><div class="user-name" id="topbar-user-name">…</div><div class="user-role" id="topbar-user-role"></div></div>
+      </div>
+    </header>
+
+    <main id="page-content">
+      <div class="card">
+        <div class="card-header"><span class="card-title">All Users</span></div>
+        <div id="users-container"><div class="page-loader"><div class="spinner"></div></div></div>
+      </div>
+    </main>
+  </div>
+</div>
+
+<!-- User modal -->
+<div class="modal-overlay" id="user-modal">
+  <div class="modal">
+    <div class="modal-header">
+      <span class="modal-title" id="user-modal-title">New User</span>
+      <button class="modal-close" onclick="Modal.close('user-modal')">✕</button>
+    </div>
+    <div class="modal-body">
+      <input type="hidden" id="edit-user-id">
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Staff ID <span class="required">*</span></label>
+          <input id="u-staff-id" type="text" class="form-control font-mono" placeholder="PNGUOT001">
+        </div>
+        <div class="form-group">
+          <label class="form-label">First Name <span class="required">*</span></label>
+          <input id="u-first-name" type="text" class="form-control">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Last Name <span class="required">*</span></label>
+          <input id="u-last-name" type="text" class="form-control">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Email <span class="required">*</span></label>
+          <input id="u-email" type="email" class="form-control">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Phone</label>
+          <input id="u-phone" type="text" class="form-control" placeholder="+675 XXXX XXXX">
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Password <span id="pass-required" class="required">*</span></label>
+        <input id="u-password" type="password" class="form-control" placeholder="Min 8 characters">
+        <span class="form-hint" id="pass-hint"></span>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Department</label>
+        <select id="u-department" class="form-control">
+          <option value="">— Select Department —</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Roles</label>
+        <div id="roles-checkboxes" style="display:flex;flex-wrap:wrap;gap:10px;margin-top:6px"></div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Active</label>
+        <select id="u-active" class="form-control">
+          <option value="1">Yes</option>
+          <option value="0">No</option>
+        </select>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="Modal.close('user-modal')">Cancel</button>
+      <button class="btn btn-primary" id="btn-save-user" onclick="saveUser()">Save User</button>
+    </div>
+  </div>
+</div>
+
+<script src="../assets/js/api.js"></script>
+<script src="../assets/js/app.js"></script>
+<script>
+const ALL_ROLES = ['CLAIMANT','HEAD_OF_SCHOOL','DEAN','ICT_DIRECTOR',
+  'PROCUREMENT_MANAGER','ACCOUNTS_OFFICER','VICE_CHANCELLOR','SYSTEM_ADMIN'];
+let departments = [];
+let searchTimer;
+
+(async () => {
+  const ok = await requireAuth(['SYSTEM_ADMIN']);
+  if (!ok) return;
+  Sidebar.setActive('admin-users.html');
+  loadDepts();
+  loadUsers();
+  document.getElementById('user-search').addEventListener('input', () => {
+    clearTimeout(searchTimer);
+    searchTimer = setTimeout(loadUsers, 400);
+  });
+})();
+
+async function loadDepts() {
+  try {
+    const res = await API.get('admin/departments.php').catch(() => ({ departments: [] }));
+    departments = res.departments || [];
+    const sel = document.getElementById('u-department');
+    departments.forEach(d => sel.innerHTML += `<option value="${d.id}">${d.name} (${d.code})</option>`);
+  } catch {}
+}
+
+async function loadUsers() {
+  const c = document.getElementById('users-container');
+  c.innerHTML = `<div class="page-loader"><div class="spinner"></div></div>`;
+  try {
+    const res   = await API.adminUsers({ search: document.getElementById('user-search').value });
+    const users = res.users;
+    if (!users.length) {
+      c.innerHTML = `<div class="empty-state"><div class="es-icon">👥</div><div class="es-title">No users found</div></div>`;
+      return;
+    }
+    c.innerHTML = `
+      <div class="table-wrap"><table>
+        <thead><tr><th>Staff ID</th><th>Name</th><th>Email</th><th>Department</th><th>Roles</th><th>Active</th><th>Actions</th></tr></thead>
+        <tbody>
+          ${users.map(u => `
+            <tr>
+              <td class="font-mono fw-600">${u.staff_id}</td>
+              <td>${u.first_name} ${u.last_name}</td>
+              <td>${u.email}</td>
+              <td>${u.department_name||'—'}</td>
+              <td>${(u.roles||[]).map(r=>`<span class="status-badge status-SUBMITTED" style="margin:1px">${r.replace(/_/g,' ')}</span>`).join('')}</td>
+              <td>${u.is_active ? '<span style="color:var(--primary)">●</span> Active' : '<span style="color:var(--danger)">●</span> Inactive'}</td>
+              <td><button class="btn btn-ghost btn-sm" onclick="openEditUser(${u.id})">Edit</button></td>
+            </tr>`).join('')}
+        </tbody>
+      </table></div>`;
+  } catch (err) {
+    c.innerHTML = `<div class="alert alert-error" style="margin:16px"><span>❌</span>${err.message}</div>`;
+  }
+}
+
+function renderRolesCheckboxes(selected=[]) {
+  document.getElementById('roles-checkboxes').innerHTML = ALL_ROLES.map(r => `
+    <label style="display:flex;align-items:center;gap:6px;font-size:13px;cursor:pointer">
+      <input type="checkbox" value="${r}" ${selected.includes(r)?'checked':''}>
+      ${r.replace(/_/g,' ')}
+    </label>`).join('');
+}
+
+function openCreateUser() {
+  document.getElementById('user-modal-title').textContent = 'New User';
+  document.getElementById('edit-user-id').value = '';
+  ['u-staff-id','u-first-name','u-last-name','u-email','u-phone','u-password'].forEach(id => {
+    document.getElementById(id).value = '';
+  });
+  document.getElementById('u-active').value = '1';
+  document.getElementById('pass-required').classList.remove('hidden');
+  document.getElementById('pass-hint').textContent = '';
+  renderRolesCheckboxes(['CLAIMANT']);
+  Modal.open('user-modal');
+}
+
+async function openEditUser(id) {
+  document.getElementById('user-modal-title').textContent = 'Edit User';
+  try {
+    const res = await API.adminUserGet(id);
+    const u   = res.user;
+    document.getElementById('edit-user-id').value = u.id;
+    document.getElementById('u-staff-id').value   = u.staff_id;
+    document.getElementById('u-first-name').value = u.first_name;
+    document.getElementById('u-last-name').value  = u.last_name;
+    document.getElementById('u-email').value      = u.email;
+    document.getElementById('u-phone').value      = u.phone || '';
+    document.getElementById('u-password').value   = '';
+    document.getElementById('u-active').value     = u.is_active ? '1' : '0';
+    document.getElementById('pass-required').classList.add('hidden');
+    document.getElementById('pass-hint').textContent = 'Leave blank to keep current password.';
+    document.getElementById('u-department').value  = u.department_id || '';
+    renderRolesCheckboxes(u.roles || []);
+    Modal.open('user-modal');
+  } catch (err) { Toast.error(err.message); }
+}
+
+async function saveUser() {
+  const editId = document.getElementById('edit-user-id').value;
+  const roles  = [...document.querySelectorAll('#roles-checkboxes input:checked')].map(cb => cb.value);
+  const data   = {
+    staff_id:      document.getElementById('u-staff-id').value,
+    first_name:    document.getElementById('u-first-name').value,
+    last_name:     document.getElementById('u-last-name').value,
+    email:         document.getElementById('u-email').value,
+    phone:         document.getElementById('u-phone').value,
+    password:      document.getElementById('u-password').value,
+    department_id: document.getElementById('u-department').value,
+    is_active:     document.getElementById('u-active').value === '1' ? 1 : 0,
+    roles,
+  };
+  try {
+    if (editId) {
+      await API.adminUserUpdate({ ...data, id: editId });
+      Toast.success('User updated.');
+    } else {
+      await API.adminUserCreate(data);
+      Toast.success('User created.');
+    }
+    Modal.close('user-modal');
+    loadUsers();
+  } catch (err) { Toast.error(err.message); }
+}
+</script>
+</body>
+</html>

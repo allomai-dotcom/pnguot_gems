@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Delegate Assignments — PNGUOT GEMS</title>
+  <link rel="stylesheet" href="../assets/css/main.css">
+</head>
+<body>
+<div id="app-shell">
+  <aside id="sidebar">
+    <div class="sidebar-header">
+      <div class="sidebar-avatar" id="sidebar-footer-av">JD</div>
+      <div class="sidebar-workspace"><div class="ws-name" id="sidebar-ws-name">…</div><div class="ws-sub" id="sidebar-ws-sub">PNGUOT</div></div>
+    </div>
+    <nav class="sidebar-nav">
+      <a class="nav-item" href="dashboard.html"     data-page="dashboard.html"><span class="nav-icon">📊</span><span class="nav-label">Overview</span></a>
+      <div class="sidebar-section-label">Expenses</div>
+      <a class="nav-item" href="ge-form.html" data-page="ge-form.html"><span class="nav-icon">➕</span><span class="nav-label">New GE</span></a>
+      <a class="nav-item" href="my-ges.html"  data-page="my-ges.html"><span class="nav-icon">📋</span><span class="nav-label">My GE Forms</span></a>
+      <a class="nav-item" href="quotation-tracker.html" data-page="quotation-tracker.html"><span class="nav-icon">📎</span><span class="nav-label">Quotation Tracker</span></a>
+      <div class="sidebar-section-label">Administration</div>
+      <a class="nav-item" href="admin-users.html"     data-page="admin-users.html"><span class="nav-icon">👥</span><span class="nav-label">Users</span></a>
+      <a class="nav-item" href="admin-delegates.html" data-page="admin-delegates.html"><span class="nav-icon">🔗</span><span class="nav-label">Delegates</span></a>
+      <a class="nav-item" href="admin-reports.html"   data-page="admin-reports.html"><span class="nav-icon">📈</span><span class="nav-label">Reports</span></a>
+    </nav>
+    <div class="sidebar-footer">
+      <div class="footer-icon">💰</div>
+      <div><div class="footer-name" id="sidebar-footer-name">PNGUOT GEMS</div><div class="footer-version">ver. 1.0.0</div></div>
+      <div class="dropdown"><button class="footer-menu" data-dropdown="sb-um">•••</button>
+        <div class="dropdown-menu" id="sb-um"><div class="dropdown-item danger" onclick="Auth.logout()">🚪 Sign Out</div></div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-overlay" id="sidebar-overlay"></div>
+
+  <div id="main-area">
+    <header id="topbar">
+      <button class="hamburger" id="hamburger-btn">☰</button>
+      <span class="topbar-page-title">Delegate Assignments</span>
+      <div class="topbar-actions" style="margin-left:auto">
+        <button class="btn btn-primary btn-sm" onclick="Modal.open('add-delegate-modal')">+ Assign Delegate</button>
+        <div class="user-avatar" id="topbar-avatar">JD</div>
+        <div><div class="user-name" id="topbar-user-name">…</div><div class="user-role" id="topbar-user-role"></div></div>
+      </div>
+    </header>
+
+    <main id="page-content">
+      <div class="alert alert-info mb-16">
+        <span class="alert-icon">ℹ️</span>
+        <div>Delegates determine who receives approval tasks for each workflow step. Assign at least one delegate per role to prevent workflow errors.</div>
+      </div>
+      <div class="card">
+        <div class="card-header"><span class="card-title">Current Delegate Assignments</span></div>
+        <div id="delegates-container"><div class="page-loader"><div class="spinner"></div></div></div>
+      </div>
+    </main>
+  </div>
+</div>
+
+<!-- Add delegate modal -->
+<div class="modal-overlay" id="add-delegate-modal">
+  <div class="modal">
+    <div class="modal-header">
+      <span class="modal-title">Assign Delegate</span>
+      <button class="modal-close" onclick="Modal.close('add-delegate-modal')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label class="form-label">Role <span class="required">*</span></label>
+        <select id="d-role" class="form-control">
+          <option value="">— Select Role —</option>
+          <option value="HEAD_OF_SCHOOL">Head of School</option>
+          <option value="DEAN">Dean</option>
+          <option value="ICT_DIRECTOR">ICT Director</option>
+          <option value="PROCUREMENT_MANAGER">Procurement Manager</option>
+          <option value="ACCOUNTS_OFFICER">Accounts Officer</option>
+          <option value="VICE_CHANCELLOR">Vice Chancellor</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">User <span class="required">*</span></label>
+        <select id="d-user" class="form-control">
+          <option value="">— Select User —</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Scope</label>
+        <select id="d-scope" class="form-control">
+          <option value="global">Global (Central Role)</option>
+          <option value="faculty">Faculty</option>
+          <option value="department">Department</option>
+        </select>
+      </div>
+      <div class="form-group hidden" id="d-faculty-group">
+        <label class="form-label">Faculty Code</label>
+        <input id="d-faculty" type="text" class="form-control font-mono" placeholder="e.g. FBE">
+      </div>
+      <div class="form-group hidden" id="d-dept-group">
+        <label class="form-label">Department</label>
+        <select id="d-dept" class="form-control"><option value="">— Select —</option></select>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="Modal.close('add-delegate-modal')">Cancel</button>
+      <button class="btn btn-primary" onclick="saveDelegate()">Assign</button>
+    </div>
+  </div>
+</div>
+
+<script src="../assets/js/api.js"></script>
+<script src="../assets/js/app.js"></script>
+<script>
+let allUsers = [];
+
+(async () => {
+  const ok = await requireAuth(['SYSTEM_ADMIN']);
+  if (!ok) return;
+  Sidebar.setActive('admin-delegates.html');
+  loadDelegates();
+  loadUsers();
+
+  document.getElementById('d-scope').addEventListener('change', e => {
+    document.getElementById('d-faculty-group').classList.toggle('hidden', e.target.value !== 'faculty');
+    document.getElementById('d-dept-group').classList.toggle('hidden', e.target.value !== 'department');
+  });
+})();
+
+async function loadUsers() {
+  try {
+    const res = await API.adminUsers({});
+    allUsers = res.users;
+    const sel = document.getElementById('d-user');
+    allUsers.forEach(u => sel.innerHTML += `<option value="${u.id}">${u.first_name} ${u.last_name} (${u.staff_id})</option>`);
+  } catch {}
+}
+
+async function loadDelegates() {
+  const c = document.getElementById('delegates-container');
+  try {
+    const res = await API.adminDelegates();
+    const d   = res.delegates;
+    if (!d.length) {
+      c.innerHTML = `<div class="empty-state"><div class="es-icon">🔗</div><div class="es-title">No delegates assigned</div><div class="es-sub">Assign delegates to enable the approval workflow.</div></div>`;
+      return;
+    }
+    c.innerHTML = `
+      <div class="table-wrap"><table>
+        <thead><tr><th>Role</th><th>Assigned To</th><th>Staff ID</th><th>Scope</th><th>Status</th><th>Actions</th></tr></thead>
+        <tbody>
+          ${d.map(a => `
+            <tr>
+              <td><span class="fw-600">${a.role_label}</span></td>
+              <td>${a.user_name}</td>
+              <td class="font-mono">${a.staff_id}</td>
+              <td>${a.department_name || a.faculty_code || 'Global'}</td>
+              <td>${a.is_active ? '<span style="color:var(--primary)">● Active</span>' : '<span style="color:var(--danger)">● Inactive</span>'}</td>
+              <td><button class="btn btn-danger btn-sm" onclick="removeDelegate(${a.id})">Remove</button></td>
+            </tr>`).join('')}
+        </tbody>
+      </table></div>`;
+  } catch (err) {
+    c.innerHTML = `<div class="alert alert-error" style="margin:16px"><span>❌</span>${err.message}</div>`;
+  }
+}
+
+async function saveDelegate() {
+  const scope = document.getElementById('d-scope').value;
+  const data  = {
+    role_code:     document.getElementById('d-role').value,
+    user_id:       document.getElementById('d-user').value,
+    faculty_code:  scope === 'faculty'     ? document.getElementById('d-faculty').value : null,
+    department_id: scope === 'department'  ? document.getElementById('d-dept').value    : null,
+  };
+  if (!data.role_code || !data.user_id) { Toast.warning('Role and User are required.'); return; }
+  try {
+    await API.adminDelegateAdd(data);
+    Toast.success('Delegate assigned.');
+    Modal.close('add-delegate-modal');
+    loadDelegates();
+  } catch (err) { Toast.error(err.message); }
+}
+
+async function removeDelegate(id) {
+  const ok = await window.confirm('Remove this delegate assignment?');
+  if (!ok) return;
+  try {
+    await API.adminDelegateRemove({ id });
+    Toast.success('Delegate removed.');
+    loadDelegates();
+  } catch (err) { Toast.error(err.message); }
+}
+</script>
+</body>
+</html>

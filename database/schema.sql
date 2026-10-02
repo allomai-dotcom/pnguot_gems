@@ -99,6 +99,7 @@ CREATE TABLE general_expenses (
     claimant_id             INT UNSIGNED NOT NULL,
     department_id           INT UNSIGNED NOT NULL,
     payee_name              VARCHAR(200) NULL,
+    claimant_full_name      VARCHAR(200) NULL,
     departmental_reference  VARCHAR(100) NULL,
     claimant_reference      VARCHAR(100) NULL,
     description             TEXT         NULL,
@@ -128,6 +129,7 @@ CREATE TABLE ge_line_items (
     description     VARCHAR(300) NOT NULL,
     quantity        DECIMAL(10,3) NOT NULL DEFAULT 1,
     unit_price      DECIMAL(12,2) NOT NULL DEFAULT 0.00,
+    gst_percent     DECIMAL(5,2)  NOT NULL DEFAULT 0.00,
     total_price     DECIMAL(12,2) GENERATED ALWAYS AS (quantity * unit_price) STORED,
     created_at      DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (ge_id) REFERENCES general_expenses(id) ON DELETE CASCADE
@@ -395,3 +397,29 @@ ALTER TABLE general_expenses
 ALTER TABLE general_expenses
   ADD CONSTRAINT fk_ge_sent_by
   FOREIGN KEY (sent_to_accounts_by) REFERENCES users(id) ON DELETE SET NULL;
+
+-- ============================================================
+-- GAP 5 MIGRATION — GST Percent on Line Items
+-- ============================================================
+ALTER TABLE ge_line_items
+  ADD COLUMN gst_percent DECIMAL(5,2) NOT NULL DEFAULT 0.00 AFTER unit_price;
+
+-- ============================================================
+-- GAP 6 MIGRATION — Claimant Declaration Fields
+-- ============================================================
+ALTER TABLE general_expenses
+  ADD COLUMN claimant_full_name        VARCHAR(200) NULL AFTER payee_name,
+  ADD COLUMN claimant_declaration_date DATE         NULL AFTER claimant_signed_at;
+
+-- ============================================================
+-- GAP 7 MIGRATION — HOD Certification on General Expenses
+-- NOTE: hod_signature_data / hod_designation / hod_certified_at on workflow_tasks
+--       were added in GAP 3 and MUST NOT be re-added here.
+-- ============================================================
+ALTER TABLE general_expenses
+  ADD COLUMN hod_name              VARCHAR(200) NULL AFTER claimant_declaration_date,
+  ADD COLUMN hod_designation       VARCHAR(100) NULL AFTER hod_name,
+  ADD COLUMN hod_signature_data    MEDIUMTEXT   NULL AFTER hod_designation,
+  ADD COLUMN hod_certification_date DATE        NULL AFTER hod_signature_data,
+  ADD COLUMN hod_approved          TINYINT(1)   NOT NULL DEFAULT 0 AFTER hod_certification_date,
+  ADD COLUMN hod_sent_to_accounts  TINYINT(1)   NOT NULL DEFAULT 0 AFTER hod_approved;

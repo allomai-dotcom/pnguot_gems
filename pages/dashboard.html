@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard — PNGUOT GEMS</title>
+  <link rel="stylesheet" href="../assets/css/main.css">
+</head>
+<body>
+<div id="app-shell">
+
+  <!-- Sidebar -->
+  <aside id="sidebar">
+    <div class="sidebar-header">
+      <div class="sidebar-avatar" id="sidebar-footer-av">JD</div>
+      <div class="sidebar-workspace">
+        <div class="ws-name" id="sidebar-ws-name">Loading…</div>
+        <div class="ws-sub" id="sidebar-ws-sub">PNGUOT</div>
+      </div>
+      <button class="sidebar-add-btn" onclick="window.location.href='ge-form.html'" title="New GE">+</button>
+    </div>
+
+    <nav class="sidebar-nav">
+      <a class="nav-item" data-page="dashboard.html" href="dashboard.html">
+        <span class="nav-icon">📊</span><span class="nav-label">Overview</span>
+      </a>
+      <a class="nav-item" data-page="notifications.html" href="notifications.html">
+        <span class="nav-icon">🔔</span><span class="nav-label">Notifications</span>
+        <span class="nav-badge hidden notif-badge">0</span>
+      </a>
+
+      <div class="sidebar-section-label">Expenses</div>
+      <a class="nav-item" data-page="ge-form.html" href="ge-form.html">
+        <span class="nav-icon">➕</span><span class="nav-label">New GE</span>
+      </a>
+      <a class="nav-item" data-page="my-ges.html" href="my-ges.html">
+        <span class="nav-icon">📋</span><span class="nav-label">My GE Forms</span>
+      </a>
+      <a class="nav-item" data-page="quotation-tracker.html" href="quotation-tracker.html"><span class="nav-icon">📎</span><span class="nav-label">Quotation Tracker</span></a>
+
+      <div class="sidebar-section-label approver-only hidden">Approvals</div>
+      <a class="nav-item approver-only hidden" data-page="approvals.html" href="approvals.html">
+        <span class="nav-icon">✅</span><span class="nav-label">Pending Approvals</span>
+        <span class="nav-badge hidden" id="pending-approvals-badge">0</span>
+      </a>
+
+      <div class="sidebar-section-label admin-only hidden">Administration</div>
+      <a class="nav-item admin-only hidden" data-page="admin-users.html" href="admin-users.html">
+        <span class="nav-icon">👥</span><span class="nav-label">Users</span>
+      </a>
+      <a class="nav-item admin-only hidden" data-page="admin-delegates.html" href="admin-delegates.html">
+        <span class="nav-icon">🔗</span><span class="nav-label">Delegates</span>
+      </a>
+      <a class="nav-item admin-only hidden" data-page="admin-reports.html" href="admin-reports.html">
+        <span class="nav-icon">📈</span><span class="nav-label">Reports</span>
+      </a>
+    </nav>
+
+    <div class="sidebar-footer">
+      <div class="footer-icon">💰</div>
+      <div>
+        <div class="footer-name" id="sidebar-footer-name">PNGUOT GEMS</div>
+        <div class="footer-version">ver. 1.0.0</div>
+      </div>
+      <div class="dropdown">
+        <button class="footer-menu" data-dropdown="sidebar-user-menu">•••</button>
+        <div class="dropdown-menu" id="sidebar-user-menu">
+          <div class="dropdown-item" onclick="window.location.href='profile.html'">👤 Profile</div>
+          <div class="dropdown-divider"></div>
+          <div class="dropdown-item danger" onclick="Auth.logout()">🚪 Sign Out</div>
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-overlay" id="sidebar-overlay"></div>
+
+  <!-- Main -->
+  <div id="main-area">
+    <header id="topbar">
+      <button class="hamburger" id="hamburger-btn">☰</button>
+      <span class="topbar-page-title">Overview</span>
+      <div class="topbar-search">
+        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+        <input type="text" placeholder="Search GE number, payee…" id="dash-search">
+      </div>
+      <div class="topbar-actions">
+        <div class="dropdown">
+          <button class="topbar-btn" data-dropdown="notif-dropdown" title="Notifications">
+            🔔<span class="badge hidden notif-badge">0</span>
+          </button>
+          <div class="dropdown-menu" id="notif-dropdown" style="min-width:300px">
+            <div style="padding:10px 14px;font-weight:600;font-size:13px;border-bottom:1px solid var(--card-border)">Notifications</div>
+            <div id="notif-preview-list" style="max-height:260px;overflow-y:auto"></div>
+            <div style="padding:8px;border-top:1px solid var(--card-border)">
+              <a href="notifications.html" class="btn btn-ghost btn-sm w-full" style="justify-content:center">View All</a>
+            </div>
+          </div>
+        </div>
+        <div class="dropdown">
+          <div class="topbar-user" data-dropdown="user-menu">
+            <div class="user-avatar" id="topbar-avatar">JD</div>
+            <div>
+              <div class="user-name" id="topbar-user-name">Loading…</div>
+              <div class="user-role" id="topbar-user-role"></div>
+            </div>
+          </div>
+          <div class="dropdown-menu" id="user-menu">
+            <div class="dropdown-item" onclick="window.location.href='profile.html'">👤 My Profile</div>
+            <div class="dropdown-divider"></div>
+            <div class="dropdown-item danger" onclick="Auth.logout()">🚪 Sign Out</div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main id="page-content">
+      <div id="dash-content">
+        <div class="page-loader"><div class="spinner"></div> Loading…</div>
+      </div>
+    </main>
+  </div>
+</div>
+
+<script src="../assets/js/api.js"></script>
+<script src="../assets/js/app.js"></script>
+<script>
+(async () => {
+  const ok = await requireAuth();
+  if (!ok) return;
+
+  Sidebar.setActive('dashboard.html');
+  loadDashboard();
+  loadNotifPreview();
+})();
+
+async function loadNotifPreview() {
+  try {
+    const res  = await API.notifications();
+    const list = document.getElementById('notif-preview-list');
+    const unread = res.notifications.filter(n => !n.is_read).slice(0, 5);
+    if (!unread.length) {
+      list.innerHTML = '<div style="padding:16px;text-align:center;color:var(--text-muted);font-size:13px">No new notifications</div>';
+    } else {
+      list.innerHTML = unread.map(n => `
+        <div class="dropdown-item" style="align-items:flex-start;flex-direction:column;gap:2px">
+          <div style="font-size:12px;font-weight:600">${n.ge_number ? n.ge_number + ' · ' : ''}${n.type.replace(/_/g,' ')}</div>
+          <div style="font-size:11px;color:var(--text-muted)">${n.message.substring(0,80)}…</div>
+        </div>`).join('');
+    }
+  } catch {}
+}
+
+async function loadDashboard() {
+  const container = document.getElementById('dash-content');
+  try {
+    const [reportsRes, tasksRes] = await Promise.all([
+      API.reports().catch(() => ({ by_status:{}, monthly_trends:[], by_department:[], recent_ges:[], user_count:0 })),
+      API.myTasks().catch(() => ({ tasks:[] })),
+    ]);
+    const r = reportsRes;
+    const pendingTasks = tasksRes.tasks.length;
+
+    const total   = (r.by_status?.COMPLETED?.count || 0);
+    const draft   = (r.by_status?.DRAFT?.count || 0);
+    const pending = Object.entries(r.by_status || {})
+      .filter(([s]) => s.startsWith('PENDING'))
+      .reduce((s, [,v]) => s + v.count, 0);
+    const totalAmt = Object.values(r.by_status || {}).reduce((s, v) => s + (v.total || 0), 0);
+
+    // Pending approvals badge
+    if (pendingTasks > 0) {
+      document.querySelectorAll('#pending-approvals-badge').forEach(b => {
+        b.textContent = pendingTasks; b.classList.remove('hidden');
+      });
+    }
+
+    container.innerHTML = `
+      <div class="stat-grid">
+        <div class="stat-card">
+          <div class="stat-icon green">📋</div>
+          <div class="stat-label">Total GE Forms</div>
+          <div class="stat-value">${Object.values(r.by_status||{}).reduce((s,v)=>s+v.count,0)}</div>
+          <div class="stat-sub">All time</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon blue">⏳</div>
+          <div class="stat-label">Pending Approval</div>
+          <div class="stat-value">${pending}</div>
+          <div class="stat-sub">In workflow</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon green">✅</div>
+          <div class="stat-label">Completed</div>
+          <div class="stat-value">${total}</div>
+          <div class="stat-sub">Fully approved</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon yellow">📝</div>
+          <div class="stat-label">Drafts</div>
+          <div class="stat-value">${draft}</div>
+          <div class="stat-sub">Not yet submitted</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon purple">💰</div>
+          <div class="stat-label">Total Value</div>
+          <div class="stat-value" style="font-size:18px">${Fmt.currency(totalAmt)}</div>
+          <div class="stat-sub">All GEs</div>
+        </div>
+        ${pendingTasks > 0 ? `
+        <div class="stat-card" style="border-color:var(--warning);cursor:pointer" onclick="window.location.href='approvals.html'">
+          <div class="stat-icon yellow">🔔</div>
+          <div class="stat-label">My Pending Tasks</div>
+          <div class="stat-value">${pendingTasks}</div>
+          <div class="stat-sub" style="color:var(--warning)">Action required</div>
+        </div>` : ''}
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px">
+        <div class="card">
+          <div class="card-header">
+            <span class="card-title">Recent GE Forms</span>
+            <a href="my-ges.html" class="btn btn-ghost btn-sm">View All →</a>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>GE Number</th><th>Payee</th><th>Amount</th><th>Status</th></tr></thead>
+              <tbody>
+                ${(r.recent_ges||[]).map(g => `
+                  <tr style="cursor:pointer" onclick="window.location.href='ge-view.html?id=${g.id||''}'">
+                    <td class="font-mono fw-600">${g.ge_number}</td>
+                    <td>${g.payee_name||'—'}</td>
+                    <td class="fw-600">${Fmt.currency(g.total_amount)}</td>
+                    <td>${statusBadge(g.status, g.status_label)}</td>
+                  </tr>`).join('') || '<tr><td colspan="4" class="text-center text-muted">No GEs yet</td></tr>'}
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <span class="card-title">By Department</span>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Department</th><th class="text-right">GEs</th><th class="text-right">Total</th></tr></thead>
+              <tbody>
+                ${(r.by_department||[]).map(d => `
+                  <tr>
+                    <td>${d.department}</td>
+                    <td class="text-right">${d.ge_count}</td>
+                    <td class="text-right fw-600">${Fmt.currency(d.total_amount)}</td>
+                  </tr>`).join('') || '<tr><td colspan="3" class="text-center text-muted">No data</td></tr>'}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>`;
+  } catch (err) {
+    container.innerHTML = `<div class="alert alert-error"><span>❌</span>${err.message}</div>`;
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Notifications — PNGUOT GEMS</title>
+  <link rel="stylesheet" href="../assets/css/main.css">
+</head>
+<body>
+<div id="app-shell">
+  <aside id="sidebar">
+    <div class="sidebar-header">
+      <div class="sidebar-avatar" id="sidebar-footer-av">JD</div>
+      <div class="sidebar-workspace"><div class="ws-name" id="sidebar-ws-name">…</div><div class="ws-sub" id="sidebar-ws-sub">PNGUOT</div></div>
+    </div>
+    <nav class="sidebar-nav">
+      <a class="nav-item" href="dashboard.html"     data-page="dashboard.html"><span class="nav-icon">📊</span><span class="nav-label">Overview</span></a>
+      <a class="nav-item" href="notifications.html" data-page="notifications.html"><span class="nav-icon">🔔</span><span class="nav-label">Notifications</span></a>
+      <div class="sidebar-section-label">Expenses</div>
+      <a class="nav-item" href="ge-form.html" data-page="ge-form.html"><span class="nav-icon">➕</span><span class="nav-label">New GE</span></a>
+      <a class="nav-item" href="my-ges.html"  data-page="my-ges.html"><span class="nav-icon">📋</span><span class="nav-label">My GE Forms</span></a>
+      <a class="nav-item" href="quotation-tracker.html" data-page="quotation-tracker.html"><span class="nav-icon">📎</span><span class="nav-label">Quotation Tracker</span></a>
+      <div class="sidebar-section-label approver-only hidden">Approvals</div>
+      <a class="nav-item approver-only hidden" href="approvals.html" data-page="approvals.html"><span class="nav-icon">✅</span><span class="nav-label">Pending Approvals</span></a>
+      <div class="sidebar-section-label admin-only hidden">Administration</div>
+      <a class="nav-item admin-only hidden" href="admin-users.html"     data-page="admin-users.html"><span class="nav-icon">👥</span><span class="nav-label">Users</span></a>
+      <a class="nav-item admin-only hidden" href="admin-delegates.html" data-page="admin-delegates.html"><span class="nav-icon">🔗</span><span class="nav-label">Delegates</span></a>
+      <a class="nav-item admin-only hidden" href="admin-reports.html"   data-page="admin-reports.html"><span class="nav-icon">📈</span><span class="nav-label">Reports</span></a>
+    </nav>
+    <div class="sidebar-footer">
+      <div class="footer-icon">💰</div>
+      <div><div class="footer-name" id="sidebar-footer-name">PNGUOT GEMS</div><div class="footer-version">ver. 1.0.0</div></div>
+      <div class="dropdown"><button class="footer-menu" data-dropdown="sb-um">•••</button>
+        <div class="dropdown-menu" id="sb-um"><div class="dropdown-item danger" onclick="Auth.logout()">🚪 Sign Out</div></div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-overlay" id="sidebar-overlay"></div>
+
+  <div id="main-area">
+    <header id="topbar">
+      <button class="hamburger" id="hamburger-btn">☰</button>
+      <span class="topbar-page-title">Notifications</span>
+      <div class="topbar-actions" style="margin-left:auto">
+        <button class="btn btn-ghost btn-sm" onclick="markAllRead()">✓ Mark All Read</button>
+        <div class="user-avatar" id="topbar-avatar">JD</div>
+        <div><div class="user-name" id="topbar-user-name">…</div><div class="user-role" id="topbar-user-role"></div></div>
+      </div>
+    </header>
+
+    <main id="page-content">
+      <div class="card">
+        <div class="card-header"><span class="card-title">All Notifications</span></div>
+        <div id="notif-list"><div class="page-loader"><div class="spinner"></div></div></div>
+      </div>
+    </main>
+  </div>
+</div>
+
+<script src="../assets/js/api.js"></script>
+<script src="../assets/js/app.js"></script>
+<script>
+const NOTIF_ICONS = {
+  APPROVAL_REQUIRED: '🔔', GE_QUERIED: '❓', QUERY_RESPONDED: '💬',
+  GE_COMPLETED: '✅', GE_REJECTED: '❌', QUERY_RAISED: '❓', default: 'ℹ️',
+};
+
+(async () => {
+  const ok = await requireAuth();
+  if (!ok) return;
+  Sidebar.setActive('notifications.html');
+  loadNotifications();
+})();
+
+async function loadNotifications() {
+  const c = document.getElementById('notif-list');
+  try {
+    const res   = await API.notifications();
+    const notes = res.notifications;
+    if (!notes.length) {
+      c.innerHTML = `<div class="empty-state"><div class="es-icon">🔔</div><div class="es-title">No notifications</div></div>`;
+      return;
+    }
+    c.innerHTML = notes.map(n => `
+      <div class="doc-item" style="${!n.is_read ? 'background:var(--primary-light)' : ''};cursor:pointer"
+           onclick="markRead(${n.id}, this)">
+        <span class="doc-icon">${NOTIF_ICONS[n.type] || NOTIF_ICONS.default}</span>
+        <div class="doc-info">
+          <div class="doc-name">
+            ${n.ge_number ? `<span class="font-mono" style="margin-right:6px">${n.ge_number}</span>` : ''}
+            ${n.type.replace(/_/g,' ')}
+            ${!n.is_read ? '<span class="nav-badge" style="display:inline-flex;margin-left:6px">New</span>' : ''}
+          </div>
+          <div class="doc-meta">${n.message}</div>
+          <div class="doc-meta">${Fmt.datetime(n.created_at)}</div>
+        </div>
+        ${n.ge_number ? `<a href="my-ges.html" class="btn btn-ghost btn-sm">View GE →</a>` : ''}
+      </div>`).join('');
+  } catch (err) {
+    c.innerHTML = `<div class="alert alert-error" style="margin:16px"><span>❌</span>${err.message}</div>`;
+  }
+}
+
+async function markRead(id, el) {
+  try {
+    await API.markNotifRead({ id });
+    el.style.background = '';
+    el.querySelector('.nav-badge')?.remove();
+  } catch {}
+}
+
+async function markAllRead() {
+  try {
+    await API.markNotifRead({ mark_read_all: true });
+    Toast.success('All notifications marked as read.');
+    loadNotifications();
+  } catch (err) { Toast.error(err.message); }
+}
+</script>
+</body>
+</html>

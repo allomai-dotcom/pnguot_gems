@@ -20,20 +20,36 @@ if (!in_array($ge['status'], ['DRAFT', 'READY_FOR_DOCUMENTS', 'QUERIED'])) {
     json_error('GE cannot be edited in its current status: ' . $ge['status']);
 }
 
-// Update header (claimants cannot change cfc_number or commitment_number)
-$isAdmin = in_array('SYSTEM_ADMIN', $user['roles']);
-$fields  = [];
-$vals    = [];
+// Update header fields
+$fields = [];
+$vals   = [];
 
 $allowed = ['payee_name','departmental_reference','claimant_reference',
-            'description','procurement_type','is_capital_item'];
-if ($isAdmin) $allowed = array_merge($allowed, ['cfc_number','commitment_number']);
+            'description','procurement_type','is_capital_item',
+            'claimant_full_name','claimant_declaration_date'];
+
+// CFC / Commitment — ACCOUNTS_OFFICER or SYSTEM_ADMIN only
+$isPrivileged = in_array('SYSTEM_ADMIN', $user['roles']) || in_array('ACCOUNTS_OFFICER', $user['roles']);
+if ($isPrivileged) $allowed = array_merge($allowed, ['cfc_number','commitment_number']);
+
+// HOD certification fields — claimant fills on behalf of HOD
+$hodAllowed = ['hod_name','hod_designation','hod_certification_date'];
+$allowed    = array_merge($allowed, $hodAllowed);
 
 foreach ($allowed as $f) {
     if (array_key_exists($f, $b)) {
         $fields[] = "$f = ?";
         $vals[]   = $f === 'is_capital_item' ? (int)(bool)$b[$f] : $b[$f];
     }
+}
+
+if (isset($b['hod_approved'])) {
+    $fields[] = 'hod_approved = ?';
+    $vals[]   = (int)(bool)$b['hod_approved'];
+}
+if (isset($b['hod_sent_to_accounts'])) {
+    $fields[] = 'hod_sent_to_accounts = ?';
+    $vals[]   = (int)(bool)$b['hod_sent_to_accounts'];
 }
 
 if ($fields) {
@@ -46,15 +62,16 @@ if ($fields) {
 if (isset($b['line_items']) && is_array($b['line_items'])) {
     $db->prepare('DELETE FROM ge_line_items WHERE ge_id = ?')->execute([$id]);
     $liStmt = $db->prepare(
-        'INSERT INTO ge_line_items (ge_id, sort_order, description, quantity, unit_price)
-         VALUES (?, ?, ?, ?, ?)'
+        'INSERT INTO ge_line_items (ge_id, sort_order, description, quantity, unit_price, gst_percent)
+         VALUES (?, ?, ?, ?, ?, ?)'
     );
     $total = 0;
     foreach ($b['line_items'] as $i => $li) {
-        $qty   = max(0, (float)($li['quantity'] ?? 1));
-        $price = max(0, (float)($li['unit_price'] ?? 0));
-        $liStmt->execute([$id, $i, trim($li['description'] ?? ''), $qty, $price]);
-        $total += $qty * $price;
+        $qty   = max(0, (float)($li['quantity']   ?? 1));
+        $price = max(0, (float)($li['unit_price']  ?? 0));
+        $gst   = max(0, min(100, (float)($li['gst_percent'] ?? 0)));
+        $liStmt->execute([$id, $i, trim($li['description'] ?? ''), $qty, $price, $gst]);
+        $total += $qty * $price * (1 + $gst / 100);
     }
     $db->prepare('UPDATE general_expenses SET total_amount = ? WHERE id = ?')->execute([$total, $id]);
 }
@@ -94,6 +111,14 @@ if ($ge['claimant_id'] === $user['id'] &&
          SET claimant_signature_data = ?, claimant_signed_at = NOW()
          WHERE id = ?'
     )->execute([$b['claimant_signature_data'], $id]);
+}
+
+// HOD signature — claimant fills on behalf of HOD
+if ($ge['claimant_id'] === $user['id'] &&
+    isset($b['hod_signature_data']) && trim($b['hod_signature_data']) !== '') {
+    $db->prepare(
+        'UPDATE general_expenses SET hod_signature_data = ? WHERE id = ?'
+    )->execute([$b['hod_signature_data'], $id]);
 }
 
 // Bump version

@@ -19,6 +19,7 @@
       <div class="sidebar-section-label">Expenses</div>
       <a class="nav-item" data-page="ge-form.html"  href="ge-form.html"><span class="nav-icon">➕</span><span class="nav-label">New GE</span></a>
       <a class="nav-item" data-page="my-ges.html"   href="my-ges.html"><span class="nav-icon">📋</span><span class="nav-label">My GE Forms</span></a>
+      <a class="nav-item" data-page="quotation-tracker.html" href="quotation-tracker.html"><span class="nav-icon">📎</span><span class="nav-label">Quotation Tracker</span></a>
       <div class="sidebar-section-label approver-only hidden">Approvals</div>
       <a class="nav-item approver-only hidden" data-page="approvals.html" href="approvals.html"><span class="nav-icon">✅</span><span class="nav-label">Pending Approvals</span></a>
       <div class="sidebar-section-label admin-only hidden">Administration</div>
@@ -28,7 +29,7 @@
     </nav>
     <div class="sidebar-footer">
       <div class="footer-icon">💰</div>
-      <div><div class="footer-name" id="sidebar-footer-name">PNGUOT GEMS</div><div class="footer-version">ver. 1.0.0</div></div>
+      <div><div class="footer-name" id="sidebar-footer-name">PNGUOT GEMS</div><div class="footer-version">ver. 4.0.0</div></div>
       <div class="dropdown"><button class="footer-menu" data-dropdown="sb-um">•••</button>
         <div class="dropdown-menu" id="sb-um">
           <div class="dropdown-item" onclick="location.href='profile.html'">👤 Profile</div>
@@ -78,19 +79,26 @@
       </div>
 
       <form id="ge-form">
-        <!-- Header card -->
-        <div class="card mb-24">
+
+        <!-- Section 1 — Claim Routing -->
+        <div class="card mb-24" id="section-1">
           <div class="card-header">
-            <span class="card-title">GE Header Information</span>
+            <span class="card-title">1 — Claim Routing</span>
             <span id="ge-status-badge"></span>
             <span class="font-mono text-muted" style="font-size:12px" id="ge-number"></span>
           </div>
           <div class="card-body">
             <div class="form-row">
               <div class="form-group">
-                <label class="form-label">Payee Name <span class="required">*</span></label>
+                <label class="form-label">Dr. To / Payee Name <span class="required">*</span></label>
                 <input id="payee-name" type="text" class="form-control" placeholder="e.g. ABC Computer Supplies Ltd">
               </div>
+              <div class="form-group">
+                <label class="form-label">Department</label>
+                <input id="dept-display" type="text" class="form-control" readonly style="background:var(--bg-secondary)">
+              </div>
+            </div>
+            <div class="form-row">
               <div class="form-group">
                 <label class="form-label">Departmental Reference <span class="required">*</span></label>
                 <input id="dept-ref" type="text" class="form-control" placeholder="e.g. ICT-EQUIPMENT-2026">
@@ -120,49 +128,21 @@
               <label class="form-label">Description / Purpose</label>
               <textarea id="description" class="form-control" rows="2" placeholder="Briefly describe the purpose of this expense…"></textarea>
             </div>
-
-            <!-- Claimant Declaration & Signature -->
-            <div class="card mb-24" id="claimant-sig-card">
-              <div class="card-header">
-                <span class="card-title">Claimant Declaration &amp; Signature</span>
-              </div>
-              <div class="card-body">
-                <p style="font-size:13px;margin-bottom:12px;color:var(--text-muted)">
-                  I certify that the expenses listed above are correct and have been incurred for official University purposes.
-                </p>
-                <canvas id="claimant-sig-canvas" width="600" height="150"
-                  style="border:1px solid var(--border);border-radius:6px;background:#fff;display:block;max-width:100%"></canvas>
-                <div class="flex gap-8 mt-8">
-                  <button type="button" id="btn-clear-sig" class="btn btn-ghost btn-sm">🗑 Clear Signature</button>
-                </div>
-              </div>
-            </div>
-
-            <!-- Finance-only (hidden for claimants) -->
-            <div class="form-row finance-only hidden">
-              <div class="form-group">
-                <label class="form-label">CFC Number <span class="text-muted">(Finance Only)</span></label>
-                <input id="cfc-number" type="text" class="form-control font-mono" placeholder="CFC-XXXX">
-              </div>
-              <div class="form-group">
-                <label class="form-label">Commitment Number <span class="text-muted">(Finance Only)</span></label>
-                <input id="commitment-number" type="text" class="form-control font-mono" placeholder="COMM-XXXX">
-              </div>
-            </div>
           </div>
         </div>
 
-        <!-- Line items -->
-        <div class="card mb-24">
+        <!-- Section 2 — Particulars of Expenditure -->
+        <div class="card mb-24" id="section-2">
           <div class="card-header">
-            <span class="card-title">Particulars / Line Items</span>
+            <span class="card-title">2 — Particulars of Expenditure</span>
           </div>
           <div class="card-body">
-            <div style="display:grid;grid-template-columns:1fr 80px 120px 110px 36px;gap:8px;margin-bottom:8px">
+            <div style="display:grid;grid-template-columns:1fr 80px 120px 80px 110px 36px;gap:8px;margin-bottom:8px">
               <div class="form-label">Description</div>
               <div class="form-label">Qty</div>
-              <div class="form-label">Unit Price (K)</div>
-              <div class="form-label text-right">Total</div>
+              <div class="form-label">Unit Rate (K)</div>
+              <div class="form-label">GST%</div>
+              <div class="form-label text-right">Total (K)</div>
               <div></div>
             </div>
             <div id="line-items-container"></div>
@@ -176,10 +156,10 @@
           </div>
         </div>
 
-        <!-- Accounting lines -->
-        <div class="card mb-24">
+        <!-- Section 3 — Department Use -->
+        <div class="card mb-24" id="section-3">
           <div class="card-header">
-            <span class="card-title">Accounting / Cost Allocation</span>
+            <span class="card-title">3 — Department Use</span>
             <span class="text-muted" style="font-size:12px">Must equal GE total</span>
           </div>
           <div class="card-body">
@@ -206,6 +186,115 @@
           </div>
         </div>
 
+        <!-- Section 4 — Claimant Declaration -->
+        <div class="card mb-24" id="section-4">
+          <div class="card-header">
+            <span class="card-title">4 — Claimant Declaration</span>
+          </div>
+          <div class="card-body">
+            <div class="form-group">
+              <label class="form-label">Full Name <span class="required">*</span></label>
+              <input id="claimant-full-name" type="text" class="form-control" placeholder="Full name of claimant">
+            </div>
+            <p style="font-size:13px;margin-bottom:12px;color:var(--text-muted)">
+              I certify that the expenses listed above are correct and have been incurred for official University purposes.
+            </p>
+            <canvas id="claimant-sig-canvas" width="600" height="150"
+              style="border:1px solid var(--border);border-radius:6px;background:#fff;display:block;max-width:100%"></canvas>
+            <div class="flex gap-8 mt-8">
+              <button type="button" id="btn-clear-sig" class="btn btn-ghost btn-sm">🗑 Clear Signature</button>
+            </div>
+            <div class="form-group mt-16">
+              <label class="form-label">Date</label>
+              <input id="claimant-declaration-date" type="date" class="form-control" style="max-width:200px">
+            </div>
+          </div>
+        </div>
+
+        <!-- Section 5 — Financial Coding (visible to all, editable by finance roles only) -->
+        <div class="card mb-24" id="section-5">
+          <div class="card-header">
+            <span class="card-title">5 — Financial Coding</span>
+          </div>
+          <div class="card-body">
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">CFC Number <span class="text-muted">(Finance Only)</span></label>
+                <input id="cfc-number" type="text" class="form-control font-mono" placeholder="CFC-XXXX">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Commitment Number <span class="text-muted">(Finance Only)</span></label>
+                <input id="commitment-number" type="text" class="form-control font-mono" placeholder="COMM-XXXX">
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Section 6 — HOD Certification -->
+        <div class="card mb-24" id="section-6">
+          <div class="card-header">
+            <span class="card-title">6 — HOD Certification</span>
+          </div>
+          <div class="card-body">
+            <p class="text-muted" style="font-size:13px;margin-bottom:16px">
+              To be completed by the Head of Department.
+            </p>
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">HOD Name</label>
+                <input id="hod-name" type="text" class="form-control" placeholder="Full name of HOD">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Designation</label>
+                <select id="hod-designation" class="form-control">
+                  <option value="">— Select Designation —</option>
+                  <option value="Head of Department">Head of Department</option>
+                  <option value="HOD Acting">HOD Acting</option>
+                  <option value="Dean of Faculty">Dean of Faculty</option>
+                  <option value="ICT Director">ICT Director</option>
+                  <option value="Procurement Manager">Procurement Manager</option>
+                  <option value="Vice Chancellor">Vice Chancellor</option>
+                  <option value="Pro Vice Chancellor Admin">Pro Vice Chancellor Admin</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label">HOD Signature</label>
+              <canvas id="hod-sig-canvas" width="600" height="150"
+                style="border:1px solid var(--border);border-radius:6px;background:#fff;display:block;max-width:100%"></canvas>
+              <div class="flex gap-8 mt-8">
+                <button type="button" id="btn-clear-hod-sig" class="btn btn-ghost btn-sm">🗑 Clear HOD Signature</button>
+              </div>
+            </div>
+            <div class="form-row mt-16">
+              <div class="form-group">
+                <label class="form-label">Date</label>
+                <input id="hod-certification-date" type="date" class="form-control" style="max-width:200px">
+              </div>
+              <div class="form-group" style="align-self:flex-end">
+                <label class="form-label" style="display:flex;align-items:center;gap:8px;cursor:pointer">
+                  <input id="hod-approved" type="checkbox"> Approved by HOD
+                </label>
+                <label class="form-label" style="display:flex;align-items:center;gap:8px;cursor:pointer;margin-top:8px">
+                  <input id="hod-sent-to-accounts" type="checkbox"> Sent to Accounts
+                </label>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Section 7 — Supporting Documents -->
+        <div class="card mb-24" id="section-7">
+          <div class="card-header">
+            <span class="card-title">7 — Supporting Documents</span>
+          </div>
+          <div class="card-body">
+            <div id="inline-docs-content">
+              <div class="text-muted" style="font-size:13px">Save the form first to manage documents.</div>
+            </div>
+          </div>
+        </div>
+
         <!-- Audit trail (shown when editing) -->
         <div class="card mb-24 hidden" id="audit-card">
           <div class="card-header"><span class="card-title">Audit Trail</span></div>
@@ -221,10 +310,37 @@
           <div class="flex gap-8">
             <button type="button" id="btn-save-draft" class="btn btn-secondary">💾 Save Draft</button>
             <button type="button" id="btn-ready-for-docs" class="btn btn-primary">Continue to Supporting Documents →</button>
+            <button type="button" id="btn-submit-ge" class="btn btn-primary hidden">Submit for Approval →</button>
           </div>
         </div>
       </form>
     </main>
+  </div>
+</div>
+
+<!-- Upload modal (reused by Section 7 inline document upload) -->
+<div class="modal-overlay" id="upload-modal">
+  <div class="modal">
+    <div class="modal-header">
+      <span class="modal-title" id="upload-modal-title">Upload Document</span>
+      <button class="modal-close" onclick="Modal.close('upload-modal')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="upload-zone" id="upload-zone">
+        <div class="uz-icon">📁</div>
+        <div class="uz-title">Drop file here or click to browse</div>
+        <div class="uz-sub">PDF, JPEG, PNG — max 10 MB</div>
+        <input type="file" id="file-input" style="display:none" accept=".pdf,.jpg,.jpeg,.png,.gif">
+      </div>
+      <div id="selected-file" class="hidden mt-8" style="font-size:13px;color:var(--text-secondary)"></div>
+      <div id="upload-progress" class="hidden mt-8">
+        <div class="spinner"></div> Uploading…
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="Modal.close('upload-modal')">Cancel</button>
+      <button class="btn btn-primary" id="btn-do-upload" disabled>Upload</button>
+    </div>
   </div>
 </div>
 
@@ -248,18 +364,6 @@
   }
 
   await GEForm.init(geId);
-
-  // Update total display data-raw on change
-  const observer = new MutationObserver(() => {
-    const totalEl = document.querySelector('.ge-total-display');
-    if (totalEl) {
-      const val = GEForm.lineItems.reduce((s,li) => s + li.quantity * li.unit_price, 0);
-      totalEl.dataset.raw = val;
-      GEForm.updateAcctTotal();
-    }
-  });
-  const container = document.getElementById('line-items-container');
-  if (container) observer.observe(container, { childList: true, subtree: true });
 })();
 </script>
 </body>
