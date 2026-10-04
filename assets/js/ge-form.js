@@ -19,7 +19,7 @@ const GEForm = {
     if (this.geId) {
       await this.load(this.geId);
     } else {
-      this.lineItems = [{ description: '', quantity: 1, unit_price: 0, gst_percent: 0 }];
+      this.lineItems = [{ description: '', quantity: 1, unit_price: 0 }];
       this.acctLines = [{ account_code: '', account_name: '',
         budget_div: '', budget_fn: '', budget_act: '', budget_item: '', budget_si: '', budget_d: '',
         amount: 0, notes: '' }];
@@ -189,17 +189,17 @@ const GEForm = {
       const row = document.createElement('div');
       row.className = 'line-item-row';
       row.dataset.index = i;
-      row.style.cssText = 'display:grid;grid-template-columns:1fr 80px 120px 80px 110px 36px;gap:8px;margin-bottom:6px';
+      row.style.cssText = 'display:grid;grid-template-columns:1fr 80px 120px 110px 36px;gap:8px;margin-bottom:6px';
       row.innerHTML = `
         <input class="form-control li-desc"  type="text"   placeholder="Description" value="${this.esc(li.description)}">
         <input class="form-control li-qty"   type="number" placeholder="Qty"  min="0.001" step="0.001" value="${li.quantity}">
         <input class="form-control li-price" type="number" placeholder="Unit Rate" min="0" step="0.01" value="${li.unit_price}">
-        <input class="form-control li-gst"   type="number" placeholder="GST%" min="0" max="100" step="0.1" value="${li.gst_percent ?? 0}">
-        <div class="line-total text-right" style="line-height:36px">${Fmt.currency(li.quantity * li.unit_price * (1 + (li.gst_percent || 0) / 100))}</div>
+        <div class="line-total text-right" style="line-height:36px">${Fmt.currency(li.quantity * li.unit_price)}</div>
         <button class="btn btn-ghost btn-sm remove-li" title="Remove" ${this.lineItems.length <= 1 ? 'disabled' : ''}>✕</button>`;
       container.appendChild(row);
     });
     this.updateTotal();
+    this.updateGSTDisplay();
   },
 
   renderAcctLines() {
@@ -210,15 +210,14 @@ const GEForm = {
       const row = document.createElement('div');
       row.className = 'acct-row';
       row.dataset.index = i;
-      row.style.cssText = 'display:grid;grid-template-columns:60px 60px 60px 60px 60px 60px 1fr 120px 36px;gap:6px;margin-bottom:6px';
+      row.style.cssText = 'display:grid;grid-template-columns:60px 60px 60px 70px 60px 60px 1fr 36px;gap:6px;margin-bottom:6px';
       row.innerHTML = `
-        <input class="form-control al-div"    type="text" placeholder="Div"  value="${this.esc(al.budget_div)}">
-        <input class="form-control al-fn"     type="text" placeholder="FN"   value="${this.esc(al.budget_fn)}">
-        <input class="form-control al-act"    type="text" placeholder="Act"  value="${this.esc(al.budget_act)}">
-        <input class="form-control al-item"   type="text" placeholder="Item" value="${this.esc(al.budget_item)}">
-        <input class="form-control al-si"     type="text" placeholder="SI"   value="${this.esc(al.budget_si)}">
-        <input class="form-control al-d"      type="text" placeholder="D"    value="${this.esc(al.budget_d)}">
-        <input class="form-control al-name"   type="text" placeholder="Account Name" value="${this.esc(al.account_name)}">
+        <input class="form-control al-div"    type="text" placeholder="Div"    value="${this.esc(al.budget_div)}">
+        <input class="form-control al-fn"     type="text" placeholder="FN"     value="${this.esc(al.budget_fn)}">
+        <input class="form-control al-act"    type="text" placeholder="Act"    value="${this.esc(al.budget_act)}">
+        <input class="form-control al-item"   type="text" placeholder="Item"   value="${this.esc(al.budget_item)}">
+        <input class="form-control al-si"     type="text" placeholder="SI"     value="${this.esc(al.budget_si)}">
+        <input class="form-control al-d"      type="text" placeholder="D"      value="${this.esc(al.budget_d)}">
         <input class="form-control al-amount" type="number" placeholder="Amount" min="0" step="0.01" value="${al.amount}">
         <button class="btn btn-ghost btn-sm remove-al" title="Remove" ${this.acctLines.length <= 1 ? 'disabled' : ''}>✕</button>`;
       container.appendChild(row);
@@ -227,9 +226,7 @@ const GEForm = {
   },
 
   updateTotal() {
-    const total = this.lineItems.reduce((s, li) => {
-      return s + (li.quantity * li.unit_price * (1 + (li.gst_percent || 0) / 100));
-    }, 0);
+    const total = this.lineItems.reduce((s, li) => s + (li.quantity * li.unit_price), 0);
     document.querySelectorAll('.ge-total-display').forEach(el => {
       el.textContent = Fmt.currency(total);
       el.dataset.raw = total;
@@ -238,12 +235,20 @@ const GEForm = {
       const i  = parseInt(row.dataset.index);
       const li = this.lineItems[i];
       if (li) {
-        const lineTotal = li.quantity * li.unit_price * (1 + (li.gst_percent || 0) / 100);
+        const lineTotal = li.quantity * li.unit_price;
         const totalEl = row.querySelector('.line-total');
         if (totalEl) totalEl.textContent = Fmt.currency(lineTotal);
       }
     });
+    const gstEl = document.getElementById('gst-amount-display');
+    if (gstEl) gstEl.textContent = Fmt.currency(total * 0.10);
     this.updateAcctTotal();
+  },
+
+  updateGSTDisplay() {
+    const total = this.lineItems.reduce((s, li) => s + (li.quantity * li.unit_price), 0);
+    const gstEl = document.getElementById('gst-amount-display');
+    if (gstEl) gstEl.textContent = Fmt.currency(total * 0.10);
   },
 
   updateAcctTotal() {
@@ -274,7 +279,6 @@ const GEForm = {
         if (e.target.classList.contains('li-desc'))  li.description = e.target.value;
         if (e.target.classList.contains('li-qty'))   li.quantity    = parseFloat(e.target.value) || 0;
         if (e.target.classList.contains('li-price')) li.unit_price  = parseFloat(e.target.value) || 0;
-        if (e.target.classList.contains('li-gst'))   li.gst_percent = parseFloat(e.target.value) || 0;
         this.updateTotal();
       }
       const aRow = e.target.closest('.acct-row');
@@ -314,7 +318,7 @@ const GEForm = {
 
     // Add buttons
     document.getElementById('add-line-item')?.addEventListener('click', () => {
-      this.lineItems.push({ description: '', quantity: 1, unit_price: 0, gst_percent: 0 });
+      this.lineItems.push({ description: '', quantity: 1, unit_price: 0 });
       this.renderLineItems();
     });
     document.getElementById('add-acct-line')?.addEventListener('click', () => {
@@ -437,12 +441,6 @@ const GEForm = {
       { type: 'QUOTATION_3',          label: 'Supplier Quotation 3' },
       { type: 'JUSTIFICATION_LETTER', label: 'Justification Letter' },
     ];
-    const OPTIONAL_DOCS = [
-      { type: 'PURCHASE_ORDER',    label: 'Purchase Order' },
-      { type: 'REMITTANCE_ADVICE', label: 'Remittance Advice' },
-      { type: 'INVOICE',           label: 'Invoice' },
-      { type: 'DELIVERY',          label: 'Delivery Docket' },
-    ];
 
     try {
       const geRes = await API.geGet(this.geId);
@@ -475,13 +473,9 @@ const GEForm = {
       };
 
       container.innerHTML = `
-        <div class="doc-list mb-16">
+        <div class="doc-list">
           <div style="font-weight:600;font-size:13px;margin-bottom:8px">Required Documents</div>
           ${REQUIRED_DOCS.map(d => makeDocRow(d, true)).join('')}
-        </div>
-        <div class="doc-list">
-          <div style="font-weight:600;font-size:13px;margin-bottom:8px">Optional Documents</div>
-          ${OPTIONAL_DOCS.map(d => makeDocRow(d, false)).join('')}
         </div>`;
 
       // Show/hide submit button
