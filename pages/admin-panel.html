@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Panel � PNGUOT GEMS</title>
+  <link rel="stylesheet" href="../assets/css/main.css">
+  <style>
+    /* Admin-specific overrides � deeper navy sidebar */
+    #sidebar { background: #0f1623; }
+    .sidebar-header { border-bottom-color: #1e2535; }
+    .sidebar-nav .nav-item:hover { background: #1e2535; }
+    .sidebar-nav .nav-item.active { background: #3b82f6; }
+    .sidebar-add-btn { background: #3b82f6; }
+    .sidebar-add-btn:hover { background: #2563eb; }
+    .sidebar-footer { border-top-color: #1e2535; }
+    .sidebar-section-label { color: #4b6080; }
+    #sidebar .nav-badge { background: #3b82f6; }
+
+    /* Admin stat cards with blue accent */
+    .admin-stat { border-left: 4px solid #3b82f6; }
+
+    /* Quick action cards */
+    .action-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+    .action-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: var(--card-radius);
+      padding: 20px;
+      cursor: pointer;
+      transition: all var(--transition);
+      text-align: center;
+      text-decoration: none;
+      display: flex; flex-direction: column;
+      align-items: center; gap: 10px;
+    }
+    .action-card:hover {
+      border-color: #3b82f6;
+      box-shadow: 0 4px 16px rgba(59,130,246,.15);
+      transform: translateY(-2px);
+    }
+    .action-card .ac-icon {
+      width: 52px; height: 52px;
+      border-radius: 14px;
+      background: var(--info-light);
+      color: var(--info);
+      font-size: 24px;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .action-card .ac-title { font-size: 14px; font-weight: 600; color: var(--text-primary); }
+    .action-card .ac-desc  { font-size: 12px; color: var(--text-muted); }
+
+    /* Admin topbar accent */
+    #topbar { border-bottom: 2px solid #3b82f6; }
+    .admin-badge {
+      background: #3b82f6; color: #fff;
+      font-size: 10px; font-weight: 700;
+      padding: 2px 8px; border-radius: 10px;
+      letter-spacing: .04em; text-transform: uppercase;
+    }
+  </style>
+</head>
+<body class="admin-ui">
+<div id="app-shell">
+
+  <!-- Admin Sidebar -->
+  <aside id="sidebar">
+    <div class="sidebar-header">
+      <div class="sidebar-avatar" id="sidebar-footer-av" style="background:#3b82f6">AD</div>
+      <div class="sidebar-workspace">
+        <div class="ws-name" id="sidebar-ws-name">Admin Panel</div>
+        <div class="ws-sub" id="sidebar-ws-sub">PNGUOT GEMS</div>
+      </div>
+    </div>
+
+    <nav class="sidebar-nav">
+      <a class="nav-item" data-page="admin-panel.html" href="admin-panel.html">
+        <span class="nav-icon">??</span><span class="nav-label">Overview</span>
+      </a>
+
+      <div class="sidebar-section-label">Staff</div>
+      <a class="nav-item" data-page="admin-users.html" href="admin-users.html">
+        <span class="nav-icon">??</span><span class="nav-label">Staff Accounts</span>
+      </a>
+      <a class="nav-item" data-page="admin-delegates.html" href="admin-delegates.html">
+        <span class="nav-icon">??</span><span class="nav-label">Delegates</span>
+      </a>
+
+      <div class="sidebar-section-label">GE Management</div>
+      <a class="nav-item" data-page="admin-all-ges.html" href="admin-all-ges.html">
+        <span class="nav-icon">??</span><span class="nav-label">All GE Forms</span>
+      </a>
+      <a class="nav-item" data-page="admin-approvals.html" href="admin-approvals.html">
+        <span class="nav-icon">?</span><span class="nav-label">Pending Approvals</span>
+        <span class="nav-badge hidden" id="approval-badge">0</span>
+      </a>
+
+      <div class="sidebar-section-label">System</div>
+      <a class="nav-item" data-page="admin-reports.html" href="admin-reports.html">
+        <span class="nav-icon">??</span><span class="nav-label">Reports</span>
+      </a>
+      <a class="nav-item" data-page="admin-notifications.html" href="admin-notifications.html">
+        <span class="nav-icon">??</span><span class="nav-label">Notifications</span>
+        <span class="nav-badge hidden notif-badge">0</span>
+      </a>
+      <a class="nav-item" data-page="admin-profile.html" href="admin-profile.html">
+        <span class="nav-icon">??</span><span class="nav-label">My Profile</span>
+      </a>
+    </nav>
+
+    <div class="sidebar-footer">
+      <div class="footer-icon" style="background:none;padding:0"><img src="../assets/img/pnguot-logo.jpg" style="width:32px;height:32px;object-fit:contain;border-radius:4px"></div>
+      <div>
+        <div class="footer-name" id="sidebar-footer-name">PNGUOT GEMS</div>
+        <div class="footer-version">Admin � ver. 1.0</div>
+      </div>
+      <div class="dropdown">
+        <button class="footer-menu" data-dropdown="sidebar-admin-menu">���</button>
+        <div class="dropdown-menu" id="sidebar-admin-menu">
+          <div class="dropdown-item" onclick="location.href='admin-profile.html'">?? My Profile</div>
+          <div class="dropdown-divider"></div>
+          <div class="dropdown-item danger" onclick="Auth.logout()">?? Sign Out</div>
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-overlay" id="sidebar-overlay"></div>
+
+  <!-- Main area -->
+  <div id="main-area">
+    <header id="topbar">
+      <button class="hamburger" id="hamburger-btn">?</button>
+      <span class="topbar-page-title">Admin Panel</span>
+      <span class="admin-badge" style="margin-left:8px">System Admin</span>
+      <div style="flex:1"></div>
+      <div class="topbar-actions">
+        <div class="dropdown">
+          <button class="topbar-btn" data-dropdown="notif-dd" title="Notifications">
+            ??<span class="badge hidden notif-badge">0</span>
+          </button>
+          <div class="dropdown-menu" id="notif-dd" style="min-width:300px">
+            <div style="padding:10px 14px;font-weight:600;font-size:13px;border-bottom:1px solid var(--card-border)">Notifications</div>
+            <div id="notif-list-preview" style="max-height:260px;overflow-y:auto">
+              <div style="padding:16px;text-align:center;color:var(--text-muted);font-size:13px">Loading�</div>
+            </div>
+            <div style="padding:8px;border-top:1px solid var(--card-border)">
+              <a href="admin-notifications.html" class="btn btn-ghost btn-sm w-full" style="justify-content:center">View All</a>
+            </div>
+          </div>
+        </div>
+        <div class="dropdown">
+          <div class="topbar-user" data-dropdown="admin-user-menu">
+            <div class="user-avatar" id="topbar-avatar" style="background:#3b82f6">AD</div>
+            <div>
+              <div class="user-name" id="topbar-user-name">Loading�</div>
+              <div class="user-role" id="topbar-user-role">System Administrator</div>
+            </div>
+          </div>
+          <div class="dropdown-menu" id="admin-user-menu">
+            <div class="dropdown-item" onclick="location.href='admin-profile.html'">?? My Profile</div>
+            <div class="dropdown-divider"></div>
+            <div class="dropdown-item danger" onclick="Auth.logout()">?? Sign Out</div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main id="page-content">
+
+      <!-- Welcome banner -->
+      <div id="welcome-banner" class="card mb-24" style="background:linear-gradient(135deg,#1e3a5f,#1e40af);border:none;color:#fff">
+        <div class="card-body" style="display:flex;align-items:center;gap:20px">
+          <div style="width:64px;height:64px;flex-shrink:0">
+            <img src="../assets/img/pnguot-logo.jpg" style="width:64px;height:64px;object-fit:contain;border-radius:8px">
+          </div>
+          <div>
+            <div style="font-size:20px;font-weight:700;margin-bottom:4px">
+              Welcome back, <span id="admin-first-name">Admin</span>
+            </div>
+            <div style="font-size:13px;opacity:.8">
+              You are logged in as System Administrator � PNGUOT General Expense Monitoring System
+            </div>
+          </div>
+          <div style="margin-left:auto;text-align:right">
+            <div style="font-size:11px;opacity:.7">Today</div>
+            <div style="font-size:16px;font-weight:600" id="admin-date">�</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- System health stat row -->
+      <div class="stat-grid mb-24" id="admin-stats">
+        <div class="page-loader"><div class="spinner"></div></div>
+      </div>
+
+      <!-- Quick actions -->
+      <div class="card-header mb-8" style="padding:0 0 10px">
+        <span class="card-title">Quick Actions</span>
+      </div>
+      <div class="action-grid mb-24">
+        <a class="action-card" href="admin-users.html">
+          <div class="ac-icon">??</div>
+          <div class="ac-title">Add Staff</div>
+          <div class="ac-desc">Create a new staff account</div>
+        </a>
+        <a class="action-card" href="admin-delegates.html">
+          <div class="ac-icon">??</div>
+          <div class="ac-title">Assign Delegate</div>
+          <div class="ac-desc">Set approval role assignments</div>
+        </a>
+        <a class="action-card" href="admin-all-ges.html">
+          <div class="ac-icon">??</div>
+          <div class="ac-title">View All GEs</div>
+          <div class="ac-desc">Browse all expense forms</div>
+        </a>
+        <a class="action-card" href="admin-reports.html">
+          <div class="ac-icon">??</div>
+          <div class="ac-title">Reports</div>
+          <div class="ac-desc">Expenditure and workflow reports</div>
+        </a>
+        <a class="action-card" href="admin-approvals.html">
+          <div class="ac-icon">?</div>
+          <div class="ac-title">Pending Approvals</div>
+          <div class="ac-desc">Review tasks assigned to you</div>
+        </a>
+        <a class="action-card" href="admin-profile.html">
+          <div class="ac-icon">??</div>
+          <div class="ac-title">Change Password</div>
+          <div class="ac-desc">Update your admin password</div>
+        </a>
+      </div>
+
+      <!-- Two column bottom row -->
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px">
+
+        <!-- Recent staff -->
+        <div class="card">
+          <div class="card-header">
+            <span class="card-title">Recent Staff Accounts</span>
+            <a href="admin-users.html" class="btn btn-ghost btn-sm">View All ?</a>
+          </div>
+          <div id="recent-staff-list">
+            <div class="page-loader"><div class="spinner"></div></div>
+          </div>
+        </div>
+
+        <!-- System status -->
+        <div class="card">
+          <div class="card-header">
+            <span class="card-title">System Status</span>
+          </div>
+          <div class="card-body" id="system-status">
+            <div class="page-loader"><div class="spinner"></div></div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Recent GE activity -->
+      <div class="card mt-24">
+        <div class="card-header">
+          <span class="card-title">Recent GE Activity</span>
+          <a href="admin-all-ges.html" class="btn btn-ghost btn-sm">View All ?</a>
+        </div>
+        <div id="recent-ges">
+          <div class="page-loader"><div class="spinner"></div></div>
+        </div>
+      </div>
+
+    </main>
+  </div>
+</div>
+
+<script src="../assets/js/api.js?v=2"></script>
+<script src="../assets/js/app.js?v=2"></script>
+<script>
+(async () => {
+  const ok = await requireAuth(['SYSTEM_ADMIN']);
+  if (!ok) return;
+
+  const u = Auth.user;
+  Sidebar.setActive('admin-panel.html');
+
+  // Welcome banner
+  document.getElementById('admin-first-name').textContent = u.first_name;
+  document.getElementById('admin-date').textContent = new Date().toLocaleDateString('en-PG', {
+    weekday: 'long', day: 'numeric', month: 'long', year: 'numeric'
+  });
+
+  // Load all dashboard data in parallel
+  const [reportsRes, usersRes, tasksRes, notifsRes] = await Promise.allSettled([
+    API.reports(),
+    API.adminUsers({}),
+    API.myTasks(),
+    API.notifications(),
+  ]);
+
+  const reports = reportsRes.status === 'fulfilled' ? reportsRes.value : {};
+  const users   = usersRes.status   === 'fulfilled' ? usersRes.value.users   : [];
+  const tasks   = tasksRes.status   === 'fulfilled' ? tasksRes.value.tasks   : [];
+  const notifs  = notifsRes.status  === 'fulfilled' ? notifsRes.value.notifications : [];
+
+  // Notification badge
+  const unread = notifs.filter(n => !n.is_read).length;
+  if (unread > 0) {
+    document.querySelectorAll('.notif-badge').forEach(b => { b.textContent = unread; b.classList.remove('hidden'); });
+  }
+
+  // Notification preview
+  const preview = document.getElementById('notif-list-preview');
+  const unreadList = notifs.filter(n => !n.is_read).slice(0, 4);
+  preview.innerHTML = unreadList.length
+    ? unreadList.map(n => `
+        <div class="dropdown-item" style="flex-direction:column;align-items:flex-start;gap:2px">
+          <div style="font-size:12px;font-weight:600">${n.ge_number ? n.ge_number + ' � ' : ''}${n.type.replace(/_/g,' ')}</div>
+          <div style="font-size:11px;color:var(--text-muted)">${n.message.substring(0,70)}�</div>
+        </div>`).join('')
+    : '<div style="padding:16px;text-align:center;color:var(--text-muted);font-size:13px">No new notifications</div>';
+
+  // Pending approvals badge
+  if (tasks.length > 0) {
+    const ab = document.getElementById('approval-badge');
+    ab.textContent = tasks.length;
+    ab.classList.remove('hidden');
+  }
+
+  // Stat cards
+  const byStatus  = reports.by_status || {};
+  const totalGEs  = Object.values(byStatus).reduce((s, v) => s + v.count, 0);
+  const totalAmt  = Object.values(byStatus).reduce((s, v) => s + (v.total || 0), 0);
+  const pending   = Object.entries(byStatus).filter(([k]) => k.startsWith('PENDING')).reduce((s,[,v])=>s+v.count,0);
+  const completed = byStatus.COMPLETED?.count || 0;
+  const activeStaff = users.filter(u => u.is_active).length;
+
+  // Pending GEs badge (sidebar approval badge)
+  if (pending > 0) {
+    const pb = document.getElementById('approval-badge');
+    if (pb) { pb.textContent = pending; pb.classList.remove('hidden'); }
+  }
+
+  document.getElementById('admin-stats').innerHTML = `
+    <div class="stat-card admin-stat">
+      <div class="stat-icon blue">??</div>
+      <div class="stat-label">Active Staff</div>
+      <div class="stat-value">${activeStaff}</div>
+      <div class="stat-sub">${users.length} total accounts</div>
+    </div>
+    <div class="stat-card admin-stat">
+      <div class="stat-icon blue">??</div>
+      <div class="stat-label">Total GE Forms</div>
+      <div class="stat-value">${totalGEs}</div>
+      <div class="stat-sub">All time</div>
+    </div>
+    <div class="stat-card admin-stat">
+      <div class="stat-icon yellow">?</div>
+      <div class="stat-label">In Workflow</div>
+      <div class="stat-value">${pending}</div>
+      <div class="stat-sub">Awaiting approval</div>
+    </div>
+    <div class="stat-card admin-stat">
+      <div class="stat-icon green">?</div>
+      <div class="stat-label">Completed GEs</div>
+      <div class="stat-value">${completed}</div>
+      <div class="stat-sub">Fully approved</div>
+    </div>
+    <div class="stat-card admin-stat">
+      <div class="stat-icon purple">??</div>
+      <div class="stat-label">Total Value</div>
+      <div class="stat-value" style="font-size:18px">${Fmt.currency(totalAmt)}</div>
+      <div class="stat-sub">All GEs</div>
+    </div>
+    ${tasks.length > 0 ? `
+    <div class="stat-card" style="border-left:4px solid var(--warning);cursor:pointer" onclick="location.href='admin-approvals.html'">
+      <div class="stat-icon yellow">??</div>
+      <div class="stat-label">My Pending Tasks</div>
+      <div class="stat-value">${tasks.length}</div>
+      <div class="stat-sub" style="color:var(--warning)">Action required</div>
+    </div>` : ''}`;
+
+  // Recent staff table
+  const recentStaff = [...users].sort((a,b) => new Date(b.created_at) - new Date(a.created_at)).slice(0,6);
+  document.getElementById('recent-staff-list').innerHTML = recentStaff.length
+    ? `<div class="table-wrap"><table>
+        <thead><tr><th>Staff ID</th><th>Name</th><th>Department</th><th>Status</th></tr></thead>
+        <tbody>
+          ${recentStaff.map(u => `
+            <tr>
+              <td class="font-mono fw-600" style="font-size:12px">${u.staff_id}</td>
+              <td>${u.first_name} ${u.last_name}</td>
+              <td style="font-size:12px">${u.department_name || '�'}</td>
+              <td>${u.is_active
+                ? '<span style="color:var(--primary);font-size:12px">? Active</span>'
+                : '<span style="color:var(--danger);font-size:12px">? Inactive</span>'}</td>
+            </tr>`).join('')}
+        </tbody>
+      </table></div>`
+    : '<div class="empty-state" style="padding:24px"><div class="es-icon">??</div><div class="es-title">No staff yet</div></div>';
+
+  // Staff count (no sidebar badge for it in the new layout — just skip)
+
+  // System status panel
+  const delegates = await API.adminDelegates().catch(() => ({ delegates: [] }));
+  const activeDelegates = (delegates.delegates || []).filter(d => d.is_active);
+  const requiredRoles = ['HEAD_OF_SCHOOL','DEAN','ICT_DIRECTOR','PROCUREMENT_MANAGER','ACCOUNTS_OFFICER','VICE_CHANCELLOR'];
+  const coveredRoles  = [...new Set(activeDelegates.map(d => d.role_code))];
+  const missingRoles  = requiredRoles.filter(r => !coveredRoles.includes(r));
+
+  document.getElementById('system-status').innerHTML = `
+    <div style="display:flex;flex-direction:column;gap:10px">
+      <div class="flex-between" style="font-size:13px">
+        <span>Apache / Web Server</span>
+        <span style="color:var(--primary);font-weight:600">? Online</span>
+      </div>
+      <div class="flex-between" style="font-size:13px">
+        <span>Database</span>
+        <span style="color:var(--primary);font-weight:600">? Connected</span>
+      </div>
+      <div class="flex-between" style="font-size:13px">
+        <span>Staff Accounts</span>
+        <span style="color:var(--primary);font-weight:600">${activeStaff} Active</span>
+      </div>
+      <div class="flex-between" style="font-size:13px">
+        <span>Delegate Coverage</span>
+        <span style="color:${missingRoles.length ? 'var(--warning)' : 'var(--primary)'};font-weight:600">
+          ${missingRoles.length ? '?? ' + missingRoles.length + ' role(s) missing' : '? All roles covered'}
+        </span>
+      </div>
+      <div class="flex-between" style="font-size:13px">
+        <span>OTP Mode</span>
+        <span style="color:var(--info);font-weight:600">?? Development (bypassed)</span>
+      </div>
+      ${missingRoles.length ? `
+      <div class="alert alert-warning mt-8" style="font-size:12px">
+        <span class="alert-icon">??</span>
+        <div>Missing delegates for: <strong>${missingRoles.map(r=>r.replace(/_/g,' ')).join(', ')}</strong>.
+        <a href="admin-delegates.html" style="color:var(--warning);font-weight:600;margin-left:4px">Fix now ?</a></div>
+      </div>` : ''}
+    </div>`;
+
+  // Recent GEs
+  const recentGEs = reports.recent_ges || [];
+  document.getElementById('recent-ges').innerHTML = recentGEs.length
+    ? `<div class="table-wrap"><table>
+        <thead><tr><th>GE Number</th><th>Claimant</th><th>Payee</th><th>Amount</th><th>Status</th><th>Submitted</th></tr></thead>
+        <tbody>
+          ${recentGEs.map(g => `
+            <tr>
+              <td class="font-mono fw-600">${g.ge_number}</td>
+              <td>${g.claimant_name || '�'}</td>
+              <td>${g.payee_name || '�'}</td>
+              <td class="fw-600">${Fmt.currency(g.total_amount)}</td>
+              <td>${statusBadge(g.status, g.status_label)}</td>
+              <td style="font-size:12px">${Fmt.date(g.submitted_at)}</td>
+            </tr>`).join('')}
+        </tbody>
+      </table></div>`
+    : '<div class="empty-state" style="padding:24px"><div class="es-icon">??</div><div class="es-title">No GE forms yet</div></div>';
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,174 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>All GE Forms — PNGUOT GEMS Admin</title>
+  <link rel="stylesheet" href="../assets/css/main.css">
+</head>
+<body class="admin-ui">
+<div id="app-shell">
+  <!-- Admin Sidebar -->
+  <aside id="sidebar">
+    <div class="sidebar-header">
+      <div class="sidebar-avatar" id="sidebar-footer-av" style="background:#3b82f6">AD</div>
+      <div class="sidebar-workspace"><div class="ws-name" id="sidebar-ws-name">Admin Panel</div><div class="ws-sub" id="sidebar-ws-sub">PNGUOT GEMS</div></div>
+    </div>
+    <nav class="sidebar-nav">
+      <a class="nav-item" href="admin-panel.html"    data-page="admin-panel.html"><span class="nav-icon">🏠</span><span class="nav-label">Overview</span></a>
+      <div class="sidebar-section-label">Staff</div>
+      <a class="nav-item" href="admin-users.html"     data-page="admin-users.html"><span class="nav-icon">👥</span><span class="nav-label">Staff Accounts</span></a>
+      <a class="nav-item" href="admin-delegates.html" data-page="admin-delegates.html"><span class="nav-icon">🔗</span><span class="nav-label">Delegates</span></a>
+      <div class="sidebar-section-label">GE Management</div>
+      <a class="nav-item" href="admin-all-ges.html"  data-page="admin-all-ges.html"><span class="nav-icon">📋</span><span class="nav-label">All GE Forms</span></a>
+      <a class="nav-item" href="admin-approvals.html" data-page="admin-approvals.html"><span class="nav-icon">✅</span><span class="nav-label">Pending Approvals</span><span class="nav-badge hidden" id="approval-badge">0</span></a>
+      <div class="sidebar-section-label">System</div>
+      <a class="nav-item" href="admin-reports.html"  data-page="admin-reports.html"><span class="nav-icon">📈</span><span class="nav-label">Reports</span></a>
+      <a class="nav-item" href="admin-notifications.html" data-page="admin-notifications.html"><span class="nav-icon">🔔</span><span class="nav-label">Notifications</span><span class="nav-badge hidden notif-badge">0</span></a>
+      <a class="nav-item" href="admin-profile.html"   data-page="admin-profile.html"><span class="nav-icon">👤</span><span class="nav-label">My Profile</span></a>
+    </nav>
+    <div class="sidebar-footer">
+      <div class="footer-icon" style="background:none;padding:0"><img src="../assets/img/pnguot-logo.jpg" style="width:32px;height:32px;object-fit:contain;border-radius:4px"></div>
+      <div><div class="footer-name" id="sidebar-footer-name">PNGUOT GEMS</div><div class="footer-version">Admin · ver. 1.0</div></div>
+      <div class="dropdown"><button class="footer-menu" data-dropdown="sidebar-admin-menu">•••</button>
+        <div class="dropdown-menu" id="sidebar-admin-menu">
+          <div class="dropdown-item" onclick="location.href='admin-profile.html'">👤 My Profile</div>
+          <div class="dropdown-divider"></div>
+          <div class="dropdown-item danger" onclick="Auth.logout()">🚪 Sign Out</div>
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-overlay" id="sidebar-overlay"></div>
+
+  <div id="main-area">
+    <header id="topbar">
+      <button class="hamburger" id="hamburger-btn">☰</button>
+      <span class="topbar-page-title">All GE Forms</span>
+      <span class="admin-badge" style="margin-left:8px">System Admin</span>
+      <div class="topbar-search" style="margin-left:16px">
+        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+        <input type="text" placeholder="Search GE number, payee, staff…" id="search-input">
+      </div>
+      <div class="topbar-actions">
+        <div class="user-avatar" id="topbar-avatar" style="background:#3b82f6">AD</div>
+        <div><div class="user-name" id="topbar-user-name">…</div><div class="user-role" id="topbar-user-role"></div></div>
+      </div>
+    </header>
+
+    <main id="page-content">
+      <!-- Filters -->
+      <div class="card mb-24">
+        <div class="card-body" style="padding:12px 16px">
+          <div class="flex-between flex-wrap gap-8">
+            <div class="flex gap-8 flex-wrap">
+              <select class="form-control" id="filter-status" style="width:auto">
+                <option value="">All Statuses</option>
+                <option value="DRAFT">Draft</option>
+                <option value="READY_FOR_DOCUMENTS">Ready for Documents</option>
+                <option value="SUBMITTED">Submitted</option>
+                <option value="PENDING_HOS">Pending HOS</option>
+                <option value="PENDING_DEAN">Pending Dean</option>
+                <option value="PENDING_ICT">Pending ICT</option>
+                <option value="PENDING_PROCUREMENT">Pending Procurement</option>
+                <option value="PENDING_ACCOUNTS_VERIFICATION">Pending Accounts</option>
+                <option value="PENDING_VC">Pending VC</option>
+                <option value="PENDING_PAYMENT">Pending Payment</option>
+                <option value="QUERIED">Queried</option>
+                <option value="COMPLETED">Completed</option>
+                <option value="CANCELLED">Cancelled</option>
+              </select>
+            </div>
+            <div id="total-count" class="text-muted" style="font-size:13px"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div id="ge-list-container"><div class="page-loader"><div class="spinner"></div></div></div>
+        <div id="pagination-container"></div>
+      </div>
+    </main>
+  </div>
+</div>
+
+<script src="../assets/js/api.js?v=2"></script>
+<script src="../assets/js/app.js?v=2"></script>
+<script>
+let currentPage = 1;
+let searchTimer;
+
+(async () => {
+  const ok = await requireAuth(['SYSTEM_ADMIN']);
+  if (!ok) return;
+  Sidebar.setActive('admin-all-ges.html');
+  loadList();
+  document.getElementById('filter-status').addEventListener('change', () => { currentPage=1; loadList(); });
+  document.getElementById('search-input').addEventListener('input', () => {
+    clearTimeout(searchTimer);
+    searchTimer = setTimeout(() => { currentPage=1; loadList(); }, 400);
+  });
+})();
+
+async function loadList() {
+  const c = document.getElementById('ge-list-container');
+  c.innerHTML = `<div class="page-loader"><div class="spinner"></div></div>`;
+  try {
+    const res = await API.geList({
+      page: currentPage, limit: 25,
+      status: document.getElementById('filter-status').value,
+      search: document.getElementById('search-input').value,
+    });
+    const { data, pagination } = res;
+    document.getElementById('total-count').textContent = `${pagination.total} GE form${pagination.total!==1?'s':''}`;
+
+    if (!data.length) {
+      c.innerHTML = `<div class="empty-state"><div class="es-icon">📋</div><div class="es-title">No GE forms found</div></div>`;
+      document.getElementById('pagination-container').innerHTML = '';
+      return;
+    }
+
+    c.innerHTML = `
+      <div class="table-wrap"><table>
+        <thead>
+          <tr><th>GE Number</th><th>Claimant</th><th>Payee</th><th>Department</th>
+          <th>Type</th><th>Amount</th><th>Status</th><th>Updated</th><th>Action</th></tr>
+        </thead>
+        <tbody>
+          ${data.map(g => `
+            <tr>
+              <td class="font-mono fw-600">${g.ge_number||'—'}</td>
+              <td>${g.claimant_name||'—'}</td>
+              <td>${g.payee_name||'—'}</td>
+              <td style="font-size:12px">${g.department_name||'—'}</td>
+              <td>${g.procurement_type}${g.is_capital_item?' 🏛':''}</td>
+              <td class="fw-600">${Fmt.currency(g.total_amount)}</td>
+              <td>${statusBadge(g.status, g.status_label)}</td>
+              <td style="font-size:12px">${Fmt.date(g.updated_at)}</td>
+              <td><a href="ge-view.html?id=${g.id}" class="btn btn-ghost btn-sm">View</a></td>
+            </tr>`).join('')}
+        </tbody>
+      </table></div>`;
+
+    renderPagination(pagination);
+  } catch (err) {
+    c.innerHTML = `<div class="alert alert-error" style="margin:16px"><span>❌</span>${err.message}</div>`;
+  }
+}
+
+function renderPagination(p) {
+  const c = document.getElementById('pagination-container');
+  if (p.pages <= 1) { c.innerHTML=''; return; }
+  let html = `<div class="pagination">`;
+  html += `<button class="page-btn" onclick="goPage(${p.page-1})" ${p.page<=1?'disabled':''}>‹</button>`;
+  for (let i=1; i<=p.pages; i++) {
+    if (i===1||i===p.pages||Math.abs(i-p.page)<=2)
+      html += `<button class="page-btn ${i===p.page?'active':''}" onclick="goPage(${i})">${i}</button>`;
+    else if (Math.abs(i-p.page)===3) html += `<span class="page-btn" style="border:none">…</span>`;
+  }
+  html += `<button class="page-btn" onclick="goPage(${p.page+1})" ${p.page>=p.pages?'disabled':''}>›</button></div>`;
+  c.innerHTML = html;
+}
+function goPage(p) { currentPage=p; loadList(); }
+</script>
+</body>
+</html>

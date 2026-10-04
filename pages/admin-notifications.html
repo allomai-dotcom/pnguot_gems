@@ -1,35 +1,37 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Notifications — PNGUOT GEMS</title>
+  <title>Notifications — PNGUOT GEMS (Admin)</title>
   <link rel="stylesheet" href="../assets/css/main.css">
 </head>
-<body class="staff-ui">
+<body class="admin-ui">
 <div id="app-shell">
-  <!-- Staff Sidebar -->
+  <!-- Admin Sidebar -->
   <aside id="sidebar">
     <div class="sidebar-header">
-      <div class="sidebar-avatar" id="sidebar-footer-av">JD</div>
-      <div class="sidebar-workspace"><div class="ws-name" id="sidebar-ws-name">…</div><div class="ws-sub" id="sidebar-ws-sub">PNGUOT</div></div>
+      <div class="sidebar-avatar" id="sidebar-footer-av" style="background:#3b82f6">AD</div>
+      <div class="sidebar-workspace"><div class="ws-name" id="sidebar-ws-name">Admin Panel</div><div class="ws-sub" id="sidebar-ws-sub">PNGUOT GEMS</div></div>
     </div>
     <nav class="sidebar-nav">
-      <a class="nav-item" href="dashboard.html"     data-page="dashboard.html"><span class="nav-icon">📊</span><span class="nav-label">Overview</span></a>
-      <a class="nav-item" href="notifications.html" data-page="notifications.html"><span class="nav-icon">🔔</span><span class="nav-label">Notifications</span></a>
-      <div class="sidebar-section-label">Expenses</div>
-      <a class="nav-item" href="ge-form.html" data-page="ge-form.html"><span class="nav-icon">➕</span><span class="nav-label">New GE</span></a>
-      <a class="nav-item" href="my-ges.html"  data-page="my-ges.html"><span class="nav-icon">📋</span><span class="nav-label">My GE Forms</span></a>
-      <a class="nav-item" href="quotation-tracker.html" data-page="quotation-tracker.html"><span class="nav-icon">📎</span><span class="nav-label">Quotation Tracker</span></a>
-      <a class="nav-item" href="my-reports.html" data-page="my-reports.html"><span class="nav-icon">📊</span><span class="nav-label">Reports</span></a>
-      <div class="sidebar-section-label approver-only hidden">Approvals</div>
-      <a class="nav-item approver-only hidden" href="approvals.html" data-page="approvals.html"><span class="nav-icon">✅</span><span class="nav-label">Pending Approvals</span></a>
+      <a class="nav-item" href="admin-panel.html"    data-page="admin-panel.html"><span class="nav-icon">🏠</span><span class="nav-label">Overview</span></a>
+      <div class="sidebar-section-label">Staff</div>
+      <a class="nav-item" href="admin-users.html"     data-page="admin-users.html"><span class="nav-icon">👥</span><span class="nav-label">Staff Accounts</span></a>
+      <a class="nav-item" href="admin-delegates.html" data-page="admin-delegates.html"><span class="nav-icon">🔗</span><span class="nav-label">Delegates</span></a>
+      <div class="sidebar-section-label">GE Management</div>
+      <a class="nav-item" href="admin-all-ges.html"  data-page="admin-all-ges.html"><span class="nav-icon">📋</span><span class="nav-label">All GE Forms</span></a>
+      <a class="nav-item" href="admin-approvals.html" data-page="admin-approvals.html"><span class="nav-icon">✅</span><span class="nav-label">Pending Approvals</span><span class="nav-badge hidden" id="approval-badge">0</span></a>
+      <div class="sidebar-section-label">System</div>
+      <a class="nav-item" href="admin-reports.html"  data-page="admin-reports.html"><span class="nav-icon">📈</span><span class="nav-label">Reports</span></a>
+      <a class="nav-item" href="admin-notifications.html" data-page="admin-notifications.html"><span class="nav-icon">🔔</span><span class="nav-label">Notifications</span><span class="nav-badge hidden notif-badge">0</span></a>
+      <a class="nav-item" href="admin-profile.html"   data-page="admin-profile.html"><span class="nav-icon">👤</span><span class="nav-label">My Profile</span></a>
     </nav>
     <div class="sidebar-footer">
       <div class="footer-icon" style="background:none;padding:0"><img src="../assets/img/pnguot-logo.jpg" style="width:32px;height:32px;object-fit:contain;border-radius:4px"></div>
-      <div><div class="footer-name" id="sidebar-footer-name">PNGUOT GEMS</div><div class="footer-version">ver. 1.0</div></div>
-      <div class="dropdown"><button class="footer-menu" data-dropdown="sidebar-user-menu">•••</button>
-        <div class="dropdown-menu" id="sidebar-user-menu">
-          <div class="dropdown-item" onclick="window.location.href='profile.html'">👤 My Profile</div>
+      <div><div class="footer-name" id="sidebar-footer-name">PNGUOT GEMS</div><div class="footer-version">Admin · ver. 1.0</div></div>
+      <div class="dropdown"><button class="footer-menu" data-dropdown="sidebar-admin-menu">•••</button>
+        <div class="dropdown-menu" id="sidebar-admin-menu">
+          <div class="dropdown-item" onclick="location.href='admin-profile.html'">👤 My Profile</div>
           <div class="dropdown-divider"></div>
           <div class="dropdown-item danger" onclick="Auth.logout()">🚪 Sign Out</div>
         </div>
@@ -42,9 +44,10 @@
     <header id="topbar">
       <button class="hamburger" id="hamburger-btn">☰</button>
       <span class="topbar-page-title">Notifications</span>
+      <span class="admin-badge" style="margin-left:8px">System Admin</span>
       <div class="topbar-actions" style="margin-left:auto">
         <button class="btn btn-ghost btn-sm" onclick="markAllRead()">✓ Mark All Read</button>
-        <div class="user-avatar" id="topbar-avatar">JD</div>
+        <div class="user-avatar" id="topbar-avatar" style="background:#3b82f6">AD</div>
         <div><div class="user-name" id="topbar-user-name">…</div><div class="user-role" id="topbar-user-role"></div></div>
       </div>
     </header>
@@ -67,9 +70,9 @@ const NOTIF_ICONS = {
 };
 
 (async () => {
-  const ok = await requireAuth();
+  const ok = await requireAuth(['SYSTEM_ADMIN']);
   if (!ok) return;
-  Sidebar.setActive('notifications.html');
+  Sidebar.setActive('admin-notifications.html');
   loadNotifications();
 })();
 
@@ -95,7 +98,7 @@ async function loadNotifications() {
           <div class="doc-meta">${n.message}</div>
           <div class="doc-meta">${Fmt.datetime(n.created_at)}</div>
         </div>
-        ${n.ge_number ? `<a href="my-ges.html" class="btn btn-ghost btn-sm">View GE →</a>` : ''}
+        ${n.ge_number ? `<a href="admin-all-ges.html" class="btn btn-ghost btn-sm">View GE →</a>` : ''}
       </div>`).join('');
   } catch (err) {
     c.innerHTML = `<div class="alert alert-error" style="margin:16px"><span>❌</span>${err.message}</div>`;
@@ -120,4 +123,3 @@ async function markAllRead() {
 </script>
 </body>
 </html>
-

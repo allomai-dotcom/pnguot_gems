@@ -827,3 +827,22 @@ textarea.form-control { resize: vertical; min-height: 80px; }
   .card { box-shadow: none !important; border: 1px solid #ccc !important; }
   body { background: #fff !important; color: #000 !important; }
 }
+
+/* -- Admin UI theme ----------------------------------------- */
+.admin-ui #sidebar { background: #0f1623; }
+.admin-ui .sidebar-header { border-bottom-color: #1e2535; }
+.admin-ui .sidebar-nav .nav-item:hover { background: #1e2535; }
+.admin-ui .sidebar-nav .nav-item.active { background: #3b82f6; }
+.admin-ui .sidebar-section-label { color: #4b6080; }
+.admin-ui .sidebar-footer { border-top-color: #1e2535; }
+.admin-ui #topbar { border-bottom: 2px solid #3b82f6; }
+.admin-badge {
+  background: #3b82f6; color: #fff;
+  font-size: 10px; font-weight: 700;
+  padding: 2px 8px; border-radius: 10px;
+  letter-spacing: .04em; text-transform: uppercase;
+}
+
+/* -- Staff UI theme ----------------------------------------- */
+.staff-ui #sidebar { background: #1a1d23; }
+.staff-ui .sidebar-nav .nav-item.active { background: #22c55e; }

@@ -1,0 +1,507 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Reports — PNGUOT GEMS</title>
+  <link rel="stylesheet" href="../assets/css/main.css">
+  <style>
+    @media print {
+      #sidebar, #topbar, .no-print, .sidebar-overlay { display: none !important; }
+      #main-area { margin: 0 !important; }
+      #page-content { padding: 0 !important; overflow: visible !important; }
+      body { background: #fff !important; font-size: 12px; }
+      .card { box-shadow: none !important; border: 1px solid #ddd !important; }
+      #report-output { display: block !important; }
+      .print-header { display: block !important; }
+    }
+    .print-header {
+      display: none;
+      text-align: center;
+      margin-bottom: 20px;
+      padding-bottom: 16px;
+      border-bottom: 2px solid #000;
+    }
+    .print-header h1 { font-size: 18px; margin-bottom: 4px; }
+    .print-header p  { font-size: 12px; color: #555; }
+
+    .report-section { margin-bottom: 28px; }
+    .report-section-title {
+      font-size: 14px; font-weight: 700;
+      padding: 8px 0; border-bottom: 2px solid var(--card-border);
+      margin-bottom: 12px; color: var(--text-primary);
+    }
+
+    .summary-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+      gap: 12px; margin-bottom: 20px;
+    }
+    .summary-box {
+      background: var(--input-bg); border: 1px solid var(--card-border);
+      border-radius: 8px; padding: 14px;
+      text-align: center;
+    }
+    .summary-box .sb-val  { font-size: 22px; font-weight: 700; color: var(--text-primary); }
+    .summary-box .sb-label{ font-size: 11px; color: var(--text-muted); margin-top: 4px; }
+
+    .bar-row {
+      display: flex; align-items: center; gap: 10px;
+      margin-bottom: 8px; font-size: 13px;
+    }
+    .bar-label { width: 150px; flex-shrink: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .bar-track { flex: 1; background: var(--input-bg); border-radius: 4px; height: 14px; overflow: hidden; }
+    .bar-fill  { height: 100%; border-radius: 4px; background: var(--info); transition: width .4s ease; }
+    .bar-amount{ width: 110px; text-align: right; font-weight: 600; flex-shrink: 0; }
+    .bar-pct   { width: 44px; text-align: right; color: var(--text-muted); flex-shrink: 0; }
+
+    #report-output { display: none; }
+    #report-output.visible { display: block; }
+  </style>
+</head>
+<body class="staff-ui">
+<div id="app-shell">
+  <!-- Staff Sidebar -->
+  <aside id="sidebar">
+    <div class="sidebar-header">
+      <div class="sidebar-avatar" id="sidebar-footer-av">JD</div>
+      <div class="sidebar-workspace"><div class="ws-name" id="sidebar-ws-name">…</div><div class="ws-sub" id="sidebar-ws-sub">PNGUOT</div></div>
+      <button class="sidebar-add-btn" onclick="location.href='ge-form.html'" title="New GE">+</button>
+    </div>
+    <nav class="sidebar-nav">
+      <a class="nav-item" href="dashboard.html"     data-page="dashboard.html"><span class="nav-icon">📊</span><span class="nav-label">Overview</span></a>
+      <a class="nav-item" href="notifications.html" data-page="notifications.html"><span class="nav-icon">🔔</span><span class="nav-label">Notifications</span><span class="nav-badge hidden notif-badge">0</span></a>
+      <div class="sidebar-section-label">Expenses</div>
+      <a class="nav-item" href="ge-form.html"  data-page="ge-form.html"><span class="nav-icon">➕</span><span class="nav-label">New GE</span></a>
+      <a class="nav-item" href="my-ges.html"   data-page="my-ges.html"><span class="nav-icon">📋</span><span class="nav-label">My GE Forms</span></a>
+      <a class="nav-item" href="quotation-tracker.html" data-page="quotation-tracker.html"><span class="nav-icon">📎</span><span class="nav-label">Quotation Tracker</span></a>
+      <a class="nav-item" href="my-reports.html" data-page="my-reports.html"><span class="nav-icon">📊</span><span class="nav-label">Reports</span></a>
+      <div class="sidebar-section-label approver-only hidden">Approvals</div>
+      <a class="nav-item approver-only hidden" href="approvals.html" data-page="approvals.html"><span class="nav-icon">✅</span><span class="nav-label">Pending Approvals</span></a>
+    </nav>
+    <div class="sidebar-footer">
+      <div class="footer-icon" style="background:none;padding:0"><img src="../assets/img/pnguot-logo.jpg" style="width:32px;height:32px;object-fit:contain;border-radius:4px"></div>
+      <div><div class="footer-name" id="sidebar-footer-name">PNGUOT GEMS</div><div class="footer-version">ver. 1.0</div></div>
+      <div class="dropdown"><button class="footer-menu" data-dropdown="sidebar-user-menu">•••</button>
+        <div class="dropdown-menu" id="sidebar-user-menu">
+          <div class="dropdown-item" onclick="window.location.href='profile.html'">👤 My Profile</div>
+          <div class="dropdown-divider"></div>
+          <div class="dropdown-item danger" onclick="Auth.logout()">🚪 Sign Out</div>
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-overlay" id="sidebar-overlay"></div>
+
+  <div id="main-area">
+    <header id="topbar">
+      <button class="hamburger" id="hamburger-btn">☰</button>
+      <span class="topbar-page-title" id="page-title">Reports</span>
+      <div style="flex:1"></div>
+      <div class="topbar-actions no-print">
+        <button class="btn btn-secondary btn-sm hidden" id="btn-print" onclick="printReport()">🖨 Print</button>
+        <button class="btn btn-secondary btn-sm hidden" id="btn-export-csv" onclick="exportCSV()">⬇ Export CSV</button>
+        <div class="user-avatar" id="topbar-avatar">JD</div>
+        <div><div class="user-name" id="topbar-user-name">…</div><div class="user-role" id="topbar-user-role"></div></div>
+      </div>
+    </header>
+
+    <main id="page-content">
+
+      <!-- Filter card -->
+      <div class="card mb-24 no-print">
+        <div class="card-header"><span class="card-title">Generate Report</span></div>
+        <div class="card-body">
+          <div class="form-row" style="align-items:flex-end">
+            <div class="form-group">
+              <label class="form-label">From Date <span class="required">*</span></label>
+              <input id="f-date-from" type="date" class="form-control">
+            </div>
+            <div class="form-group">
+              <label class="form-label">To Date <span class="required">*</span></label>
+              <input id="f-date-to" type="date" class="form-control">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Status</label>
+              <select id="f-status" class="form-control">
+                <option value="">All Statuses</option>
+                <option value="DRAFT">Draft</option>
+                <option value="READY_FOR_DOCUMENTS">Ready for Documents</option>
+                <option value="SUBMITTED">Submitted</option>
+                <option value="PENDING_HOS">Pending HOS</option>
+                <option value="PENDING_DEAN">Pending Dean</option>
+                <option value="PENDING_ICT">Pending ICT</option>
+                <option value="PENDING_PROCUREMENT">Pending Procurement</option>
+                <option value="PENDING_ACCOUNTS_VERIFICATION">Pending Accounts</option>
+                <option value="PENDING_VC">Pending VC</option>
+                <option value="PENDING_PAYMENT">Pending Payment</option>
+                <option value="QUERIED">Queried</option>
+                <option value="COMPLETED">Completed</option>
+                <option value="CANCELLED">Cancelled</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Procurement Type</label>
+              <select id="f-type" class="form-control">
+                <option value="">All Types</option>
+                <option value="STANDARD">Standard</option>
+                <option value="ICT">ICT</option>
+              </select>
+            </div>
+            <!-- Department filter — accounts officer only -->
+            <div class="form-group hidden" id="dept-filter-group">
+              <label class="form-label">Department</label>
+              <select id="f-dept" class="form-control">
+                <option value="">All Departments</option>
+              </select>
+            </div>
+          </div>
+          <div class="flex gap-8 mt-8">
+            <button class="btn btn-secondary btn-sm" onclick="setQuickRange('thisMonth')">This Month</button>
+            <button class="btn btn-secondary btn-sm" onclick="setQuickRange('lastMonth')">Last Month</button>
+            <button class="btn btn-secondary btn-sm" onclick="setQuickRange('thisYear')">This Year</button>
+            <button class="btn btn-secondary btn-sm" onclick="setQuickRange('lastYear')">Last Year</button>
+            <button class="btn btn-primary" id="btn-generate" onclick="generateReport()">
+              📊 Generate Report
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Report output -->
+      <div id="report-output">
+
+        <!-- Print header (hidden on screen, shown when printing) -->
+        <div class="print-header">
+          <h1>Papua New Guinea University of Technology</h1>
+          <h2 style="font-size:15px;margin-bottom:6px">General Expense Monitoring System — Expenditure Report</h2>
+          <p id="print-period"></p>
+          <p id="print-generated"></p>
+        </div>
+
+        <!-- Summary boxes -->
+        <div class="report-section">
+          <div class="report-section-title">Summary</div>
+          <div class="summary-grid" id="summary-boxes"></div>
+        </div>
+
+        <!-- By type bar chart -->
+        <div class="report-section">
+          <div class="report-section-title">Expenditure by Type</div>
+          <div id="by-type-chart"></div>
+        </div>
+
+        <!-- By department bar chart (accounts officer only) -->
+        <div class="report-section hidden" id="by-dept-section">
+          <div class="report-section-title">Expenditure by Department</div>
+          <div id="by-dept-chart"></div>
+        </div>
+
+        <!-- By status bar chart -->
+        <div class="report-section">
+          <div class="report-section-title">GE Forms by Status</div>
+          <div id="by-status-chart"></div>
+        </div>
+
+        <!-- GE detail table -->
+        <div class="report-section">
+          <div class="report-section-title" id="detail-table-title">GE Forms Detail</div>
+          <div class="table-wrap">
+            <table id="detail-table">
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>GE Number</th>
+                  <th class="ao-col hidden">Claimant</th>
+                  <th class="ao-col hidden">Department</th>
+                  <th>Payee</th>
+                  <th>Type</th>
+                  <th>Amount (K)</th>
+                  <th>Status</th>
+                  <th>Date</th>
+                </tr>
+              </thead>
+              <tbody id="detail-tbody"></tbody>
+              <tfoot id="detail-tfoot"></tfoot>
+            </table>
+          </div>
+        </div>
+
+      </div>
+
+    </main>
+  </div>
+</div>
+
+<script src="../assets/js/api.js?v=2"></script>
+<script src="../assets/js/app.js?v=2"></script>
+<script>
+let reportData = null;
+let isAccountsOfficer = false;
+
+(async () => {
+  const ok = await requireAuth();
+  if (!ok) return;
+  Sidebar.setActive('my-reports.html');
+
+  isAccountsOfficer = Auth.hasAnyRole(['ACCOUNTS_OFFICER','SYSTEM_ADMIN']);
+
+  // Update page title
+  document.getElementById('page-title').textContent = isAccountsOfficer
+    ? 'Expenditure Reports' : 'My GE Reports';
+
+  // Show department filter for accounts officers
+  if (isAccountsOfficer) {
+    document.getElementById('dept-filter-group').classList.remove('hidden');
+    // Load departments
+    try {
+      const res = await API.get('admin/departments.php');
+      const sel = document.getElementById('f-dept');
+      (res.departments || []).forEach(d => {
+        sel.innerHTML += `<option value="${d.id}">${d.name}</option>`;
+      });
+    } catch {}
+  }
+
+  // Default to current month
+  setQuickRange('thisMonth');
+})();
+
+// ── Quick date range helpers ──────────────────────────────────
+function setQuickRange(range) {
+  const now   = new Date();
+  const year  = now.getFullYear();
+  const month = now.getMonth();
+  let from, to;
+
+  switch (range) {
+    case 'thisMonth':
+      from = new Date(year, month, 1);
+      to   = new Date(year, month + 1, 0);
+      break;
+    case 'lastMonth':
+      from = new Date(year, month - 1, 1);
+      to   = new Date(year, month, 0);
+      break;
+    case 'thisYear':
+      from = new Date(year, 0, 1);
+      to   = new Date(year, 11, 31);
+      break;
+    case 'lastYear':
+      from = new Date(year - 1, 0, 1);
+      to   = new Date(year - 1, 11, 31);
+      break;
+  }
+  document.getElementById('f-date-from').value = from.toISOString().slice(0,10);
+  document.getElementById('f-date-to').value   = to.toISOString().slice(0,10);
+}
+
+// ── Generate report ───────────────────────────────────────────
+async function generateReport() {
+  const dateFrom = document.getElementById('f-date-from').value;
+  const dateTo   = document.getElementById('f-date-to').value;
+  if (!dateFrom || !dateTo) { Toast.warning('Please select a date range.'); return; }
+  if (dateFrom > dateTo)    { Toast.warning('From date must be before To date.'); return; }
+
+  const btn = document.getElementById('btn-generate');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner" style="width:14px;height:14px;border-width:2px"></span> Generating…';
+
+  try {
+    const params = {
+      date_from: dateFrom,
+      date_to:   dateTo,
+      status:    document.getElementById('f-status').value,
+      procurement_type: document.getElementById('f-type').value,
+    };
+    if (isAccountsOfficer) params.dept_id = document.getElementById('f-dept').value;
+
+    const res = await API.myReport(params);
+    reportData = res;
+    renderReport(res);
+
+    document.getElementById('btn-print').classList.remove('hidden');
+    document.getElementById('btn-export-csv').classList.remove('hidden');
+  } catch (err) {
+    Toast.error(err.message || 'Failed to generate report.');
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = '📊 Generate Report';
+  }
+}
+
+// ── Render report ─────────────────────────────────────────────
+function renderReport(d) {
+  const output = document.getElementById('report-output');
+  output.classList.add('visible');
+  output.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+  // Print header
+  document.getElementById('print-period').textContent =
+    `Period: ${Fmt.date(d.date_from)} — ${Fmt.date(d.date_to)}`;
+  document.getElementById('print-generated').textContent =
+    `Generated by: ${d.generated_by}  ·  ${Fmt.datetime(d.generated_at)}`;
+
+  // Summary boxes
+  const completedCount = (d.by_status?.COMPLETED?.count || 0);
+  const completedAmt   = (d.by_status?.COMPLETED?.total || 0);
+  const pendingCount   = Object.entries(d.by_status || {})
+    .filter(([k]) => k.startsWith('PENDING')).reduce((s,[,v])=>s+v.count, 0);
+
+  document.getElementById('summary-boxes').innerHTML = `
+    <div class="summary-box">
+      <div class="sb-val">${d.ge_count}</div>
+      <div class="sb-label">Total GE Forms</div>
+    </div>
+    <div class="summary-box">
+      <div class="sb-val" style="color:var(--primary)">${Fmt.currency(d.total_amount)}</div>
+      <div class="sb-label">Total Value</div>
+    </div>
+    <div class="summary-box">
+      <div class="sb-val" style="color:var(--primary)">${completedCount}</div>
+      <div class="sb-label">Completed</div>
+    </div>
+    <div class="summary-box">
+      <div class="sb-val" style="color:var(--primary)">${Fmt.currency(completedAmt)}</div>
+      <div class="sb-label">Completed Value</div>
+    </div>
+    <div class="summary-box">
+      <div class="sb-val" style="color:var(--warning)">${pendingCount}</div>
+      <div class="sb-label">In Workflow</div>
+    </div>`;
+
+  // By type
+  renderBarChart('by-type-chart', d.by_type, d.total_amount);
+
+  // By department (accounts officer)
+  const deptSection = document.getElementById('by-dept-section');
+  if (isAccountsOfficer && Object.keys(d.by_dept || {}).length) {
+    deptSection.classList.remove('hidden');
+    renderBarChartObj('by-dept-chart', d.by_dept, d.total_amount);
+  } else {
+    deptSection.classList.add('hidden');
+  }
+
+  // By status
+  const statusData = {};
+  Object.entries(d.by_status || {}).forEach(([k,v]) => {
+    statusData[v.label] = { count: v.count, total: v.total };
+  });
+  renderBarChartStatus('by-status-chart', d.by_status, d.total_amount);
+
+  // Detail table
+  const isAO = d.is_full_view;
+  document.querySelectorAll('.ao-col').forEach(el =>
+    el.classList.toggle('hidden', !isAO));
+  document.getElementById('detail-table-title').textContent =
+    isAO ? 'All GE Forms Detail' : 'My GE Forms Detail';
+
+  const tbody = document.getElementById('detail-tbody');
+  tbody.innerHTML = (d.ges || []).map((g, i) => `
+    <tr>
+      <td style="color:var(--text-muted)">${i+1}</td>
+      <td class="font-mono fw-600" style="font-size:12px">${g.ge_number||'—'}</td>
+      ${isAO ? `<td style="font-size:12px">${g.claimant_name}</td>
+                <td style="font-size:12px">${g.department_name}</td>` : ''}
+      <td>${g.payee_name||'—'}</td>
+      <td>${g.is_capital_item?'Capital':g.procurement_type}</td>
+      <td class="text-right fw-600">${Fmt.currency(g.total_amount)}</td>
+      <td>${statusBadge(g.status, g.status_label)}</td>
+      <td style="font-size:12px">${Fmt.date(g.created_at)}</td>
+    </tr>`).join('') ||
+    '<tr><td colspan="9" class="text-center text-muted" style="padding:20px">No GE forms found for this period.</td></tr>';
+
+  // Footer total
+  document.getElementById('detail-tfoot').innerHTML = `
+    <tr style="background:var(--input-bg);font-weight:700">
+      <td colspan="${isAO ? 6 : 4}" style="text-align:right;padding:10px 14px">TOTAL</td>
+      <td class="text-right" style="padding:10px 14px;color:var(--primary)">${Fmt.currency(d.total_amount)}</td>
+      <td colspan="2"></td>
+    </tr>`;
+}
+
+function renderBarChart(containerId, byType, grandTotal) {
+  const c = document.getElementById(containerId);
+  const items = Object.entries(byType || {});
+  if (!items.length) { c.innerHTML = '<p class="text-muted">No data.</p>'; return; }
+  const max = Math.max(...items.map(([,v]) => v.total), 1);
+  c.innerHTML = items.map(([label, v]) => `
+    <div class="bar-row">
+      <div class="bar-label">${label}</div>
+      <div class="bar-track"><div class="bar-fill" style="width:${(v.total/max*100).toFixed(1)}%;background:var(--info)"></div></div>
+      <div class="bar-amount">${Fmt.currency(v.total)}</div>
+      <div class="bar-pct">${grandTotal > 0 ? ((v.total/grandTotal)*100).toFixed(1)+'%' : '0%'}</div>
+    </div>
+    <div style="font-size:11px;color:var(--text-muted);margin:-4px 0 10px 160px">${v.count} GE form${v.count!==1?'s':''}</div>
+  `).join('');
+}
+
+function renderBarChartObj(containerId, byDept, grandTotal) {
+  const c = document.getElementById(containerId);
+  const items = Object.entries(byDept || {});
+  if (!items.length) { c.innerHTML = '<p class="text-muted">No data.</p>'; return; }
+  const max = Math.max(...items.map(([,v]) => v.total), 1);
+  const colors = ['#3b82f6','#22c55e','#f59e0b','#8b5cf6','#ef4444','#06b6d4'];
+  c.innerHTML = items.map(([label, v], i) => `
+    <div class="bar-row">
+      <div class="bar-label" title="${label}">${label}</div>
+      <div class="bar-track"><div class="bar-fill" style="width:${(v.total/max*100).toFixed(1)}%;background:${colors[i%colors.length]}"></div></div>
+      <div class="bar-amount">${Fmt.currency(v.total)}</div>
+      <div class="bar-pct">${grandTotal > 0 ? ((v.total/grandTotal)*100).toFixed(1)+'%' : '0%'}</div>
+    </div>`).join('');
+}
+
+function renderBarChartStatus(containerId, byStatus, grandTotal) {
+  const c = document.getElementById(containerId);
+  const items = Object.entries(byStatus || {});
+  if (!items.length) { c.innerHTML = '<p class="text-muted">No data.</p>'; return; }
+  const max = Math.max(...items.map(([,v]) => v.count), 1);
+  c.innerHTML = items.map(([code, v]) => `
+    <div class="bar-row">
+      <div class="bar-label">${v.label}</div>
+      <div class="bar-track"><div class="bar-fill" style="width:${(v.count/max*100).toFixed(1)}%;background:var(--purple)"></div></div>
+      <div class="bar-amount" style="font-size:12px">${v.count} form${v.count!==1?'s':''}</div>
+      <div class="bar-pct">${Fmt.currency(v.total)}</div>
+    </div>`).join('');
+}
+
+// ── Print ─────────────────────────────────────────────────────
+function printReport() {
+  window.print();
+}
+
+// ── Export CSV ────────────────────────────────────────────────
+function exportCSV() {
+  if (!reportData || !reportData.ges?.length) { Toast.warning('Generate a report first.'); return; }
+
+  const isAO = reportData.is_full_view;
+  const headers = ['#','GE Number', ...(isAO ? ['Claimant','Department'] : []),
+    'Payee','Dept Ref','Procurement Type','Amount (K)','Status','Date Created'];
+
+  const rows = reportData.ges.map((g, i) => [
+    i+1,
+    g.ge_number || '',
+    ...(isAO ? [g.claimant_name, g.department_name] : []),
+    g.payee_name || '',
+    g.departmental_reference || '',
+    g.is_capital_item ? 'Capital Item' : g.procurement_type,
+    parseFloat(g.total_amount).toFixed(2),
+    g.status_label,
+    g.created_at?.slice(0,10) || '',
+  ]);
+
+  const csv = [headers, ...rows]
+    .map(row => row.map(v => `"${String(v).replace(/"/g,'""')}"`).join(','))
+    .join('\n');
+
+  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+  const url  = URL.createObjectURL(blob);
+  const a    = document.createElement('a');
+  a.href     = url;
+  a.download = `GEMS_Report_${reportData.date_from}_to_${reportData.date_to}.csv`;
+  a.click();
+  URL.revokeObjectURL(url);
+  Toast.success('CSV exported successfully.');
+}
+</script>
+</body>
+</html>
