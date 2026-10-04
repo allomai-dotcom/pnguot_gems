@@ -16,19 +16,24 @@ const GEForm = {
   async init(geId = null) {
     this.geId = geId ? parseInt(geId) : null;
 
+    // Load department dropdown first (needed for both new and edit)
+    await this.loadDepartments();
+
     if (this.geId) {
       await this.load(this.geId);
     } else {
-      this.lineItems = [{ description: '', quantity: 1, unit_price: 0 }];
+      this.lineItems = [{ description: '', quantity: '', unit_price: '', amount: '' }];
       this.acctLines = [{ account_code: '', account_name: '',
         budget_div: '', budget_fn: '', budget_act: '', budget_item: '', budget_si: '', budget_d: '',
-        amount: 0, notes: '' }];
+        amount: '', notes: '' }];
       this.renderLineItems();
       this.renderAcctLines();
 
-      // Populate dept-display from Auth.user
+      // Pre-select the user's own department
       const deptEl = document.getElementById('dept-display');
-      if (deptEl && Auth.user) deptEl.value = Auth.user.dept_name || '';
+      if (deptEl && Auth.user?.department_id) {
+        deptEl.value = Auth.user.department_id;
+      }
 
       // Default claimant full name from Auth.user
       const claimantNameEl = document.getElementById('claimant-full-name');
@@ -90,12 +95,18 @@ const GEForm = {
       // Section 1 — Claim Routing
       this.setVal('ge-number',        ge.ge_number);
       this.setVal('payee-name',       ge.payee_name);
-      this.setVal('dept-display',     ge.department_name || (Auth.user?.dept_name) || '');
+      // For the select, set the department_id value
+      const deptSel = document.getElementById('dept-display');
+      if (deptSel) deptSel.value = ge.department_id || '';
       this.setVal('dept-ref',         ge.departmental_reference);
       this.setVal('claimant-ref',     ge.claimant_reference);
       this.setVal('description',      ge.description);
       this.setVal('procurement-type', ge.procurement_type);
       this.setVal('is-capital-item',  ge.is_capital_item ? '1' : '0');
+
+      // Restore GST checkbox state
+      const gstCb = document.getElementById('gst-included');
+      if (gstCb) gstCb.checked = !!(ge.gst_included);
 
       // Status badge
       const statusEl = document.getElementById('ge-status-badge');
@@ -105,11 +116,12 @@ const GEForm = {
       this.lineItems = ge.line_items?.length
         ? ge.line_items.map(li => ({
             description: li.description,
-            quantity:    li.quantity,
-            unit_price:  li.unit_price,
+            quantity:    li.quantity || '',
+            unit_price:  li.unit_price || '',
+            amount:      li.total_price || li.amount || '',
             gst_percent: parseFloat(li.gst_percent) || 0,
           }))
-        : [{ description: '', quantity: 1, unit_price: 0, gst_percent: 0 }];
+        : [{ description: '', quantity: '', unit_price: '', amount: '' }];
       this.renderLineItems();
 
       // Section 3 — Accounting lines
@@ -189,14 +201,30 @@ const GEForm = {
       const row = document.createElement('div');
       row.className = 'line-item-row';
       row.dataset.index = i;
-      row.style.cssText = 'display:grid;grid-template-columns:1fr 80px 120px 110px 36px;gap:8px;margin-bottom:6px';
+      row.style.cssText = 'display:grid;grid-template-columns:1fr 80px 120px 110px 36px;gap:8px;margin-bottom:6px;align-items:start';
+
+      // Show blank when value is 0 or empty
+      const qtyVal   = li.quantity   ? li.quantity   : '';
+      const priceVal = li.unit_price ? li.unit_price : '';
+      const amtVal   = li.amount     !== undefined ? (li.amount || '') : '';
+
       row.innerHTML = `
-        <input class="form-control li-desc"  type="text"   placeholder="Description" value="${this.esc(li.description)}">
-        <input class="form-control li-qty"   type="number" placeholder="Qty"  min="0.001" step="0.001" value="${li.quantity}">
-        <input class="form-control li-price" type="number" placeholder="Unit Rate" min="0" step="0.01" value="${li.unit_price}">
-        <div class="line-total text-right" style="line-height:36px">${Fmt.currency(li.quantity * li.unit_price)}</div>
+        <textarea class="form-control li-desc" placeholder="Description" rows="1"
+          style="resize:none;overflow:hidden;min-height:36px;line-height:1.4;padding:8px 10px"
+        >${this.esc(li.description)}</textarea>
+        <input class="form-control li-qty"    type="number" placeholder="Qty"       min="0" step="any"  value="${qtyVal}">
+        <input class="form-control li-price"  type="number" placeholder="Unit Rate" min="0" step="0.01" value="${priceVal}">
+        <input class="form-control li-amount" type="number" placeholder="Amount"    min="0" step="0.01" value="${amtVal}" style="font-weight:600">
         <button class="btn btn-ghost btn-sm remove-li" title="Remove" ${this.lineItems.length <= 1 ? 'disabled' : ''}>✕</button>`;
       container.appendChild(row);
+
+      // Auto-expand textarea as user types
+      const ta = row.querySelector('.li-desc');
+      if (ta) {
+        const autoResize = () => { ta.style.height = 'auto'; ta.style.height = ta.scrollHeight + 'px'; };
+        ta.addEventListener('input', autoResize);
+        setTimeout(autoResize, 0); // size on load
+      }
     });
     this.updateTotal();
     this.updateGSTDisplay();
@@ -210,15 +238,17 @@ const GEForm = {
       const row = document.createElement('div');
       row.className = 'acct-row';
       row.dataset.index = i;
-      row.style.cssText = 'display:grid;grid-template-columns:60px 60px 60px 70px 60px 60px 1fr 36px;gap:6px;margin-bottom:6px';
+      row.style.cssText = 'display:grid;grid-template-columns:60px 60px 60px 70px 60px 60px 110px 36px;gap:6px;margin-bottom:6px';
+      // Show blank when amount is 0
+      const amtVal = al.amount ? al.amount : '';
       row.innerHTML = `
-        <input class="form-control al-div"    type="text" placeholder="Div"    value="${this.esc(al.budget_div)}">
-        <input class="form-control al-fn"     type="text" placeholder="FN"     value="${this.esc(al.budget_fn)}">
-        <input class="form-control al-act"    type="text" placeholder="Act"    value="${this.esc(al.budget_act)}">
-        <input class="form-control al-item"   type="text" placeholder="Item"   value="${this.esc(al.budget_item)}">
-        <input class="form-control al-si"     type="text" placeholder="SI"     value="${this.esc(al.budget_si)}">
-        <input class="form-control al-d"      type="text" placeholder="D"      value="${this.esc(al.budget_d)}">
-        <input class="form-control al-amount" type="number" placeholder="Amount" min="0" step="0.01" value="${al.amount}">
+        <input class="form-control al-div"    type="text"   placeholder="Div"    value="${this.esc(al.budget_div)}">
+        <input class="form-control al-fn"     type="text"   placeholder="FN"     value="${this.esc(al.budget_fn)}">
+        <input class="form-control al-act"    type="text"   placeholder="Act"    value="${this.esc(al.budget_act)}">
+        <input class="form-control al-item"   type="text"   placeholder="Item"   value="${this.esc(al.budget_item)}">
+        <input class="form-control al-si"     type="text"   placeholder="SI"     value="${this.esc(al.budget_si)}">
+        <input class="form-control al-d"      type="text"   placeholder="D"      value="${this.esc(al.budget_d)}">
+        <input class="form-control al-amount" type="number" placeholder="Amount" min="0" step="0.01" value="${amtVal}" style="font-weight:600">
         <button class="btn btn-ghost btn-sm remove-al" title="Remove" ${this.acctLines.length <= 1 ? 'disabled' : ''}>✕</button>`;
       container.appendChild(row);
     });
@@ -226,29 +256,41 @@ const GEForm = {
   },
 
   updateTotal() {
-    const total = this.lineItems.reduce((s, li) => s + (li.quantity * li.unit_price), 0);
-    document.querySelectorAll('.ge-total-display').forEach(el => {
-      el.textContent = Fmt.currency(total);
-      el.dataset.raw = total;
+    // Sum all line amounts
+    const subtotal = this.lineItems.reduce((s, li) => {
+      const amt = li.amount !== '' && li.amount !== undefined
+        ? parseFloat(li.amount) || 0
+        : (parseFloat(li.quantity) || 0) * (parseFloat(li.unit_price) || 0);
+      return s + amt;
+    }, 0);
+
+    const included   = document.getElementById('gst-included')?.checked ?? false;
+    const gstAmount  = included ? subtotal * 0.10 : 0;
+    const grandTotal = subtotal + gstAmount;
+
+    // Subtotal display
+    document.querySelectorAll('.ge-subtotal-display').forEach(el => {
+      el.textContent = Fmt.currency(subtotal);
     });
-    document.querySelectorAll('.line-item-row').forEach(row => {
-      const i  = parseInt(row.dataset.index);
-      const li = this.lineItems[i];
-      if (li) {
-        const lineTotal = li.quantity * li.unit_price;
-        const totalEl = row.querySelector('.line-total');
-        if (totalEl) totalEl.textContent = Fmt.currency(lineTotal);
-      }
-    });
+
+    // GST display
     const gstEl = document.getElementById('gst-amount-display');
-    if (gstEl) gstEl.textContent = Fmt.currency(total * 0.10);
+    if (gstEl) {
+      gstEl.textContent = Fmt.currency(gstAmount);
+      gstEl.style.color = included ? 'var(--text-primary)' : 'var(--text-muted)';
+    }
+
+    // Grand total display
+    document.querySelectorAll('.ge-total-display').forEach(el => {
+      el.textContent = grandTotal.toFixed(2);
+      el.dataset.raw = grandTotal;
+    });
+
     this.updateAcctTotal();
   },
 
   updateGSTDisplay() {
-    const total = this.lineItems.reduce((s, li) => s + (li.quantity * li.unit_price), 0);
-    const gstEl = document.getElementById('gst-amount-display');
-    if (gstEl) gstEl.textContent = Fmt.currency(total * 0.10);
+    this.updateTotal(); // delegate — updateTotal handles everything now
   },
 
   updateAcctTotal() {
@@ -276,9 +318,30 @@ const GEForm = {
         const i  = parseInt(row.dataset.index);
         const li = this.lineItems[i];
         if (!li) return;
-        if (e.target.classList.contains('li-desc'))  li.description = e.target.value;
-        if (e.target.classList.contains('li-qty'))   li.quantity    = parseFloat(e.target.value) || 0;
-        if (e.target.classList.contains('li-price')) li.unit_price  = parseFloat(e.target.value) || 0;
+        if (e.target.classList.contains('li-desc'))   li.description = e.target.value;
+        if (e.target.classList.contains('li-qty')) {
+          li.quantity   = e.target.value !== '' ? parseFloat(e.target.value) : '';
+          // Auto-calculate amount if both qty and price are filled
+          if (li.quantity !== '' && li.unit_price !== '') {
+            li.amount = parseFloat(li.quantity) * parseFloat(li.unit_price);
+            // Update the amount input field
+            const amtInput = e.target.closest('.line-item-row')?.querySelector('.li-amount');
+            if (amtInput) amtInput.value = li.amount || '';
+          }
+        }
+        if (e.target.classList.contains('li-price')) {
+          li.unit_price = e.target.value !== '' ? parseFloat(e.target.value) : '';
+          // Auto-calculate amount if both qty and price are filled
+          if (li.quantity !== '' && li.unit_price !== '') {
+            li.amount = parseFloat(li.quantity) * parseFloat(li.unit_price);
+            const amtInput = e.target.closest('.line-item-row')?.querySelector('.li-amount');
+            if (amtInput) amtInput.value = li.amount || '';
+          }
+        }
+        if (e.target.classList.contains('li-amount')) {
+          // User typed amount directly — store it and clear auto-calc
+          li.amount = e.target.value !== '' ? parseFloat(e.target.value) : '';
+        }
         this.updateTotal();
       }
       const aRow = e.target.closest('.acct-row');
@@ -318,13 +381,20 @@ const GEForm = {
 
     // Add buttons
     document.getElementById('add-line-item')?.addEventListener('click', () => {
-      this.lineItems.push({ description: '', quantity: 1, unit_price: 0 });
+      this.lineItems.push({ description: '', quantity: '', unit_price: '', amount: '' });
       this.renderLineItems();
     });
+
+    // GST checkbox — recalculate GST display when toggled
+    document.getElementById('gst-included')?.addEventListener('change', () => {
+      this.updateTotal();
+      this.scheduleAutoSave();
+    });
+
     document.getElementById('add-acct-line')?.addEventListener('click', () => {
       this.acctLines.push({ account_code: '', account_name: '',
         budget_div: '', budget_fn: '', budget_act: '', budget_item: '', budget_si: '', budget_d: '',
-        amount: 0, notes: '' });
+        amount: '', notes: '' });
       this.renderAcctLines();
     });
 
@@ -337,7 +407,9 @@ const GEForm = {
   collectHeader() {
     return {
       id:                        this.geId,
+      department_id:             document.getElementById('dept-display')?.value || null,
       payee_name:                document.getElementById('payee-name')?.value?.trim(),
+      gst_included:              document.getElementById('gst-included')?.checked ?? false,
       departmental_reference:    document.getElementById('dept-ref')?.value?.trim(),
       claimant_reference:        document.getElementById('claimant-ref')?.value?.trim(),
       description:               document.getElementById('description')?.value?.trim(),
@@ -363,7 +435,21 @@ const GEForm = {
 
   async saveDraft(silent = false) {
     try {
-      const data = { ...this.collectHeader(), line_items: this.lineItems, accounting_lines: this.acctLines };
+      // Normalise line items — ensure amount is calculated if not entered directly
+      const lineItems = this.lineItems.map(li => ({
+        description: li.description,
+        quantity:    li.quantity !== '' ? parseFloat(li.quantity) || 0 : 0,
+        unit_price:  li.unit_price !== '' ? parseFloat(li.unit_price) || 0 : 0,
+        amount:      li.amount !== '' && li.amount !== undefined
+          ? parseFloat(li.amount) || 0
+          : (parseFloat(li.quantity) || 0) * (parseFloat(li.unit_price) || 0),
+      }));
+      // Normalise accounting lines
+      const acctLines = this.acctLines.map(al => ({
+        ...al,
+        amount: al.amount !== '' ? parseFloat(al.amount) || 0 : 0,
+      }));
+      const data = { ...this.collectHeader(), line_items: lineItems, accounting_lines: acctLines };
 
       if (!this.geId) {
         const res = await API.geCreate(data);
@@ -580,3 +666,44 @@ const GEForm = {
 };
 
 window.GEForm = GEForm;
+
+// ── Patch: add loadDepartments to GEForm ─────────────────────
+GEForm.loadDepartments = async function() {
+  const sel = document.getElementById('dept-display');
+  if (!sel) return;
+  try {
+    const res = await API.get('admin/departments.php');
+    const grouped = res.grouped || [];
+
+    sel.innerHTML = '<option value="">Department</option>';
+
+    grouped.forEach(group => {
+      if (group.children && group.children.length > 0) {
+        const og = document.createElement('optgroup');
+        og.label = '📁 ' + group.name;
+        group.children.forEach(child => {
+          const opt = document.createElement('option');
+          opt.value = child.id;
+          opt.textContent = child.name;
+          og.appendChild(opt);
+        });
+        sel.appendChild(og);
+      } else {
+        // Standalone (central units like Admin, Finance, ICT)
+        const opt = document.createElement('option');
+        opt.value = group.id;
+        opt.textContent = group.name;
+        sel.appendChild(opt);
+      }
+    });
+
+    (res.standalone || []).forEach(d => {
+      const opt = document.createElement('option');
+      opt.value = d.id;
+      opt.textContent = d.name;
+      sel.appendChild(opt);
+    });
+  } catch (err) {
+    console.warn('Could not load departments:', err.message);
+  }
+};

@@ -26,7 +26,8 @@ $vals   = [];
 
 $allowed = ['payee_name','departmental_reference','claimant_reference',
             'description','procurement_type','is_capital_item',
-            'claimant_full_name','claimant_declaration_date'];
+            'claimant_full_name','claimant_declaration_date',
+            'department_id'];
 
 // CFC / Commitment — ACCOUNTS_OFFICER or SYSTEM_ADMIN only
 $isPrivileged = in_array('SYSTEM_ADMIN', $user['roles']) || in_array('ACCOUNTS_OFFICER', $user['roles']);

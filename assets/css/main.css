@@ -752,7 +752,7 @@ textarea.form-control { resize: vertical; min-height: 80px; }
   text-align: center; margin-bottom: 28px;
 }
 .login-logo .logo-icon {
-  width: 56px; height: 56px;
+  width: 160px; height: 160px;
   background: var(--primary);
   border-radius: 14px;
   display: flex; align-items: center; justify-content: center;
@@ -778,6 +778,20 @@ textarea.form-control { resize: vertical; min-height: 80px; }
   transition: all var(--transition);
 }
 .dropdown-menu.show { opacity: 1; pointer-events: all; transform: translateY(0); }
+
+/* Sidebar footer dropdown — open upward, fit inside sidebar width */
+.sidebar-footer .dropdown-menu {
+  top: auto;
+  bottom: calc(100% + 6px);
+  right: 0;
+  left: 0;
+  min-width: 0;
+  width: calc(var(--sidebar-width) - 28px);
+  transform: translateY(6px);
+}
+.sidebar-footer .dropdown-menu.show {
+  transform: translateY(0);
+}
 .dropdown-item {
   display: flex; align-items: center; gap: 8px;
   padding: 8px 10px; border-radius: 6px;

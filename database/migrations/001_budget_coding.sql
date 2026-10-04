@@ -52,3 +52,11 @@ ALTER TABLE general_expenses
   ADD COLUMN hod_certification_date DATE        NULL AFTER hod_signature_data,
   ADD COLUMN hod_approved          TINYINT(1)   NOT NULL DEFAULT 0 AFTER hod_certification_date,
   ADD COLUMN hod_sent_to_accounts  TINYINT(1)   NOT NULL DEFAULT 0 AFTER hod_approved;
+
+-- GAP 5 FIX — Regenerate total_price to include GST
+-- MySQL requires DROP + re-ADD for generated columns
+ALTER TABLE ge_line_items
+  DROP COLUMN total_price;
+
+ALTER TABLE ge_line_items
+  ADD COLUMN total_price DECIMAL(12,2) GENERATED ALWAYS AS (quantity * unit_price * (1 + gst_percent / 100)) STORED AFTER gst_percent;

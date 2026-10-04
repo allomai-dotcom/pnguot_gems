@@ -3,7 +3,8 @@
 // ============================================================
 
 const API = {
-  base: '../api',
+  // Relative-to-origin base — works on any hostname (localhost or live hosting)
+  base: '/api',
 
   async request(method, url, data = null, isFormData = false) {
     const opts = {
@@ -50,6 +51,7 @@ const API = {
   geReadiness:         id => API.get('ge/submission_readiness.php', { id }),
   geSendToAccounts:    d  => API.post('ge/send_to_accounts.php', d),
   quotations:          () => API.get('ge/quotations.php'),
+  myReport:            p  => API.get('ge/my_reports.php', p),
 
   // Documents
   docUpload:   (geId, type, file) => {

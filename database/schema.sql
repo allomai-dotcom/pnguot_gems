@@ -4,8 +4,9 @@
 -- MySQL 5.7+ / MariaDB 10.3+
 -- ============================================================
 
-CREATE DATABASE IF NOT EXISTS pnguot_gems CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-USE pnguot_gems;
+-- Database must already exist on your host (e.g. if0_43087707_pnguot_gems).
+-- Do NOT run CREATE DATABASE here — shared hosts do not allow it.
+-- Select the correct database in phpMyAdmin before importing this file.
 
 -- ============================================================
 -- 1. DEPARTMENTS
@@ -99,15 +100,31 @@ CREATE TABLE general_expenses (
     claimant_id             INT UNSIGNED NOT NULL,
     department_id           INT UNSIGNED NOT NULL,
     payee_name              VARCHAR(200) NULL,
-    claimant_full_name      VARCHAR(200) NULL,
+    claimant_full_name      VARCHAR(200) NULL,          -- GAP 6
     departmental_reference  VARCHAR(100) NULL,
     claimant_reference      VARCHAR(100) NULL,
     description             TEXT         NULL,
+    -- GAP 2: claimant declaration signature
+    claimant_signature_data MEDIUMTEXT   NULL,
+    claimant_signed_at      DATETIME     NULL,
+    -- GAP 6: claimant declaration date
+    claimant_declaration_date DATE        NULL,
     procurement_type        ENUM('STANDARD','ICT') NOT NULL DEFAULT 'STANDARD',
     is_capital_item         TINYINT(1)   NOT NULL DEFAULT 0,
     total_amount            DECIMAL(12,2) NOT NULL DEFAULT 0.00,
     cfc_number              VARCHAR(50)  NULL,          -- finance only
     commitment_number       VARCHAR(50)  NULL,          -- finance only
+    -- GAP 4: sent to accounts tracking
+    sent_to_accounts        TINYINT(1)   NOT NULL DEFAULT 0,
+    sent_to_accounts_at     DATETIME     NULL,
+    sent_to_accounts_by     INT UNSIGNED NULL,
+    -- GAP 7: HOD certification on GE form
+    hod_name                VARCHAR(200) NULL,
+    hod_designation         VARCHAR(100) NULL,
+    hod_signature_data      MEDIUMTEXT   NULL,
+    hod_certification_date  DATE         NULL,
+    hod_approved            TINYINT(1)   NOT NULL DEFAULT 0,
+    hod_sent_to_accounts    TINYINT(1)   NOT NULL DEFAULT 0,
     version                 INT UNSIGNED NOT NULL DEFAULT 1,
     submitted_at            DATETIME     NULL,
     completed_at            DATETIME     NULL,
@@ -115,8 +132,9 @@ CREATE TABLE general_expenses (
     cancel_reason           TEXT         NULL,
     created_at              DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at              DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    FOREIGN KEY (claimant_id)   REFERENCES users(id),
-    FOREIGN KEY (department_id) REFERENCES departments(id)
+    FOREIGN KEY (claimant_id)        REFERENCES users(id),
+    FOREIGN KEY (department_id)      REFERENCES departments(id),
+    FOREIGN KEY (sent_to_accounts_by) REFERENCES users(id) ON DELETE SET NULL
 ) ENGINE=InnoDB;
 
 -- ============================================================
@@ -130,7 +148,7 @@ CREATE TABLE ge_line_items (
     quantity        DECIMAL(10,3) NOT NULL DEFAULT 1,
     unit_price      DECIMAL(12,2) NOT NULL DEFAULT 0.00,
     gst_percent     DECIMAL(5,2)  NOT NULL DEFAULT 0.00,
-    total_price     DECIMAL(12,2) GENERATED ALWAYS AS (quantity * unit_price) STORED,
+    total_price     DECIMAL(12,2) GENERATED ALWAYS AS (quantity * unit_price * (1 + gst_percent / 100)) STORED,
     created_at      DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (ge_id) REFERENCES general_expenses(id) ON DELETE CASCADE
 ) ENGINE=InnoDB;
@@ -144,6 +162,13 @@ CREATE TABLE ge_accounting_lines (
     sort_order      SMALLINT UNSIGNED NOT NULL DEFAULT 0,
     account_code    VARCHAR(50)  NOT NULL,
     account_name    VARCHAR(200) NULL,
+    -- GAP 1: structured budget coding columns
+    budget_div      VARCHAR(20)  NULL,
+    budget_fn       VARCHAR(20)  NULL,
+    budget_act      VARCHAR(20)  NULL,
+    budget_item     VARCHAR(20)  NULL,
+    budget_si       VARCHAR(20)  NULL,
+    budget_d        VARCHAR(20)  NULL,
     amount          DECIMAL(12,2) NOT NULL DEFAULT 0.00,
     notes           TEXT         NULL,
     created_at      DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -233,6 +258,10 @@ CREATE TABLE workflow_tasks (
     status          ENUM('PENDING','IN_PROGRESS','COMPLETED','REJECTED','QUERIED') NOT NULL DEFAULT 'PENDING',
     action_taken    ENUM('APPROVED','REJECTED','QUERIED') NULL,
     comments        TEXT         NULL,
+    -- GAP 3: HOD certification data captured at approval step
+    hod_signature_data MEDIUMTEXT   NULL,
+    hod_designation    VARCHAR(150) NULL,
+    hod_certified_at   DATETIME     NULL,
     otp_verified    TINYINT(1)   NOT NULL DEFAULT 0,
     ge_version_at_action INT UNSIGNED NULL,
     assigned_at     DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -361,65 +390,9 @@ CREATE INDEX idx_audit_ge      ON audit_log(ge_id);
 CREATE INDEX idx_audit_user    ON audit_log(user_id);
 
 -- ============================================================
--- GAP 1 MIGRATION — Structured Budget Coding (Div / FN / Act / Item / SI / D)
+-- NOTE: All GAP migration columns (GAP 1–7) are already included
+-- in the CREATE TABLE definitions above. The ALTER TABLE statements
+-- are only needed when upgrading an existing database using
+-- database/migrations/001_budget_coding.sql — do NOT run them
+-- against a fresh install from this schema.sql file.
 -- ============================================================
-ALTER TABLE ge_accounting_lines
-  ADD COLUMN budget_div  VARCHAR(20) NULL AFTER account_name,
-  ADD COLUMN budget_fn   VARCHAR(20) NULL AFTER budget_div,
-  ADD COLUMN budget_act  VARCHAR(20) NULL AFTER budget_fn,
-  ADD COLUMN budget_item VARCHAR(20) NULL AFTER budget_act,
-  ADD COLUMN budget_si   VARCHAR(20) NULL AFTER budget_item,
-  ADD COLUMN budget_d    VARCHAR(20) NULL AFTER budget_si;
-
--- ============================================================
--- GAP 2 MIGRATION — Claimant Declaration Signature
--- ============================================================
-ALTER TABLE general_expenses
-  ADD COLUMN claimant_signature_data MEDIUMTEXT NULL AFTER description,
-  ADD COLUMN claimant_signed_at      DATETIME   NULL AFTER claimant_signature_data;
-
--- ============================================================
--- GAP 3 MIGRATION — HOD Certification
--- ============================================================
-ALTER TABLE workflow_tasks
-  ADD COLUMN hod_signature_data MEDIUMTEXT   NULL AFTER comments,
-  ADD COLUMN hod_designation    VARCHAR(150) NULL AFTER hod_signature_data,
-  ADD COLUMN hod_certified_at   DATETIME     NULL AFTER hod_designation;
-
--- ============================================================
--- GAP 4 MIGRATION — Sent to Accounts Flag
--- ============================================================
-ALTER TABLE general_expenses
-  ADD COLUMN sent_to_accounts    TINYINT(1)   NOT NULL DEFAULT 0 AFTER commitment_number,
-  ADD COLUMN sent_to_accounts_at DATETIME     NULL               AFTER sent_to_accounts,
-  ADD COLUMN sent_to_accounts_by INT UNSIGNED NULL               AFTER sent_to_accounts_at;
-
-ALTER TABLE general_expenses
-  ADD CONSTRAINT fk_ge_sent_by
-  FOREIGN KEY (sent_to_accounts_by) REFERENCES users(id) ON DELETE SET NULL;
-
--- ============================================================
--- GAP 5 MIGRATION — GST Percent on Line Items
--- ============================================================
-ALTER TABLE ge_line_items
-  ADD COLUMN gst_percent DECIMAL(5,2) NOT NULL DEFAULT 0.00 AFTER unit_price;
-
--- ============================================================
--- GAP 6 MIGRATION — Claimant Declaration Fields
--- ============================================================
-ALTER TABLE general_expenses
-  ADD COLUMN claimant_full_name        VARCHAR(200) NULL AFTER payee_name,
-  ADD COLUMN claimant_declaration_date DATE         NULL AFTER claimant_signed_at;
-
--- ============================================================
--- GAP 7 MIGRATION — HOD Certification on General Expenses
--- NOTE: hod_signature_data / hod_designation / hod_certified_at on workflow_tasks
---       were added in GAP 3 and MUST NOT be re-added here.
--- ============================================================
-ALTER TABLE general_expenses
-  ADD COLUMN hod_name              VARCHAR(200) NULL AFTER claimant_declaration_date,
-  ADD COLUMN hod_designation       VARCHAR(100) NULL AFTER hod_name,
-  ADD COLUMN hod_signature_data    MEDIUMTEXT   NULL AFTER hod_designation,
-  ADD COLUMN hod_certification_date DATE        NULL AFTER hod_signature_data,
-  ADD COLUMN hod_approved          TINYINT(1)   NOT NULL DEFAULT 0 AFTER hod_certification_date,
-  ADD COLUMN hod_sent_to_accounts  TINYINT(1)   NOT NULL DEFAULT 0 AFTER hod_approved;

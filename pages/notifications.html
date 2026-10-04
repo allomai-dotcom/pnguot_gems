@@ -11,7 +11,7 @@
   <aside id="sidebar">
     <div class="sidebar-header">
       <div class="sidebar-avatar" id="sidebar-footer-av">JD</div>
-      <div class="sidebar-workspace"><div class="ws-name" id="sidebar-ws-name">…</div><div class="ws-sub" id="sidebar-ws-sub">PNGUOT</div></div>
+      <div class="sidebar-workspace"><div class="ws-name" id="sidebar-ws-name">—</div><div class="ws-sub" id="sidebar-ws-sub">PNGUOT</div></div>
     </div>
     <nav class="sidebar-nav">
       <a class="nav-item" href="dashboard.html"     data-page="dashboard.html"><span class="nav-icon">📊</span><span class="nav-label">Overview</span></a>
@@ -25,7 +25,7 @@
       <a class="nav-item approver-only hidden" href="approvals.html" data-page="approvals.html"><span class="nav-icon">✅</span><span class="nav-label">Pending Approvals</span></a>
     </nav>
     <div class="sidebar-footer">
-      <div class="footer-icon" style="background:none;padding:0"><img src="../assets/img/pnguot-logo.jpg" style="width:32px;height:32px;object-fit:contain;border-radius:4px"></div>
+      <div class="footer-icon" style="background:none;padding:0"><img src="../assets/img/pnguot-logo.jpg" style="width:42px;height:42px;object-fit:contain;border-radius:4px"></div>
       <div><div class="footer-name" id="sidebar-footer-name">PNGUOT GEMS</div><div class="footer-version">ver. 1.0</div></div>
       <div class="dropdown"><button class="footer-menu" data-dropdown="sidebar-user-menu">•••</button>
         <div class="dropdown-menu" id="sidebar-user-menu">
@@ -45,7 +45,7 @@
       <div class="topbar-actions" style="margin-left:auto">
         <button class="btn btn-ghost btn-sm" onclick="markAllRead()">✓ Mark All Read</button>
         <div class="user-avatar" id="topbar-avatar">JD</div>
-        <div><div class="user-name" id="topbar-user-name">…</div><div class="user-role" id="topbar-user-role"></div></div>
+        <div><div class="user-name" id="topbar-user-name">—</div><div class="user-role" id="topbar-user-role"></div></div>
       </div>
     </header>
 
@@ -59,7 +59,7 @@
 </div>
 
 <script src="../assets/js/api.js?v=2"></script>
-<script src="../assets/js/app.js"></script>
+<script src="../assets/js/app.js?v=2"></script>
 <script>
 const NOTIF_ICONS = {
   APPROVAL_REQUIRED: '🔔', GE_QUERIED: '❓', QUERY_RESPONDED: '💬',
@@ -79,7 +79,7 @@ async function loadNotifications() {
     const res   = await API.notifications();
     const notes = res.notifications;
     if (!notes.length) {
-      c.innerHTML = `<div class="empty-state"><div class="es-icon">🔔</div><div class="es-title">No notifications</div></div>`;
+      c.innerHTML = `<div class="empty-state"><div class="es-icon">📋</div><div class="es-title">No notifications</div></div>`;
       return;
     }
     c.innerHTML = notes.map(n => `
@@ -98,7 +98,7 @@ async function loadNotifications() {
         ${n.ge_number ? `<a href="my-ges.html" class="btn btn-ghost btn-sm">View GE →</a>` : ''}
       </div>`).join('');
   } catch (err) {
-    c.innerHTML = `<div class="alert alert-error" style="margin:16px"><span>❌</span>${err.message}</div>`;
+    c.innerHTML = `<div class="alert alert-error" style="margin:16px"><span>⚠️</span>${err.message}</div>`;
   }
 }
 

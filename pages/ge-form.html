@@ -5,7 +5,7 @@
   <title>GE Form — PNGUOT GEMS</title>
   <link rel="stylesheet" href="../assets/css/main.css">
   <style>
-    /* ── Paper Form Styles ── */
+    /* -- Paper Form Styles -- */
     .ge-paper-form {
       background: #fff;
       border: 1px solid #333;
@@ -62,7 +62,7 @@
       background: #f9f9f9;
     }
 
-    /* ── Print Styles ── */
+    /* -- Print Styles -- */
     @media print {
       #sidebar, #topbar, .ge-form-actions, #step-bar, #section-7, #audit-card { display: none !important; }
       #main-area { margin: 0; padding: 0; }
@@ -93,7 +93,7 @@
       <a class="nav-item approver-only hidden" data-page="approvals.html" href="approvals.html"><span class="nav-icon">✅</span><span class="nav-label">Pending Approvals</span></a>
     </nav>
     <div class="sidebar-footer">
-      <div class="footer-icon" style="background:none;padding:0"><img src="../assets/img/pnguot-logo.jpg" style="width:32px;height:32px;object-fit:contain;border-radius:4px"></div>
+      <div class="footer-icon" style="background:none;padding:0"><img src="../assets/img/pnguot-logo.jpg" style="width:42px;height:42px;object-fit:contain;border-radius:4px"></div>
       <div><div class="footer-name" id="sidebar-footer-name">PNGUOT GEMS</div><div class="footer-version">ver. 1.0</div></div>
       <div class="dropdown"><button class="footer-menu" data-dropdown="sb-um">•••</button>
         <div class="dropdown-menu" id="sb-um">
@@ -111,10 +111,10 @@
       <button class="hamburger" id="hamburger-btn">☰</button>
       <span class="topbar-page-title" id="page-title">New GE Form</span>
       <div class="topbar-actions" style="margin-left:auto">
-        <span id="save-indicator" class="hidden" style="font-size:12px;color:var(--primary);margin-right:8px">✅ Saved</span>
+        <span id="save-indicator" class="hidden" style="font-size:12px;color:var(--primary);margin-right:8px">✓ Saved</span>
         <div class="topbar-user dropdown" data-dropdown="um2">
           <div class="user-avatar" id="topbar-avatar">JD</div>
-          <div><div class="user-name" id="topbar-user-name">…</div><div class="user-role" id="topbar-user-role"></div></div>
+          <div><div class="user-name" id="topbar-user-name">—</div><div class="user-role" id="topbar-user-role"></div></div>
         </div>
         <div class="dropdown-menu" id="um2"><div class="dropdown-item danger" onclick="Auth.logout()">🚪 Sign Out</div></div>
       </div>
@@ -146,9 +146,9 @@
 
       <form id="ge-form">
 
-        <!-- ══════════════════════════════════════════════════════════
+        <!-- ----------------------------------------------------------
              A4 PAPER FORM CARD
-             ══════════════════════════════════════════════════════════ -->
+             ---------------------------------------------------------- -->
         <div class="ge-paper-form card mb-24">
 
           <!-- PAPER FORM HEADER -->
@@ -178,7 +178,9 @@
             <!-- Right — Department Info box -->
             <div class="ge-box">
               <div class="ge-section-label">Department:</div>
-              <input id="dept-display" type="text" class="form-control" readonly style="background:var(--bg-secondary);margin-bottom:6px" placeholder="Department">
+              <select id="dept-display" class="form-control" style="margin-bottom:6px">
+                <option value="">Department</option>
+              </select>
               <label class="form-label" style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px">Departmental Reference:</label>
               <input id="dept-ref" type="text" class="form-control" placeholder="e.g. ICT-EQUIPMENT-2026">
 
@@ -200,16 +202,12 @@
           <div class="ge-section" style="border-top:1px solid #333">
 
             <div class="ge-section-label">Particulars</div>
+            <input type="hidden" id="description" value="">
 
-            <!-- Being For -->
-            <div style="margin-bottom:6px">
-              <label class="form-label" style="font-weight:600">Being For:</label>
-              <textarea id="description" class="form-control" rows="2" placeholder="Describe the purpose of this expense…"></textarea>
-            </div>
 
             <!-- Column headers -->
             <div class="ge-table-header" style="grid-template-columns:1fr 80px 120px 110px 36px">
-              <div>Particulars</div>
+              <div>Description / Particulars</div>
               <div>Quantity</div>
               <div>Unit Rate (K)</div>
               <div>Amount (K)</div>
@@ -219,14 +217,44 @@
             <!-- Line items rendered by JS -->
             <div id="line-items-container"></div>
 
-            <!-- GST summary row -->
-            <div class="gst-summary-row" style="display:grid;grid-template-columns:1fr 80px 120px 110px 36px;gap:8px;padding:4px 0;border-top:1px solid #aaa;margin-top:4px">
-              <div style="font-weight:600">GST (10%)</div>
-              <div></div>
-              <div></div>
-              <div id="gst-amount-display" style="text-align:right;font-weight:600">K 0.00</div>
-              <div></div>
-            </div>
+            <!-- GST + TOTAL summary block -->
+            <div style="border-top:1px solid #aaa;margin-top:4px">
+
+              <!-- GST row -->
+              <div class="gst-summary-row" style="display:grid;grid-template-columns:1fr 80px 120px 110px 36px;gap:8px;padding:6px 0;align-items:center">
+                <div style="display:flex;align-items:center;gap:8px">
+                  <label style="display:flex;align-items:center;gap:6px;font-weight:600;cursor:pointer;font-size:13px">
+                    <input type="checkbox" id="gst-included" style="width:16px;height:16px;accent-color:var(--primary);cursor:pointer">
+                    GST Included (10%)
+                  </label>
+                </div>
+                <div></div>
+                <div style="font-size:11px;color:#666;text-align:right">GST (10%):</div>
+                <div id="gst-amount-display" style="text-align:right;font-weight:600;color:var(--text-muted)">K 0.00</div>
+                <div></div>
+              </div>
+
+              <!-- Subtotal row -->
+              <div style="display:grid;grid-template-columns:1fr 80px 120px 110px 36px;gap:8px;padding:4px 0;align-items:center">
+                <div style="font-size:11px;color:#666">Subtotal (excl. GST):</div>
+                <div></div>
+                <div></div>
+                <div class="ge-subtotal-display" style="text-align:right;font-size:13px;color:#555">K 0.00</div>
+                <div></div>
+              </div>
+
+              <!-- TOTAL K row — prominent -->
+              <div style="display:grid;grid-template-columns:1fr 80px 120px 110px 36px;gap:8px;padding:6px 0;border-top:2px solid #333;margin-top:2px;align-items:center">
+                <div style="font-weight:700;font-size:14px;text-transform:uppercase;letter-spacing:0.5px">TOTAL K</div>
+                <div></div>
+                <div></div>
+                <div style="text-align:right">
+                  <span class="ge-total-display" data-raw="0" style="font-size:18px;font-weight:700;color:#000">0.00</span>
+                </div>
+                <div></div>
+              </div>
+
+            </div><!-- /GST + TOTAL -->
 
             <div style="font-size:11px;font-style:italic;margin-top:6px;color:#555">** PLEASE REFER INVOICE ATTACHED **</div>
 
@@ -242,7 +270,7 @@
               <div class="ge-section-label">For Departmental Use Only</div>
 
               <!-- Accounting line column headers -->
-              <div style="display:grid;grid-template-columns:60px 60px 60px 70px 60px 60px 1fr 36px;gap:6px;border-bottom:1px solid #333;padding-bottom:4px;margin-bottom:4px;font-weight:700;font-size:11px;text-transform:uppercase">
+              <div style="display:grid;grid-template-columns:60px 60px 60px 70px 60px 60px 110px 36px;gap:6px;border-bottom:1px solid #333;padding-bottom:4px;margin-bottom:4px;font-weight:700;font-size:11px;text-transform:uppercase">
                 <div>Div</div>
                 <div>FN</div>
                 <div>Act</div>
@@ -264,11 +292,7 @@
               <label class="form-label" style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px">Claimant:</label>
               <input id="claimant-full-name" type="text" class="form-control" placeholder="Full Name">
 
-              <div style="font-size:18px;font-weight:700;margin:10px 0">
-                TOTAL K: <span class="ge-total-display" data-raw="0">0.00</span>
-              </div>
-
-              <div class="form-label" style="font-weight:600;margin-bottom:4px">Signature of Claimant:</div>
+              <div class="form-label" style="font-weight:600;margin-bottom:4px;margin-top:10px">Signature of Claimant:</div>
               <canvas id="claimant-sig-canvas" width="600" height="120"
                 style="border:1px solid #333;background:#fff;display:block;max-width:100%"></canvas>
               <button type="button" id="btn-clear-sig" class="btn btn-ghost btn-sm" style="margin-top:4px">🗑 Clear</button>
@@ -310,7 +334,7 @@
 
               <label class="form-label" style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;margin-top:10px;display:block">Head of School:</label>
               <select id="hod-designation" class="form-control">
-                <option value="">— Select Designation —</option>
+                <option value="">Select Designation</option>
                 <option value="Head of Department">Head of Department</option>
                 <option value="HOD Acting">HOD Acting</option>
                 <option value="Dean of Faculty">Dean of Faculty</option>
@@ -343,7 +367,7 @@
             <a href="my-ges.html" class="btn btn-secondary">← Back</a>
           </div>
           <div class="flex gap-8" style="align-items:center">
-            <span id="save-indicator" class="hidden" style="font-size:12px;color:var(--primary);margin-right:8px">✅ Saved</span>
+            <span id="save-indicator" class="hidden" style="font-size:12px;color:var(--primary);margin-right:8px">✓ Saved</span>
             <button type="button" id="btn-save-draft" class="btn btn-secondary">💾 Save Draft</button>
             <button type="button" id="btn-ready-for-docs" class="btn btn-primary">Continue to Supporting Documents →</button>
             <button type="button" id="btn-submit-ge" class="btn btn-primary hidden">Submit for Approval →</button>
@@ -390,7 +414,7 @@
       </div>
       <div id="selected-file" class="hidden mt-8" style="font-size:13px;color:var(--text-secondary)"></div>
       <div id="upload-progress" class="hidden mt-8">
-        <div class="spinner"></div> Uploading…
+        <div class="spinner"></div> UpLoading…
       </div>
     </div>
     <div class="modal-footer">
@@ -400,10 +424,10 @@
   </div>
 </div>
 
-<script src="../assets/js/api.js?v=2"></script>
-<script src="../assets/js/app.js"></script>
+<script src="../assets/js/api.js?v=3"></script>
+<script src="../assets/js/app.js?v=3"></script>
 <script src="https://cdn.jsdelivr.net/npm/signature_pad@4.1.7/dist/signature_pad.umd.min.js"></script>
-<script src="../assets/js/ge-form.js"></script>
+<script src="../assets/js/ge-form.js?v=3"></script>
 <script>
 (async () => {
   const ok = await requireAuth();

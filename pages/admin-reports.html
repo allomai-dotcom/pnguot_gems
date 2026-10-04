@@ -14,7 +14,7 @@
       <div class="sidebar-workspace"><div class="ws-name" id="sidebar-ws-name">Admin Panel</div><div class="ws-sub" id="sidebar-ws-sub">PNGUOT GEMS</div></div>
     </div>
     <nav class="sidebar-nav">
-      <a class="nav-item" href="admin-panel.html"    data-page="admin-panel.html"><span class="nav-icon">🏠</span><span class="nav-label">Overview</span></a>
+      <a class="nav-item" href="admin-panel.html"    data-page="admin-panel.html"><span class="nav-icon">📊</span><span class="nav-label">Overview</span></a>
       <div class="sidebar-section-label">Staff</div>
       <a class="nav-item" href="admin-users.html"     data-page="admin-users.html"><span class="nav-icon">👥</span><span class="nav-label">Staff Accounts</span></a>
       <a class="nav-item" href="admin-delegates.html" data-page="admin-delegates.html"><span class="nav-icon">🔗</span><span class="nav-label">Delegates</span></a>
@@ -22,12 +22,12 @@
       <a class="nav-item" href="admin-all-ges.html"  data-page="admin-all-ges.html"><span class="nav-icon">📋</span><span class="nav-label">All GE Forms</span></a>
       <a class="nav-item" href="admin-approvals.html" data-page="admin-approvals.html"><span class="nav-icon">✅</span><span class="nav-label">Pending Approvals</span><span class="nav-badge hidden" id="approval-badge">0</span></a>
       <div class="sidebar-section-label">System</div>
-      <a class="nav-item" href="admin-reports.html"  data-page="admin-reports.html"><span class="nav-icon">📈</span><span class="nav-label">Reports</span></a>
+      <a class="nav-item" href="admin-reports.html"  data-page="admin-reports.html"><span class="nav-icon">📊</span><span class="nav-label">Reports</span></a>
       <a class="nav-item" href="admin-notifications.html" data-page="admin-notifications.html"><span class="nav-icon">🔔</span><span class="nav-label">Notifications</span><span class="nav-badge hidden notif-badge">0</span></a>
       <a class="nav-item" href="admin-profile.html"   data-page="admin-profile.html"><span class="nav-icon">👤</span><span class="nav-label">My Profile</span></a>
     </nav>
     <div class="sidebar-footer">
-      <div class="footer-icon" style="background:none;padding:0"><img src="../assets/img/pnguot-logo.jpg" style="width:32px;height:32px;object-fit:contain;border-radius:4px"></div>
+      <div class="footer-icon" style="background:none;padding:0"><img src="../assets/img/pnguot-logo.jpg" style="width:42px;height:42px;object-fit:contain;border-radius:4px"></div>
       <div><div class="footer-name" id="sidebar-footer-name">PNGUOT GEMS</div><div class="footer-version">Admin · ver. 1.0</div></div>
       <div class="dropdown"><button class="footer-menu" data-dropdown="sidebar-admin-menu">•••</button>
         <div class="dropdown-menu" id="sidebar-admin-menu">
@@ -48,13 +48,13 @@
         <button class="btn btn-ghost btn-sm" onclick="loadReports()">🔄 Refresh</button>
         <button class="btn btn-primary btn-sm" onclick="generateReports()">📊 Generate Reports</button>
         <div class="user-avatar" id="topbar-avatar">JD</div>
-        <div><div class="user-name" id="topbar-user-name">…</div><div class="user-role" id="topbar-user-role"></div></div>
+        <div><div class="user-name" id="topbar-user-name">—</div><div class="user-role" id="topbar-user-role"></div></div>
       </div>
     </header>
 
     <main id="page-content">
 
-      <!-- ── Filter Bar ──────────────────────────────────── -->
+      <!-- -- Filter Bar ------------------------------------ -->
       <div class="card mb-20" id="filter-card">
         <div class="card-header"><span class="card-title">Filter Reports</span></div>
         <div class="card-body" style="padding:16px 20px">
@@ -104,7 +104,7 @@
         </div>
       </div>
 
-      <!-- ── Section 1: GE Claims ───────────────────────── -->
+      <!-- -- Section 1: GE Claims ------------------------- -->
       <div class="card mb-20" id="section-claims">
         <div class="card-header">
           <span class="card-title">Section 1 — GE Claims Report</span>
@@ -118,7 +118,7 @@
         </div>
       </div>
 
-      <!-- ── Section 2: Linked Quotations ──────────────── -->
+      <!-- -- Section 2: Linked Quotations ---------------- -->
       <div class="card mb-20" id="section-quotations">
         <div class="card-header">
           <span class="card-title">Section 2 — Linked Quotations</span>
@@ -132,7 +132,7 @@
         </div>
       </div>
 
-      <!-- ── Section 3: Expenditure by Category ────────── -->
+      <!-- -- Section 3: Expenditure by Category ---------- -->
       <div class="card mb-20" id="section-category">
         <div class="card-header">
           <span class="card-title">Section 3 — Expenditure by Category</span>
@@ -146,11 +146,11 @@
         </div>
       </div>
 
-      <!-- ── Section 4: System Overview (existing) ──────── -->
+      <!-- -- Section 4: System Overview (existing) -------- -->
       <div class="card mb-20" id="section-overview">
         <div class="card-header"><span class="card-title">System Overview</span></div>
         <div id="reports-content">
-          <div class="page-loader"><div class="spinner"></div> Loading overview…</div>
+          <div class="page-loader"><div class="spinner"></div> Loading overview—</div>
         </div>
       </div>
 
@@ -159,13 +159,13 @@
 </div>
 
 <script src="../assets/js/api.js?v=2"></script>
-<script src="../assets/js/app.js"></script>
+<script src="../assets/js/app.js?v=2"></script>
 <script>
-// ── State ──────────────────────────────────────────────────────
+// -- State ------------------------------------------------------
 let reportData = null;
 let currentFilters = {};
 
-// ── Initialise ─────────────────────────────────────────────────
+// -- Initialise -------------------------------------------------
 (async () => {
   const ok = await requireAuth(['SYSTEM_ADMIN','ACCOUNTS_OFFICER']);
   if (!ok) return;
@@ -174,7 +174,7 @@ let currentFilters = {};
   loadReports();
 })();
 
-// ── Period buttons ──────────────────────────────────────────────
+// -- Period buttons ----------------------------------------------
 function initPeriodButtons() {
   document.querySelectorAll('.period-btn').forEach(btn => {
     btn.addEventListener('click', () => {
@@ -242,7 +242,7 @@ function getFilterValues() {
   return params;
 }
 
-// ── Generate Reports ────────────────────────────────────────────
+// -- Generate Reports --------------------------------------------
 async function generateReports() {
   const btn = document.getElementById('generate-btn');
   const filters = getFilterValues();
@@ -273,7 +273,7 @@ async function generateReports() {
   }
 }
 
-// ── Placeholder helper ──────────────────────────────────────────
+// -- Placeholder helper ------------------------------------------
 function setPlaceholder(id) {
   document.getElementById(id).innerHTML = `
     <div class="text-center text-muted" style="padding:40px">
@@ -282,7 +282,7 @@ function setPlaceholder(id) {
     </div>`;
 }
 
-// ── Render Section 1 ────────────────────────────────────────────
+// -- Render Section 1 --------------------------------------------
 function renderClaims(data) {
   const container = document.getElementById('claims-content');
   const claims    = data.claims || [];
@@ -294,9 +294,9 @@ function renderClaims(data) {
 
   const total = data.total_expenditure || 0;
   const summary = `<div style="padding:12px 20px;font-size:13px;color:var(--text-secondary);border-bottom:1px solid var(--card-border)">
-    <strong>${claims.length}</strong> claim${claims.length !== 1 ? 's' : ''} &nbsp;·&nbsp;
-    Total: <strong>${Fmt.currency(total)}</strong> &nbsp;·&nbsp;
-    Period: <strong>${fmtDisplayDate(data.date_from)}</strong> – <strong>${fmtDisplayDate(data.date_to)}</strong>
+    <strong>${claims.length}</strong> claim${claims.length !== 1 ? 's' : ''} &nbsp;—&nbsp;
+    Total: <strong>${Fmt.currency(total)}</strong> &nbsp;—&nbsp;
+    Period: <strong>${fmtDisplayDate(data.date_from)}</strong> — <strong>${fmtDisplayDate(data.date_to)}</strong>
   </div>`;
 
   const rows = claims.map((ge, i) => `
@@ -336,7 +336,7 @@ function renderClaims(data) {
     </div>`;
 }
 
-// ── Render Section 2 ────────────────────────────────────────────
+// -- Render Section 2 --------------------------------------------
 function renderQuotations(data) {
   const container  = document.getElementById('quotations-content');
   const quotations = data.quotations || [];
@@ -372,7 +372,7 @@ function renderQuotations(data) {
     </div>`;
 }
 
-// ── Render Section 3 ────────────────────────────────────────────
+// -- Render Section 3 --------------------------------------------
 function renderCategory(data) {
   const container  = document.getElementById('category-content');
   const byCategory = data.by_category   || [];
@@ -426,7 +426,7 @@ function renderCategory(data) {
     </div>`;
 }
 
-// ── Print Section ───────────────────────────────────────────────
+// -- Print Section -----------------------------------------------
 function printSection(n, data, filters) {
   if (!data) { Toast.warning('Generate reports first before printing.'); return; }
 
@@ -456,7 +456,7 @@ function printSection(n, data, filters) {
       </tr>`).join('');
 
     bodyHTML = `
-      <p><strong>${claims.length}</strong> claim(s) &nbsp;·&nbsp; Total: <strong>${Fmt.currency(total)}</strong></p>
+      <p><strong>${claims.length}</strong> claim(s) &nbsp;—&nbsp; Total: <strong>${Fmt.currency(total)}</strong></p>
       <table>
         <thead><tr><th>#</th><th>GE Number</th><th>Payee / Dr. To</th><th>Department</th>
           <th>Claimant</th><th>Type</th><th>Capital</th><th>Amount</th><th>Status</th><th>Submitted</th></tr></thead>
@@ -559,7 +559,7 @@ function printSection(n, data, filters) {
   doc.document.close();
 }
 
-// ── Utility helpers ─────────────────────────────────────────────
+// -- Utility helpers ---------------------------------------------
 function esc(str) {
   return String(str || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
@@ -570,7 +570,7 @@ function fmtDisplayDate(dateStr) {
   return d.toLocaleDateString('en-PG', { day: '2-digit', month: 'short', year: 'numeric' });
 }
 
-// ── Section 4: Existing System Overview ─────────────────────────
+// -- Section 4: Existing System Overview -------------------------
 async function loadReports() {
   const c = document.getElementById('reports-content');
   c.innerHTML = `<div class="page-loader"><div class="spinner"></div></div>`;
@@ -587,9 +587,9 @@ async function loadReports() {
     c.innerHTML = `
       <div style="padding:16px 20px">
         <div class="stat-grid mb-24">
-          <div class="stat-card"><div class="stat-icon blue">📋</div><div class="stat-label">Total GEs</div><div class="stat-value">${totalGEs}</div></div>
+          <div class="stat-card"><div class="stat-icon blue">👥</div><div class="stat-label">Total GEs</div><div class="stat-value">${totalGEs}</div></div>
           <div class="stat-card"><div class="stat-icon green">✅</div><div class="stat-label">Completed</div><div class="stat-value">${completed}</div></div>
-          <div class="stat-card"><div class="stat-icon yellow">⏳</div><div class="stat-label">In Workflow</div><div class="stat-value">${pending}</div></div>
+          <div class="stat-card"><div class="stat-icon yellow">🔔</div><div class="stat-label">In Workflow</div><div class="stat-value">${pending}</div></div>
           <div class="stat-card"><div class="stat-icon purple">💰</div><div class="stat-label">Total Value</div><div class="stat-value" style="font-size:16px">${Fmt.currency(totalAmt)}</div></div>
           <div class="stat-card"><div class="stat-icon blue">👥</div><div class="stat-label">Active Users</div><div class="stat-value">${r.user_count}</div></div>
         </div>
@@ -658,7 +658,7 @@ async function loadReports() {
         </div>
       </div>`;
   } catch (err) {
-    c.innerHTML = `<div class="alert alert-error" style="margin:16px"><span>❌</span>${err.message}</div>`;
+    c.innerHTML = `<div class="alert alert-error" style="margin:16px"><span>?</span>${err.message}</div>`;
   }
 }
 </script>

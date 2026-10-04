@@ -11,7 +11,7 @@
   <aside id="sidebar">
     <div class="sidebar-header">
       <div class="sidebar-avatar" id="sidebar-footer-av">JD</div>
-      <div class="sidebar-workspace"><div class="ws-name" id="sidebar-ws-name">…</div><div class="ws-sub" id="sidebar-ws-sub">PNGUOT</div></div>
+      <div class="sidebar-workspace"><div class="ws-name" id="sidebar-ws-name">—</div><div class="ws-sub" id="sidebar-ws-sub">PNGUOT</div></div>
       <button class="sidebar-add-btn" onclick="location.href='ge-form.html'">+</button>
     </div>
     <nav class="sidebar-nav">
@@ -26,7 +26,7 @@
       <a class="nav-item approver-only hidden" href="approvals.html" data-page="approvals.html"><span class="nav-icon">✅</span><span class="nav-label">Pending Approvals</span></a>
     </nav>
     <div class="sidebar-footer">
-      <div class="footer-icon" style="background:none;padding:0"><img src="../assets/img/pnguot-logo.jpg" style="width:32px;height:32px;object-fit:contain;border-radius:4px"></div>
+      <div class="footer-icon" style="background:none;padding:0"><img src="../assets/img/pnguot-logo.jpg" style="width:42px;height:42px;object-fit:contain;border-radius:4px"></div>
       <div><div class="footer-name" id="sidebar-footer-name">PNGUOT GEMS</div><div class="footer-version">ver. 1.0</div></div>
       <div class="dropdown"><button class="footer-menu" data-dropdown="sidebar-user-menu">•••</button>
         <div class="dropdown-menu" id="sidebar-user-menu">
@@ -46,7 +46,7 @@
       <div class="topbar-actions" style="margin-left:auto">
         <div class="topbar-user" id="topbar-avatar-wrap">
           <div class="user-avatar" id="topbar-avatar">JD</div>
-          <div><div class="user-name" id="topbar-user-name">…</div><div class="user-role" id="topbar-user-role"></div></div>
+          <div><div class="user-name" id="topbar-user-name">—</div><div class="user-role" id="topbar-user-role"></div></div>
         </div>
       </div>
     </header>
@@ -82,7 +82,7 @@
       </div>
       <div id="selected-file" class="hidden mt-8" style="font-size:13px;color:var(--text-secondary)"></div>
       <div id="upload-progress" class="hidden mt-8">
-        <div class="spinner"></div> Uploading…
+        <div class="spinner"></div> UpLoading…
       </div>
     </div>
     <div class="modal-footer">
@@ -93,7 +93,7 @@
 </div>
 
 <script src="../assets/js/api.js?v=2"></script>
-<script src="../assets/js/app.js"></script>
+<script src="../assets/js/app.js?v=2"></script>
 <script>
 const REQUIRED_DOCS = [
   { type: 'QUOTATION_1',          label: 'Supplier Quotation 1' },
@@ -139,10 +139,10 @@ async function loadDocuments() {
           <div class="doc-info">
             <div class="doc-name">${doc.label} ${required ? '<span class="required">*</span>' : ''}</div>
             ${uploaded
-              ? `<div class="doc-meta">${uploaded.original_name} · ${Fmt.fileSize(uploaded.file_size)} · ${Fmt.date(uploaded.uploaded_at)}</div>`
+              ? `<div class="doc-meta">${uploaded.original_name} — ${Fmt.fileSize(uploaded.file_size)} — ${Fmt.date(uploaded.uploaded_at)}</div>`
               : `<div class="doc-meta text-muted">Not uploaded</div>`}
           </div>
-          <div class="doc-status ${uploaded ? 'uploaded' : 'required'}">${uploaded ? '✅ Uploaded' : (required ? '⚠ Required' : 'Optional')}</div>
+          <div class="doc-status ${uploaded ? 'uploaded' : 'required'}">${uploaded ? '✅ Uploaded' : (required ? '⚠️ Required' : 'Optional')}</div>
           <div class="doc-actions">
             ${uploaded
               ? `<a href="${API.docView(uploaded.id)}" target="_blank" class="btn btn-secondary btn-sm">View</a>
@@ -173,7 +173,7 @@ async function loadDocuments() {
           <div>Upload all required documents before you can submit.</div>
         </div>` : `
         <div class="alert alert-success mb-16">
-          <span class="alert-icon">✅</span>
+          <span class="alert-icon">❌</span>
           <div>All required documents uploaded. You can now submit.</div>
         </div>`}
 
@@ -198,7 +198,7 @@ async function loadDocuments() {
         </button>
       </div>`;
   } catch (err) {
-    c.innerHTML = `<div class="alert alert-error"><span>❌</span>${err.message}</div>`;
+    c.innerHTML = `<div class="alert alert-error"><span>⚠️</span>${err.message}</div>`;
   }
 }
 

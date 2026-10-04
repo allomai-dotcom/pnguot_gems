@@ -29,7 +29,7 @@
       <a class="nav-item approver-only hidden" data-page="approvals.html" href="approvals.html"><span class="nav-icon">✅</span><span class="nav-label">Pending Approvals</span></a>
     </nav>
     <div class="sidebar-footer">
-      <div class="footer-icon" style="background:none;padding:0"><img src="../assets/img/pnguot-logo.jpg" style="width:32px;height:32px;object-fit:contain;border-radius:4px"></div>
+      <div class="footer-icon" style="background:none;padding:0"><img src="../assets/img/pnguot-logo.jpg" style="width:42px;height:42px;object-fit:contain;border-radius:4px"></div>
       <div><div class="footer-name" id="sidebar-footer-name">PNGUOT GEMS</div><div class="footer-version">ver. 1.0</div></div>
       <div class="dropdown">
         <button class="footer-menu" data-dropdown="sidebar-user-menu">•••</button>
@@ -55,7 +55,7 @@
         <button class="btn btn-primary btn-sm" onclick="window.location.href='ge-form.html'">+ New GE</button>
         <div class="topbar-user dropdown" data-dropdown="user-menu">
           <div class="user-avatar" id="topbar-avatar">JD</div>
-          <div><div class="user-name" id="topbar-user-name">…</div><div class="user-role" id="topbar-user-role"></div></div>
+          <div><div class="user-name" id="topbar-user-name">—</div><div class="user-role" id="topbar-user-role"></div></div>
         </div>
         <div class="dropdown-menu" id="user-menu">
           <div class="dropdown-item danger" onclick="Auth.logout()">🚪 Sign Out</div>
@@ -102,7 +102,7 @@
 </div>
 
 <script src="../assets/js/api.js?v=2"></script>
-<script src="../assets/js/app.js"></script>
+<script src="../assets/js/app.js?v=2"></script>
 <script>
 let currentPage = 1;
 let searchTimer;
@@ -181,7 +181,7 @@ async function loadList() {
     // Pagination
     renderPagination(pagination);
   } catch (err) {
-    container.innerHTML = `<div class="alert alert-error" style="margin:16px"><span>❌</span>${err.message}</div>`;
+    container.innerHTML = `<div class="alert alert-error" style="margin:16px"><span>⚠️</span>${err.message}</div>`;
   }
 }
 
@@ -190,12 +190,14 @@ function renderPagination(p) {
   if (p.pages <= 1) { c.innerHTML=''; return; }
   let html = `<div class="pagination">`;
   html += `<button class="page-btn" onclick="goPage(${p.page-1})" ${p.page<=1?'disabled':''}>‹</button>`;
+
   for (let i=1; i<=p.pages; i++) {
     if (i===1||i===p.pages||Math.abs(i-p.page)<=2)
       html += `<button class="page-btn ${i===p.page?'active':''}" onclick="goPage(${i})">${i}</button>`;
     else if (Math.abs(i-p.page)===3) html += `<span class="page-btn" style="border:none">…</span>`;
   }
-  html += `<button class="page-btn" onclick="goPage(${p.page+1})" ${p.page>=p.pages?'disabled':''}>›</button>`;
+  html += `<button class="page-btn" onclick="goPage(${p.page+1})" ${p.page>=p.pages?'disabled':''}>‹</button>`;
+
   c.innerHTML = html + '</div>';
 }
 function goPage(p) { currentPage=p; loadList(); }

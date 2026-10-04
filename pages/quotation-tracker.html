@@ -29,7 +29,7 @@
       <a class="nav-item approver-only hidden" data-page="approvals.html" href="approvals.html"><span class="nav-icon">✅</span><span class="nav-label">Pending Approvals</span></a>
     </nav>
     <div class="sidebar-footer">
-      <div class="footer-icon" style="background:none;padding:0"><img src="../assets/img/pnguot-logo.jpg" style="width:32px;height:32px;object-fit:contain;border-radius:4px"></div>
+      <div class="footer-icon" style="background:none;padding:0"><img src="../assets/img/pnguot-logo.jpg" style="width:42px;height:42px;object-fit:contain;border-radius:4px"></div>
       <div>
         <div class="footer-name" id="sidebar-footer-name">PNGUOT GEMS</div>
         <div class="footer-version">ver. 1.0</div>
@@ -54,7 +54,7 @@
       <div class="topbar-actions" style="margin-left:auto">
         <div class="topbar-user dropdown" data-dropdown="user-menu">
           <div class="user-avatar" id="topbar-avatar">JD</div>
-          <div><div class="user-name" id="topbar-user-name">…</div><div class="user-role" id="topbar-user-role"></div></div>
+          <div><div class="user-name" id="topbar-user-name">—</div><div class="user-role" id="topbar-user-role"></div></div>
         </div>
         <div class="dropdown-menu" id="user-menu">
           <div class="dropdown-item danger" onclick="Auth.logout()">🚪 Sign Out</div>
@@ -86,7 +86,7 @@
 </div>
 
 <script src="../assets/js/api.js?v=2"></script>
-<script src="../assets/js/app.js"></script>
+<script src="../assets/js/app.js?v=2"></script>
 <script>
 let allQuotations = [];
 
@@ -110,7 +110,7 @@ async function loadQuotations() {
     renderTable(allQuotations);
   } catch (err) {
     document.getElementById('qt-table-container').innerHTML =
-      `<div class="alert alert-error" style="margin:16px"><span>❌</span>${err.message}</div>`;
+      `<div class="alert alert-error" style="margin:16px"><span>⚠️</span>${err.message}</div>`;
   }
 }
 
@@ -126,7 +126,7 @@ function filterRows(term) {
 function renderTable(rows) {
   const c = document.getElementById('qt-table-container');
   if (!rows.length) {
-    c.innerHTML = `<div class="empty-state"><div class="es-icon">📎</div><div class="es-title">No quotations found</div><div class="es-sub">Upload quotation documents to see them here.</div></div>`;
+    c.innerHTML = `<div class="empty-state"><div class="es-icon">📋</div><div class="es-title">No quotations found</div><div class="es-sub">Upload quotation documents to see them here.</div></div>`;
     return;
   }
   const makeQCell = (ge, slot) => {

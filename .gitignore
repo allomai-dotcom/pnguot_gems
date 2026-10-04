@@ -1,0 +1,32 @@
+# ============================================================
+# PNGUOT GEMS — .gitignore
+# ============================================================
+
+# Uploaded files (real user documents — never commit these)
+uploads/documents/*
+!uploads/documents/.gitkeep
+
+# One-time setup script (security risk if left on a live server)
+database/setup.php
+
+# OS files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Editor / IDE folders
+.vscode/
+.idea/
+*.suo
+*.user
+
+# XAMPP / PHP logs
+*.log
+error_log
+
+# Agent task files (internal Kiro workspace files)
+.agents/
+
+# Compiled / temp files
+*.tmp
+*.bak

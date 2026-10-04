@@ -57,7 +57,7 @@
       <div class="sidebar-workspace"><div class="ws-name" id="sidebar-ws-name">Admin Panel</div><div class="ws-sub" id="sidebar-ws-sub">PNGUOT GEMS</div></div>
     </div>
     <nav class="sidebar-nav">
-      <a class="nav-item" href="admin-panel.html"    data-page="admin-panel.html"><span class="nav-icon">🏠</span><span class="nav-label">Overview</span></a>
+      <a class="nav-item" href="admin-panel.html"    data-page="admin-panel.html"><span class="nav-icon">📊</span><span class="nav-label">Overview</span></a>
       <div class="sidebar-section-label">Staff</div>
       <a class="nav-item" href="admin-users.html"     data-page="admin-users.html"><span class="nav-icon">👥</span><span class="nav-label">Staff Accounts</span></a>
       <a class="nav-item" href="admin-delegates.html" data-page="admin-delegates.html"><span class="nav-icon">🔗</span><span class="nav-label">Delegates</span></a>
@@ -65,12 +65,12 @@
       <a class="nav-item" href="admin-all-ges.html"  data-page="admin-all-ges.html"><span class="nav-icon">📋</span><span class="nav-label">All GE Forms</span></a>
       <a class="nav-item" href="admin-approvals.html" data-page="admin-approvals.html"><span class="nav-icon">✅</span><span class="nav-label">Pending Approvals</span><span class="nav-badge hidden" id="approval-badge">0</span></a>
       <div class="sidebar-section-label">System</div>
-      <a class="nav-item" href="admin-reports.html"  data-page="admin-reports.html"><span class="nav-icon">📈</span><span class="nav-label">Reports</span></a>
+      <a class="nav-item" href="admin-reports.html"  data-page="admin-reports.html"><span class="nav-icon">📊</span><span class="nav-label">Reports</span></a>
       <a class="nav-item" href="admin-notifications.html" data-page="admin-notifications.html"><span class="nav-icon">🔔</span><span class="nav-label">Notifications</span><span class="nav-badge hidden notif-badge">0</span></a>
       <a class="nav-item" href="admin-profile.html"   data-page="admin-profile.html"><span class="nav-icon">👤</span><span class="nav-label">My Profile</span></a>
     </nav>
     <div class="sidebar-footer">
-      <div class="footer-icon" style="background:none;padding:0"><img src="../assets/img/pnguot-logo.jpg" style="width:32px;height:32px;object-fit:contain;border-radius:4px"></div>
+      <div class="footer-icon" style="background:none;padding:0"><img src="../assets/img/pnguot-logo.jpg" style="width:42px;height:42px;object-fit:contain;border-radius:4px"></div>
       <div><div class="footer-name" id="sidebar-footer-name">PNGUOT GEMS</div><div class="footer-version">Admin · ver. 1.0</div></div>
       <div class="dropdown"><button class="footer-menu" data-dropdown="sidebar-admin-menu">•••</button>
         <div class="dropdown-menu" id="sidebar-admin-menu">
@@ -96,9 +96,11 @@
         <div class="dropdown">
           <div class="topbar-user" data-dropdown="user-menu">
             <div class="user-avatar" id="topbar-avatar">JD</div>
-            <div><div class="user-name" id="topbar-user-name">…</div><div class="user-role" id="topbar-user-role"></div></div>
+            <div><div class="user-name" id="topbar-user-name">—</div><div class="user-role" id="topbar-user-role"></div></div>
           </div>
           <div class="dropdown-menu" id="user-menu">
+            <div class="dropdown-item" onclick="location.href='admin-profile.html'">👤 My Profile</div>
+            <div class="dropdown-divider"></div>
             <div class="dropdown-item danger" onclick="Auth.logout()">🚪 Sign Out</div>
           </div>
         </div>
@@ -122,7 +124,7 @@
   </div>
 </div>
 
-<!-- ── Add / Edit Staff Modal ─────────────────────────────── -->
+<!-- -- Add / Edit Staff Modal ------------------------------- -->
 <div class="modal-overlay" id="user-modal">
   <div class="modal modal-lg">
     <div class="modal-header">
@@ -175,7 +177,7 @@
       <div class="form-group">
         <label class="form-label">Department <span class="required">*</span></label>
         <select id="u-department" class="form-control">
-          <option value="">— Select Department —</option>
+          <option value="">Select Department</option>
         </select>
       </div>
 
@@ -245,9 +247,9 @@
 </div>
 
 <script src="../assets/js/api.js?v=2"></script>
-<script src="../assets/js/app.js"></script>
+<script src="../assets/js/app.js?v=2"></script>
 <script>
-// ── Role definitions with descriptions ───────────────────────
+// -- Role definitions with descriptions -----------------------
 const ROLE_DEFS = [
   { code: 'CLAIMANT',            label: 'Claimant',             desc: 'Can create and submit General Expense forms' },
   { code: 'HEAD_OF_SCHOOL',      label: 'Head of School/Dept',  desc: 'First-level departmental approval of GE forms' },
@@ -280,7 +282,7 @@ let viewingUserId = null;
   });
 })();
 
-// ── Auto-fill email prefix and staff ID from name ─────────────
+// -- Auto-fill email prefix and staff ID from name -------------
 function autoFillFields() {
   const first = document.getElementById('u-first-name').value.trim().toLowerCase();
   const last  = document.getElementById('u-last-name').value.trim().toLowerCase();
@@ -315,11 +317,11 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 });
 
-// ── Password helpers ──────────────────────────────────────────
+// -- Password helpers ------------------------------------------
 function togglePassword(inputId, btn) {
   const inp = document.getElementById(inputId);
   if (inp.type === 'password') { inp.type = 'text'; btn.textContent = '🙈'; }
-  else                         { inp.type = 'password'; btn.textContent = '👁'; }
+  else                         { inp.type = 'password'; btn.textContent = '🙈'; }
 }
 
 function generatePassword() {
@@ -333,7 +335,7 @@ function generatePassword() {
   Toast.info(`Generated password: ${pw} — copy it before saving.`, 'Password Generated');
 }
 
-// ── Load departments ──────────────────────────────────────────
+// -- Load departments ------------------------------------------
 async function loadDepts() {
   try {
     const res = await API.get('admin/departments.php').catch(() => ({ departments: [] }));
@@ -345,7 +347,7 @@ async function loadDepts() {
   } catch {}
 }
 
-// ── Load users table ──────────────────────────────────────────
+// -- Load users table ------------------------------------------
 async function loadUsers() {
   const c = document.getElementById('users-container');
   c.innerHTML = `<div class="page-loader"><div class="spinner"></div></div>`;
@@ -365,7 +367,7 @@ async function loadUsers() {
     if (!users.length) {
       c.innerHTML = `
         <div class="empty-state">
-          <div class="es-icon">👥</div>
+          <div class="es-icon">📋</div>
           <div class="es-title">No staff accounts yet</div>
           <div class="es-sub">Click <strong>+ Add Staff</strong> to create the first staff account.</div>
         </div>`;
@@ -397,8 +399,8 @@ async function loadUsers() {
               </td>
               <td>
                 ${u.is_active
-                  ? '<span style="color:var(--primary);font-size:12px;font-weight:600">● Active</span>'
-                  : '<span style="color:var(--danger);font-size:12px;font-weight:600">● Inactive</span>'}
+                  ? '<span style="color:var(--primary);font-size:12px;font-weight:600">✅ Active</span>'
+                  : '<span style="color:var(--danger);font-size:12px;font-weight:600">🚫 Inactive</span>'}
               </td>
               <td>
                 <div class="flex gap-8">
@@ -410,11 +412,11 @@ async function loadUsers() {
         </tbody>
       </table></div>`;
   } catch (err) {
-    c.innerHTML = `<div class="alert alert-error" style="margin:16px"><span>❌</span>${err.message}</div>`;
+    c.innerHTML = `<div class="alert alert-error" style="margin:16px"><span>⚠️</span>${err.message}</div>`;
   }
 }
 
-// ── Render role cards ─────────────────────────────────────────
+// -- Render role cards -----------------------------------------
 function renderRolesCheckboxes(selected = []) {
   document.getElementById('roles-checkboxes').innerHTML = ROLE_DEFS.map(r => `
     <label class="role-card ${selected.includes(r.code) ? 'checked' : ''}" id="role-card-${r.code}">
@@ -427,7 +429,7 @@ function renderRolesCheckboxes(selected = []) {
     </label>`).join('');
 }
 
-// ── Open create form ──────────────────────────────────────────
+// -- Open create form ------------------------------------------
 function openCreateUser() {
   document.getElementById('user-modal-title').textContent = 'Add New Staff Member';
   document.getElementById('save-btn-label').textContent   = 'Add Staff Member';
@@ -452,7 +454,7 @@ function openCreateUser() {
   Modal.open('user-modal');
 }
 
-// ── Open edit form ────────────────────────────────────────────
+// -- Open edit form --------------------------------------------
 async function openEditUser(id) {
   document.getElementById('user-modal-title').textContent = 'Edit Staff Member';
   document.getElementById('save-btn-label').textContent   = 'Save Changes';
@@ -482,7 +484,7 @@ async function openEditUser(id) {
   } catch (err) { Toast.error(err.message); }
 }
 
-// ── View staff modal ──────────────────────────────────────────
+// -- View staff modal ------------------------------------------
 async function openViewUser(id) {
   viewingUserId = id;
   const body = document.getElementById('view-modal-body');
@@ -518,11 +520,11 @@ async function openViewUser(id) {
         </tr>
       </table>`;
   } catch (err) {
-    body.innerHTML = `<div class="alert alert-error"><span>❌</span>${err.message}</div>`;
+    body.innerHTML = `<div class="alert alert-error"><span>⚠️</span>${err.message}</div>`;
   }
 }
 
-// ── Save user (create or update) ─────────────────────────────
+// -- Save user (create or update) -----------------------------
 async function saveUser() {
   const editId     = document.getElementById('edit-user-id').value;
   const firstName  = document.getElementById('u-first-name').value.trim();

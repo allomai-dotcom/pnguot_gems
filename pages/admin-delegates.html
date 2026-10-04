@@ -14,7 +14,7 @@
       <div class="sidebar-workspace"><div class="ws-name" id="sidebar-ws-name">Admin Panel</div><div class="ws-sub" id="sidebar-ws-sub">PNGUOT GEMS</div></div>
     </div>
     <nav class="sidebar-nav">
-      <a class="nav-item" href="admin-panel.html"    data-page="admin-panel.html"><span class="nav-icon">🏠</span><span class="nav-label">Overview</span></a>
+      <a class="nav-item" href="admin-panel.html"    data-page="admin-panel.html"><span class="nav-icon">📊</span><span class="nav-label">Overview</span></a>
       <div class="sidebar-section-label">Staff</div>
       <a class="nav-item" href="admin-users.html"     data-page="admin-users.html"><span class="nav-icon">👥</span><span class="nav-label">Staff Accounts</span></a>
       <a class="nav-item" href="admin-delegates.html" data-page="admin-delegates.html"><span class="nav-icon">🔗</span><span class="nav-label">Delegates</span></a>
@@ -22,12 +22,12 @@
       <a class="nav-item" href="admin-all-ges.html"  data-page="admin-all-ges.html"><span class="nav-icon">📋</span><span class="nav-label">All GE Forms</span></a>
       <a class="nav-item" href="admin-approvals.html" data-page="admin-approvals.html"><span class="nav-icon">✅</span><span class="nav-label">Pending Approvals</span><span class="nav-badge hidden" id="approval-badge">0</span></a>
       <div class="sidebar-section-label">System</div>
-      <a class="nav-item" href="admin-reports.html"  data-page="admin-reports.html"><span class="nav-icon">📈</span><span class="nav-label">Reports</span></a>
+      <a class="nav-item" href="admin-reports.html"  data-page="admin-reports.html"><span class="nav-icon">📊</span><span class="nav-label">Reports</span></a>
       <a class="nav-item" href="admin-notifications.html" data-page="admin-notifications.html"><span class="nav-icon">🔔</span><span class="nav-label">Notifications</span><span class="nav-badge hidden notif-badge">0</span></a>
       <a class="nav-item" href="admin-profile.html"   data-page="admin-profile.html"><span class="nav-icon">👤</span><span class="nav-label">My Profile</span></a>
     </nav>
     <div class="sidebar-footer">
-      <div class="footer-icon" style="background:none;padding:0"><img src="../assets/img/pnguot-logo.jpg" style="width:32px;height:32px;object-fit:contain;border-radius:4px"></div>
+      <div class="footer-icon" style="background:none;padding:0"><img src="../assets/img/pnguot-logo.jpg" style="width:42px;height:42px;object-fit:contain;border-radius:4px"></div>
       <div><div class="footer-name" id="sidebar-footer-name">PNGUOT GEMS</div><div class="footer-version">Admin · ver. 1.0</div></div>
       <div class="dropdown"><button class="footer-menu" data-dropdown="sidebar-admin-menu">•••</button>
         <div class="dropdown-menu" id="sidebar-admin-menu">
@@ -47,13 +47,13 @@
       <div class="topbar-actions" style="margin-left:auto">
         <button class="btn btn-primary btn-sm" onclick="Modal.open('add-delegate-modal')">+ Assign Delegate</button>
         <div class="user-avatar" id="topbar-avatar">JD</div>
-        <div><div class="user-name" id="topbar-user-name">…</div><div class="user-role" id="topbar-user-role"></div></div>
+        <div><div class="user-name" id="topbar-user-name">—</div><div class="user-role" id="topbar-user-role"></div></div>
       </div>
     </header>
 
     <main id="page-content">
       <div class="alert alert-info mb-16">
-        <span class="alert-icon">ℹ️</span>
+        <span class="alert-icon">⚠️</span>
         <div>Delegates determine who receives approval tasks for each workflow step. Assign at least one delegate per role to prevent workflow errors.</div>
       </div>
       <div class="card">
@@ -75,7 +75,7 @@
       <div class="form-group">
         <label class="form-label">Role <span class="required">*</span></label>
         <select id="d-role" class="form-control">
-          <option value="">— Select Role —</option>
+          <option value="">Select Role</option>
           <option value="HEAD_OF_SCHOOL">Head of School</option>
           <option value="DEAN">Dean</option>
           <option value="ICT_DIRECTOR">ICT Director</option>
@@ -87,7 +87,7 @@
       <div class="form-group">
         <label class="form-label">User <span class="required">*</span></label>
         <select id="d-user" class="form-control">
-          <option value="">— Select User —</option>
+          <option value="">Select User</option>
         </select>
       </div>
       <div class="form-group">
@@ -104,7 +104,7 @@
       </div>
       <div class="form-group hidden" id="d-dept-group">
         <label class="form-label">Department</label>
-        <select id="d-dept" class="form-control"><option value="">— Select —</option></select>
+        <select id="d-dept" class="form-control"><option value="">Select</option></select>
       </div>
     </div>
     <div class="modal-footer">
@@ -115,7 +115,7 @@
 </div>
 
 <script src="../assets/js/api.js?v=2"></script>
-<script src="../assets/js/app.js"></script>
+<script src="../assets/js/app.js?v=2"></script>
 <script>
 let allUsers = [];
 
@@ -147,7 +147,7 @@ async function loadDelegates() {
     const res = await API.adminDelegates();
     const d   = res.delegates;
     if (!d.length) {
-      c.innerHTML = `<div class="empty-state"><div class="es-icon">🔗</div><div class="es-title">No delegates assigned</div><div class="es-sub">Assign delegates to enable the approval workflow.</div></div>`;
+      c.innerHTML = `<div class="empty-state"><div class="es-icon">📋</div><div class="es-title">No delegates assigned</div><div class="es-sub">Assign delegates to enable the approval workflow.</div></div>`;
       return;
     }
     c.innerHTML = `
@@ -160,13 +160,13 @@ async function loadDelegates() {
               <td>${a.user_name}</td>
               <td class="font-mono">${a.staff_id}</td>
               <td>${a.department_name || a.faculty_code || 'Global'}</td>
-              <td>${a.is_active ? '<span style="color:var(--primary)">● Active</span>' : '<span style="color:var(--danger)">● Inactive</span>'}</td>
+              <td>${a.is_active ? '<span style="color:var(--primary)">✅ Active</span>' : '<span style="color:var(--danger)">🚫 Inactive</span>'}</td>
               <td><button class="btn btn-danger btn-sm" onclick="removeDelegate(${a.id})">Remove</button></td>
             </tr>`).join('')}
         </tbody>
       </table></div>`;
   } catch (err) {
-    c.innerHTML = `<div class="alert alert-error" style="margin:16px"><span>❌</span>${err.message}</div>`;
+    c.innerHTML = `<div class="alert alert-error" style="margin:16px"><span>⚠️</span>${err.message}</div>`;
   }
 }
 

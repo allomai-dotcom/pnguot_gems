@@ -1,0 +1,87 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login — PNGUOT GEMS</title>
+  <link rel="stylesheet" href="assets/css/main.css">
+</head>
+<body>
+<div class="login-page">
+  <div class="login-card">
+    <div class="login-logo">
+      <div class="logo-icon" style="background:none;padding:4px">
+        <img src="assets/img/pnguot-logo.jpg" style="width:160px;height:160px;object-fit:contain">
+      </div>
+      <div class="logo-title">PNGUOT GEMS</div>
+      <div class="logo-sub">General Expense Monitoring System</div>
+    </div>
+
+    <div id="login-alert" class="alert alert-error hidden">
+      <span class="alert-icon">⚠️</span>
+      <span id="login-alert-msg"></span>
+    </div>
+
+    <form id="login-form">
+      <div class="form-group">
+        <label class="form-label">Email Address</label>
+        <input id="email" type="email" class="form-control" placeholder="you@pnguot.ac.pg" autocomplete="email" required>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Password</label>
+        <input id="password" type="password" class="form-control" placeholder="••••••••" autocomplete="current-password" required>
+      </div>
+      <button type="submit" id="login-btn" class="btn btn-primary w-full btn-lg" style="margin-top:8px">
+        Sign In
+      </button>
+    </form>
+
+    <div class="login-divider">Papua New Guinea University of Technology</div>
+    <div style="text-align:center;font-size:11px;color:var(--text-muted)">v1.0 · &copy; 2026 PNGUOT</div>
+  </div>
+</div>
+
+<script src="assets/js/api.js?v=2"></script>
+<script>
+  // Redirect if already logged in — route by role
+  (async () => {
+    try {
+      const res = await API.me();
+      if (res.user) {
+        const roles = res.user.roles || [];
+        window.location.href = roles.includes('SYSTEM_ADMIN')
+          ? 'pages/admin-panel.html'
+          : 'pages/dashboard.html';
+      }
+    } catch {}
+  })();
+
+  document.getElementById('login-form').addEventListener('submit', async e => {
+    e.preventDefault();
+    const btn      = document.getElementById('login-btn');
+    const alert    = document.getElementById('login-alert');
+    const alertMsg = document.getElementById('login-alert-msg');
+    alert.classList.add('hidden');
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spinner" style="width:16px;height:16px;border-width:2px"></span> Signing in…';
+
+    try {
+      const res = await API.login({
+        email:    document.getElementById('email').value,
+        password: document.getElementById('password').value,
+      });
+      // Route based on role
+      const roles = res.user?.roles || [];
+      window.location.href = roles.includes('SYSTEM_ADMIN')
+        ? 'pages/admin-panel.html'
+        : 'pages/dashboard.html';
+    } catch (err) {
+      alertMsg.textContent = err.message || 'Login failed.';
+      alert.classList.remove('hidden');
+      btn.disabled = false;
+      btn.textContent = 'Sign In';
+    }
+  });
+</script>
+</body>
+</html>
