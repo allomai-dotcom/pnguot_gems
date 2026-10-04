@@ -1,9 +1,76 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>GE Form — PNGUOT GEMS</title>
   <link rel="stylesheet" href="../assets/css/main.css">
+  <style>
+    /* ── Paper Form Styles ── */
+    .ge-paper-form {
+      background: #fff;
+      border: 1px solid #333;
+      font-family: 'Times New Roman', serif;
+      padding: 24px;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+    .ge-paper-header {
+      text-align: center;
+      border-bottom: 2px solid #333;
+      padding-bottom: 12px;
+      margin-bottom: 12px;
+    }
+    .ge-row {
+      display: grid;
+      gap: 0;
+      border: 1px solid #333;
+      margin-bottom: 0;
+    }
+    .ge-row.ge-row-2col {
+      grid-template-columns: 1fr 1fr;
+    }
+    .ge-box {
+      border-right: 1px solid #333;
+      padding: 10px 12px;
+    }
+    .ge-box:last-child {
+      border-right: none;
+    }
+    .ge-section {
+      border: 1px solid #333;
+      padding: 10px 12px;
+      margin-bottom: 0;
+    }
+    .ge-section-label {
+      font-weight: 700;
+      text-transform: uppercase;
+      font-size: 11px;
+      letter-spacing: 0.5px;
+      margin-bottom: 8px;
+    }
+    .ge-table-header {
+      display: grid;
+      gap: 8px;
+      border-bottom: 1px solid #333;
+      padding-bottom: 4px;
+      margin-bottom: 4px;
+      font-weight: 700;
+      font-size: 11px;
+      text-transform: uppercase;
+    }
+    .gst-summary-row {
+      background: #f9f9f9;
+    }
+
+    /* ── Print Styles ── */
+    @media print {
+      #sidebar, #topbar, .ge-form-actions, #step-bar, #section-7, #audit-card { display: none !important; }
+      #main-area { margin: 0; padding: 0; }
+      #page-content { padding: 0; }
+      body { background: #fff; }
+      .ge-paper-form { box-shadow: none; border: none; }
+    }
+  </style>
 </head>
 <body>
 <div id="app-shell">
@@ -29,7 +96,7 @@
     </nav>
     <div class="sidebar-footer">
       <div class="footer-icon">💰</div>
-      <div><div class="footer-name" id="sidebar-footer-name">PNGUOT GEMS</div><div class="footer-version">ver. 4.0.0</div></div>
+      <div><div class="footer-name" id="sidebar-footer-name">PNGUOT GEMS</div><div class="footer-version">ver. 1.0</div></div>
       <div class="dropdown"><button class="footer-menu" data-dropdown="sb-um">•••</button>
         <div class="dropdown-menu" id="sb-um">
           <div class="dropdown-item" onclick="location.href='profile.html'">👤 Profile</div>
@@ -56,13 +123,14 @@
     </header>
 
     <main id="page-content">
+
       <!-- Readonly alert -->
       <div id="ge-form-readonly-alert" class="alert alert-warning hidden mb-16">
         <span class="alert-icon">⚠️</span>
         This GE is no longer editable in its current status.
       </div>
 
-      <!-- Step progress -->
+      <!-- Step progress bar -->
       <div class="step-bar mb-24" id="step-bar">
         <div class="step-item active" id="step-1">
           <div class="step-circle">1</div>
@@ -80,240 +148,230 @@
 
       <form id="ge-form">
 
-        <!-- Section 1 — Claim Routing -->
-        <div class="card mb-24" id="section-1">
-          <div class="card-header">
-            <span class="card-title">1 — Claim Routing</span>
-            <span id="ge-status-badge"></span>
-            <span class="font-mono text-muted" style="font-size:12px" id="ge-number"></span>
-          </div>
-          <div class="card-body">
-            <div class="form-row">
-              <div class="form-group">
-                <label class="form-label">Dr. To / Payee Name <span class="required">*</span></label>
-                <input id="payee-name" type="text" class="form-control" placeholder="e.g. ABC Computer Supplies Ltd">
-              </div>
-              <div class="form-group">
-                <label class="form-label">Department</label>
-                <input id="dept-display" type="text" class="form-control" readonly style="background:var(--bg-secondary)">
-              </div>
-            </div>
-            <div class="form-row">
-              <div class="form-group">
-                <label class="form-label">Departmental Reference <span class="required">*</span></label>
-                <input id="dept-ref" type="text" class="form-control" placeholder="e.g. ICT-EQUIPMENT-2026">
-              </div>
-              <div class="form-group">
-                <label class="form-label">Claimant Reference</label>
-                <input id="claimant-ref" type="text" class="form-control" placeholder="e.g. TEST-001">
-              </div>
-            </div>
-            <div class="form-row">
-              <div class="form-group">
-                <label class="form-label">Procurement Type <span class="required">*</span></label>
-                <select id="procurement-type" class="form-control">
-                  <option value="STANDARD">Standard Purchase</option>
-                  <option value="ICT">ICT Purchase</option>
-                </select>
-              </div>
-              <div class="form-group">
-                <label class="form-label">Capital Item?</label>
-                <select id="is-capital-item" class="form-control">
-                  <option value="0">No</option>
-                  <option value="1">Yes (AC, Laptop &gt; K3,000, Vehicle, Major Repairs)</option>
-                </select>
-              </div>
-            </div>
-            <div class="form-group">
-              <label class="form-label">Description / Purpose</label>
-              <textarea id="description" class="form-control" rows="2" placeholder="Briefly describe the purpose of this expense…"></textarea>
-            </div>
-          </div>
-        </div>
+        <!-- ══════════════════════════════════════════════════════════
+             A4 PAPER FORM CARD
+             ══════════════════════════════════════════════════════════ -->
+        <div class="ge-paper-form card mb-24">
 
-        <!-- Section 2 — Particulars of Expenditure -->
-        <div class="card mb-24" id="section-2">
-          <div class="card-header">
-            <span class="card-title">2 — Particulars of Expenditure</span>
+          <!-- PAPER FORM HEADER -->
+          <div class="ge-paper-header">
+            <div style="font-size:40px;line-height:1.1">🎓</div>
+            <div style="font-weight:600;font-size:16px;margin-top:4px">PAPUA NEW GUINEA UNIVERSITY OF TECHNOLOGY</div>
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-top:10px">
+              <div style="font-weight:700;font-size:22px">GENERAL EXPENSES</div>
+              <div style="display:flex;align-items:center;gap:8px">
+                <input id="ge-number" readonly class="form-control font-mono" style="width:200px;text-align:right" placeholder="GE-XXXX-XXXX">
+                <span id="ge-status-badge"></span>
+              </div>
+            </div>
           </div>
-          <div class="card-body">
-            <div style="display:grid;grid-template-columns:1fr 80px 120px 80px 110px 36px;gap:8px;margin-bottom:8px">
-              <div class="form-label">Description</div>
-              <div class="form-label">Qty</div>
-              <div class="form-label">Unit Rate (K)</div>
-              <div class="form-label">GST%</div>
-              <div class="form-label text-right">Total (K)</div>
+
+          <!-- ROW 1 — Dr. To / Department Info -->
+          <div class="ge-row ge-row-2col" style="border-bottom:none">
+
+            <!-- Left — Dr. To box -->
+            <div class="ge-box">
+              <div class="ge-section-label">Dr. To:</div>
+              <div style="font-size:12px;color:#555;margin-bottom:6px">............</div>
+              <input id="payee-name" type="text" class="form-control" placeholder="Payee Name">
+              <input id="payee-address" type="text" class="form-control" placeholder="Address / Location (optional)" style="margin-top:6px">
+            </div>
+
+            <!-- Right — Department Info box -->
+            <div class="ge-box">
+              <div class="ge-section-label">Department:</div>
+              <input id="dept-display" type="text" class="form-control" readonly style="background:var(--bg-secondary);margin-bottom:6px" placeholder="Department">
+              <label class="form-label" style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px">Departmental Reference:</label>
+              <input id="dept-ref" type="text" class="form-control" placeholder="e.g. ICT-EQUIPMENT-2026">
+
+              <!-- Hidden helper fields (preserved for JS) -->
+              <input id="claimant-ref" type="hidden">
+              <select id="procurement-type" class="hidden" style="display:none">
+                <option value="STANDARD">Standard</option>
+                <option value="ICT">ICT</option>
+              </select>
+              <select id="is-capital-item" class="hidden" style="display:none">
+                <option value="0">No</option>
+                <option value="1">Yes</option>
+              </select>
+            </div>
+
+          </div><!-- /ROW 1 -->
+
+          <!-- PARTICULARS TABLE SECTION -->
+          <div class="ge-section" style="border-top:1px solid #333">
+
+            <div class="ge-section-label">Particulars</div>
+
+            <!-- Being For -->
+            <div style="margin-bottom:6px">
+              <label class="form-label" style="font-weight:600">Being For:</label>
+              <textarea id="description" class="form-control" rows="2" placeholder="Describe the purpose of this expense…"></textarea>
+            </div>
+
+            <!-- Column headers -->
+            <div class="ge-table-header" style="grid-template-columns:1fr 80px 120px 110px 36px">
+              <div>Particulars</div>
+              <div>Quantity</div>
+              <div>Unit Rate (K)</div>
+              <div>Amount (K)</div>
               <div></div>
             </div>
+
+            <!-- Line items rendered by JS -->
             <div id="line-items-container"></div>
-            <div class="flex-between mt-8">
-              <button type="button" id="add-line-item" class="btn btn-ghost btn-sm">+ Add Line Item</button>
-              <div class="total-row">
-                <span>GE Total:</span>
-                <span class="ge-total-display" data-raw="0">K 0.00</span>
-              </div>
-            </div>
-          </div>
-        </div>
 
-        <!-- Section 3 — Department Use -->
-        <div class="card mb-24" id="section-3">
-          <div class="card-header">
-            <span class="card-title">3 — Department Use</span>
-            <span class="text-muted" style="font-size:12px">Must equal GE total</span>
-          </div>
-          <div class="card-body">
-            <div style="display:grid;grid-template-columns:60px 60px 60px 60px 60px 60px 1fr 120px 36px;gap:6px;margin-bottom:8px">
-              <div class="form-label">Div</div>
-              <div class="form-label">FN</div>
-              <div class="form-label">Act</div>
-              <div class="form-label">Item</div>
-              <div class="form-label">SI</div>
-              <div class="form-label">D</div>
-              <div class="form-label">Account Name</div>
-              <div class="form-label">Amount (K)</div>
+            <!-- GST summary row -->
+            <div class="gst-summary-row" style="display:grid;grid-template-columns:1fr 80px 120px 110px 36px;gap:8px;padding:4px 0;border-top:1px solid #aaa;margin-top:4px">
+              <div style="font-weight:600">GST (10%)</div>
+              <div></div>
+              <div></div>
+              <div id="gst-amount-display" style="text-align:right;font-weight:600">K 0.00</div>
               <div></div>
             </div>
-            <div id="acct-lines-container"></div>
-            <div class="flex-between mt-8">
-              <button type="button" id="add-acct-line" class="btn btn-ghost btn-sm">+ Add Line</button>
-              <div class="total-row">
-                <span>Accounting Total:</span>
-                <span class="acct-total-display">K 0.00</span>
-                <span id="acct-diff" style="font-size:12px"></span>
-              </div>
-            </div>
-          </div>
-        </div>
 
-        <!-- Section 4 — Claimant Declaration -->
-        <div class="card mb-24" id="section-4">
-          <div class="card-header">
-            <span class="card-title">4 — Claimant Declaration</span>
-          </div>
-          <div class="card-body">
-            <div class="form-group">
-              <label class="form-label">Full Name <span class="required">*</span></label>
-              <input id="claimant-full-name" type="text" class="form-control" placeholder="Full name of claimant">
-            </div>
-            <p style="font-size:13px;margin-bottom:12px;color:var(--text-muted)">
-              I certify that the expenses listed above are correct and have been incurred for official University purposes.
-            </p>
-            <canvas id="claimant-sig-canvas" width="600" height="150"
-              style="border:1px solid var(--border);border-radius:6px;background:#fff;display:block;max-width:100%"></canvas>
-            <div class="flex gap-8 mt-8">
-              <button type="button" id="btn-clear-sig" class="btn btn-ghost btn-sm">🗑 Clear Signature</button>
-            </div>
-            <div class="form-group mt-16">
-              <label class="form-label">Date</label>
-              <input id="claimant-declaration-date" type="date" class="form-control" style="max-width:200px">
-            </div>
-          </div>
-        </div>
+            <div style="font-size:11px;font-style:italic;margin-top:6px;color:#555">** PLEASE REFER INVOICE ATTACHED **</div>
 
-        <!-- Section 5 — Financial Coding (visible to all, editable by finance roles only) -->
-        <div class="card mb-24" id="section-5">
-          <div class="card-header">
-            <span class="card-title">5 — Financial Coding</span>
-          </div>
-          <div class="card-body">
-            <div class="form-row">
-              <div class="form-group">
-                <label class="form-label">CFC Number <span class="text-muted">(Finance Only)</span></label>
-                <input id="cfc-number" type="text" class="form-control font-mono" placeholder="CFC-XXXX">
-              </div>
-              <div class="form-group">
-                <label class="form-label">Commitment Number <span class="text-muted">(Finance Only)</span></label>
-                <input id="commitment-number" type="text" class="form-control font-mono" placeholder="COMM-XXXX">
-              </div>
-            </div>
-          </div>
-        </div>
+            <button type="button" id="add-line-item" class="btn btn-ghost btn-sm" style="margin-top:6px">+ Add Line Item</button>
 
-        <!-- Section 6 — HOD Certification -->
-        <div class="card mb-24" id="section-6">
-          <div class="card-header">
-            <span class="card-title">6 — HOD Certification</span>
-          </div>
-          <div class="card-body">
-            <p class="text-muted" style="font-size:13px;margin-bottom:16px">
-              To be completed by the Head of Department.
-            </p>
-            <div class="form-row">
-              <div class="form-group">
-                <label class="form-label">HOD Name</label>
-                <input id="hod-name" type="text" class="form-control" placeholder="Full name of HOD">
-              </div>
-              <div class="form-group">
-                <label class="form-label">Designation</label>
-                <select id="hod-designation" class="form-control">
-                  <option value="">— Select Designation —</option>
-                  <option value="Head of Department">Head of Department</option>
-                  <option value="HOD Acting">HOD Acting</option>
-                  <option value="Dean of Faculty">Dean of Faculty</option>
-                  <option value="ICT Director">ICT Director</option>
-                  <option value="Procurement Manager">Procurement Manager</option>
-                  <option value="Vice Chancellor">Vice Chancellor</option>
-                  <option value="Pro Vice Chancellor Admin">Pro Vice Chancellor Admin</option>
-                </select>
-              </div>
-            </div>
-            <div class="form-group">
-              <label class="form-label">HOD Signature</label>
-              <canvas id="hod-sig-canvas" width="600" height="150"
-                style="border:1px solid var(--border);border-radius:6px;background:#fff;display:block;max-width:100%"></canvas>
-              <div class="flex gap-8 mt-8">
-                <button type="button" id="btn-clear-hod-sig" class="btn btn-ghost btn-sm">🗑 Clear HOD Signature</button>
-              </div>
-            </div>
-            <div class="form-row mt-16">
-              <div class="form-group">
-                <label class="form-label">Date</label>
-                <input id="hod-certification-date" type="date" class="form-control" style="max-width:200px">
-              </div>
-              <div class="form-group" style="align-self:flex-end">
-                <label class="form-label" style="display:flex;align-items:center;gap:8px;cursor:pointer">
-                  <input id="hod-approved" type="checkbox"> Approved by HOD
-                </label>
-                <label class="form-label" style="display:flex;align-items:center;gap:8px;cursor:pointer;margin-top:8px">
-                  <input id="hod-sent-to-accounts" type="checkbox"> Sent to Accounts
-                </label>
-              </div>
-            </div>
-          </div>
-        </div>
+          </div><!-- /PARTICULARS SECTION -->
 
-        <!-- Section 7 — Supporting Documents -->
-        <div class="card mb-24" id="section-7">
-          <div class="card-header">
-            <span class="card-title">7 — Supporting Documents</span>
-          </div>
-          <div class="card-body">
-            <div id="inline-docs-content">
-              <div class="text-muted" style="font-size:13px">Save the form first to manage documents.</div>
+          <!-- BOTTOM SECTION — For Departmental Use / Claimant Reference -->
+          <div class="ge-row ge-row-2col" style="border-top:1px solid #333;border-bottom:none">
+
+            <!-- Left — For Departmental Use Only -->
+            <div class="ge-box">
+              <div class="ge-section-label">For Departmental Use Only</div>
+
+              <!-- Accounting line column headers -->
+              <div style="display:grid;grid-template-columns:60px 60px 60px 70px 60px 60px 1fr 36px;gap:6px;border-bottom:1px solid #333;padding-bottom:4px;margin-bottom:4px;font-weight:700;font-size:11px;text-transform:uppercase">
+                <div>Div</div>
+                <div>FN</div>
+                <div>Act</div>
+                <div>Item</div>
+                <div>SI</div>
+                <div>D</div>
+                <div>Amount</div>
+                <div></div>
+              </div>
+
+              <div id="acct-lines-container"></div>
+              <button type="button" id="add-acct-line" class="btn btn-ghost btn-sm" style="margin-top:6px">+ Add Accounting Line</button>
             </div>
-          </div>
-        </div>
 
-        <!-- Audit trail (shown when editing) -->
-        <div class="card mb-24 hidden" id="audit-card">
-          <div class="card-header"><span class="card-title">Audit Trail</span></div>
-          <div class="card-body"><div class="timeline" id="audit-trail-container"></div></div>
-        </div>
+            <!-- Right — Claimant's Reference -->
+            <div class="ge-box">
+              <div class="ge-section-label">Claimant's Reference</div>
 
-        <!-- Actions -->
+              <label class="form-label" style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px">Claimant:</label>
+              <input id="claimant-full-name" type="text" class="form-control" placeholder="Full Name">
+
+              <div style="font-size:18px;font-weight:700;margin:10px 0">
+                TOTAL K: <span class="ge-total-display" data-raw="0">0.00</span>
+              </div>
+
+              <div class="form-label" style="font-weight:600;margin-bottom:4px">Signature of Claimant:</div>
+              <canvas id="claimant-sig-canvas" width="600" height="120"
+                style="border:1px solid #333;background:#fff;display:block;max-width:100%"></canvas>
+              <button type="button" id="btn-clear-sig" class="btn btn-ghost btn-sm" style="margin-top:4px">🗑 Clear</button>
+
+              <div class="form-label" style="margin-top:8px">
+                Date:
+                <input id="claimant-declaration-date" type="date" class="form-control"
+                  style="max-width:180px;display:inline-block">
+              </div>
+            </div>
+
+          </div><!-- /BOTTOM SECTION -->
+
+          <!-- FOOTER SECTION — Financial Coding / HOD Certification -->
+          <div class="ge-row ge-row-2col" style="border-top:1px solid #333">
+
+            <!-- Left — Financial Coding -->
+            <div class="ge-box">
+              <div class="ge-section-label">Financial Coding</div>
+
+              <label class="form-label" style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px">C.F.C. Number:</label>
+              <input id="cfc-number" type="text" class="form-control font-mono" placeholder="CFC-XXXX">
+
+              <label class="form-label" style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;margin-top:8px;display:block">Commitment Number:</label>
+              <input id="commitment-number" type="text" class="form-control font-mono" placeholder="COMM-XXXX" style="margin-top:6px">
+            </div>
+
+            <!-- Right — HOD Certification -->
+            <div class="ge-box">
+              <div class="ge-section-label">HOD Certification</div>
+
+              <p style="font-size:13px;font-style:italic;margin-bottom:10px">"I certify that this account is correct."</p>
+
+              <label class="form-label" style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px">Financial Delegate (HOD):</label>
+              <canvas id="hod-sig-canvas" width="500" height="100"
+                style="border:1px solid #333;background:#fff;display:block;max-width:100%"></canvas>
+              <button type="button" id="btn-clear-hod-sig" class="btn btn-ghost btn-sm">🗑 Clear HOD Signature</button>
+              <div style="font-size:11px;font-style:italic;margin-top:2px;color:#666">(Financial Delegate)</div>
+
+              <label class="form-label" style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;margin-top:10px;display:block">Head of School:</label>
+              <select id="hod-designation" class="form-control">
+                <option value="">— Select Designation —</option>
+                <option value="Head of Department">Head of Department</option>
+                <option value="HOD Acting">HOD Acting</option>
+                <option value="Dean of Faculty">Dean of Faculty</option>
+                <option value="ICT Director">ICT Director</option>
+                <option value="Procurement Manager">Procurement Manager</option>
+                <option value="Vice Chancellor">Vice Chancellor</option>
+                <option value="Pro Vice Chancellor Admin">Pro Vice Chancellor Admin</option>
+              </select>
+              <input id="hod-name" type="text" class="form-control" placeholder="HOD Full Name" style="margin-top:6px">
+
+              <label class="form-label" style="margin-top:8px;display:block">Date:</label>
+              <input id="hod-certification-date" type="date" class="form-control" style="max-width:180px;margin-top:4px">
+
+              <label style="display:flex;align-items:center;gap:8px;margin-top:8px;font-size:13px">
+                <input id="hod-approved" type="checkbox"> Approved by HOD
+              </label>
+              <label style="display:flex;align-items:center;gap:8px;margin-top:4px;font-size:13px">
+                <input id="hod-sent-to-accounts" type="checkbox"> Sent to Accounts
+              </label>
+            </div>
+
+          </div><!-- /FOOTER SECTION -->
+
+        </div><!-- /ge-paper-form card -->
+
+        <!-- ACTIONS BAR -->
         <div class="ge-form-actions flex-between">
           <div class="flex gap-8">
             <button type="button" id="btn-cancel-ge" class="btn btn-danger hidden">Cancel GE</button>
             <a href="my-ges.html" class="btn btn-secondary">← Back</a>
           </div>
-          <div class="flex gap-8">
+          <div class="flex gap-8" style="align-items:center">
+            <span id="save-indicator" class="hidden" style="font-size:12px;color:var(--primary);margin-right:8px">✅ Saved</span>
             <button type="button" id="btn-save-draft" class="btn btn-secondary">💾 Save Draft</button>
             <button type="button" id="btn-ready-for-docs" class="btn btn-primary">Continue to Supporting Documents →</button>
             <button type="button" id="btn-submit-ge" class="btn btn-primary hidden">Submit for Approval →</button>
           </div>
         </div>
-      </form>
+
+      </form><!-- /ge-form -->
+
+      <!-- Section 7 — Supporting Documents (outside paper card, below actions) -->
+      <div class="card mb-24" id="section-7">
+        <div class="card-header">
+          <span class="card-title">7 — Supporting Documents</span>
+        </div>
+        <div class="card-body">
+          <div id="inline-docs-content">
+            <div class="text-muted" style="font-size:13px">Save the form first to manage documents.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Audit trail (shown when editing) -->
+      <div class="card mb-24 hidden" id="audit-card">
+        <div class="card-header"><span class="card-title">Audit Trail</span></div>
+        <div class="card-body"><div class="timeline" id="audit-trail-container"></div></div>
+      </div>
+
     </main>
   </div>
 </div>
@@ -344,7 +402,7 @@
   </div>
 </div>
 
-<script src="../assets/js/api.js"></script>
+<script src="../assets/js/api.js?v=2"></script>
 <script src="../assets/js/app.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/signature_pad@4.1.7/dist/signature_pad.umd.min.js"></script>
 <script src="../assets/js/ge-form.js"></script>
