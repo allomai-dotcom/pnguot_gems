@@ -7,10 +7,10 @@
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 :root {
-  --sidebar-bg:       #1a1d23;
+  --sidebar-bg:       #1e1b4b;
   --sidebar-width:    240px;
   --sidebar-hover:    #2a2d35;
-  --sidebar-active:   #22c55e;
+  --sidebar-active:   #4338ca;
   --sidebar-text:     #9ca3af;
   --sidebar-text-hi:  #f3f4f6;
   --sidebar-section:  #6b7280;
@@ -21,7 +21,7 @@
   --topbar-height:    64px;
   --topbar-border:    #e5e7eb;
 
-  --body-bg:          #f4f6f9;
+  --body-bg:          #f1f5f9;
   --card-bg:          #ffffff;
   --card-border:      #e5e7eb;
   --card-shadow:      0 1px 3px rgba(0,0,0,.08);
@@ -88,7 +88,7 @@ img { display: block; max-width: 100%; }
 }
 #sidebar::-webkit-scrollbar { width: 4px; }
 #sidebar::-webkit-scrollbar-track { background: transparent; }
-#sidebar::-webkit-scrollbar-thumb { background: #374151; border-radius: 2px; }
+#sidebar::-webkit-scrollbar-thumb { background: #3730a3; border-radius: 2px; }
 
 /* Sidebar header / workspace */
 .sidebar-header {
@@ -96,7 +96,7 @@ img { display: block; max-width: 100%; }
   align-items: center;
   gap: 10px;
   padding: 16px 14px 14px;
-  border-bottom: 1px solid #2a2d35;
+  border-bottom: 1px solid rgba(255,255,255,.1);
   flex-shrink: 0;
 }
 .sidebar-avatar {
@@ -184,7 +184,7 @@ img { display: block; max-width: 100%; }
 /* Sidebar footer */
 .sidebar-footer {
   padding: 12px 14px;
-  border-top: 1px solid #2a2d35;
+  border-top: 1px solid rgba(255,255,255,.1);
   display: flex; align-items: center; gap: 10px;
   flex-shrink: 0;
 }
@@ -376,7 +376,8 @@ tbody tr:hover { background: #f9fafb; }
   font-size: 11px; font-weight: 600;
   white-space: nowrap;
 }
-.status-DRAFT                         { background: #f3f4f6; color: #374151; }
+.status-DRAFT                         { background: #fff7ed; color: #c2410c; border: 1px solid #fed7aa; }
+.status-DRAFT::before                  { content: ''; display: inline-block; width: 6px; height: 6px; border-radius: 50%; background: #f97316; margin-right: 5px; vertical-align: middle; flex-shrink: 0; }
 .status-READY_FOR_DOCUMENTS           { background: var(--info-light); color: var(--info); }
 .status-SUBMITTED                     { background: var(--purple-light); color: var(--purple); }
 .status-PENDING_HOS,
@@ -859,5 +860,114 @@ textarea.form-control { resize: vertical; min-height: 80px; }
 }
 
 /* -- Staff UI theme ----------------------------------------- */
-.staff-ui #sidebar { background: #1a1d23; }
-.staff-ui .sidebar-nav .nav-item.active { background: #22c55e; }
+.staff-ui #sidebar { background: #1e1b4b; }
+.staff-ui .sidebar-nav .nav-item.active { background: #4338ca; }
+
+/* ── KPI Cards (dashboard redesign) ──────────────────────── */
+.kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 16px;
+  margin-bottom: 24px;
+}
+@media (max-width: 1200px) {
+  .kpi-grid { grid-template-columns: repeat(3, 1fr); }
+}
+@media (max-width: 768px) {
+  .kpi-grid { grid-template-columns: repeat(2, 1fr); }
+}
+
+/* kpi-cards-grid alias (used by inline HTML id=kpi-grid) */
+.kpi-cards-grid { display:grid; grid-template-columns:repeat(5,1fr); gap:16px; margin-bottom:24px; }
+@media (max-width: 1200px) { .kpi-cards-grid { grid-template-columns: repeat(3, 1fr); } }
+@media (max-width: 768px)  { .kpi-cards-grid { grid-template-columns: repeat(2, 1fr); } }
+
+.kpi-card {
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0,0,0,.07);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  cursor: pointer;
+  transition: transform .15s, box-shadow .15s;
+}
+.kpi-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 24px rgba(0,0,0,.1);
+}
+
+.kpi-top-bar { height: 4px; width: 100%; }
+
+.kpi-body {
+  padding: 16px 18px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.kpi-icon {
+  width: 44px; height: 44px;
+  border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 22px;
+  margin-bottom: 8px;
+}
+
+.kpi-label { font-size: 13px; color: #64748b; margin-bottom: 6px; }
+.kpi-value { font-size: 32px; font-weight: 800; color: #0f172a; line-height: 1; }
+.kpi-sub   { font-size: 12px; color: #94a3b8; margin-top: 4px; }
+
+/* KPI colour themes */
+.kpi-indigo .kpi-top-bar { background: linear-gradient(90deg,#6366f1,#818cf8); }
+.kpi-indigo .kpi-icon    { background: #eef2ff; }
+
+.kpi-cyan .kpi-top-bar   { background: linear-gradient(90deg,#06b6d4,#67e8f9); }
+.kpi-cyan .kpi-icon      { background: #ecfeff; }
+
+.kpi-green .kpi-top-bar  { background: linear-gradient(90deg,#22c55e,#86efac); }
+.kpi-green .kpi-icon     { background: #f0fdf4; }
+
+.kpi-amber .kpi-top-bar  { background: linear-gradient(90deg,#f59e0b,#fcd34d); }
+.kpi-amber .kpi-icon     { background: #fffbeb; }
+
+.kpi-pink .kpi-top-bar   { background: linear-gradient(90deg,#f43f5e,#fb7185); }
+.kpi-pink .kpi-icon      { background: #fff1f2; }
+
+/* ── Dashboard panels ─────────────────────────────────────── */
+.dash-panels { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+.dash-panel { background:#fff; border-radius:12px; box-shadow:0 2px 8px rgba(0,0,0,.06); padding:20px; }
+.dash-panel-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:16px; }
+.dash-panel-title { font-size:15px; font-weight:700; color:#0f172a; }
+.dash-panel-link { font-size:13px; color:#6366f1; text-decoration:none; }
+.dash-panel-link:hover { text-decoration:underline; }
+
+/* ── Status badge update - Draft orange dot ───────────────── */
+.status-badge.draft-badge, .badge-draft {
+  background: #fff7ed; color: #ea580c;
+  border-radius: 20px; padding: 2px 10px;
+  font-size: 12px; font-weight: 600;
+  display: inline-flex; align-items: center; gap: 5px;
+}
+.status-badge.draft-badge::before, .badge-draft::before {
+  content: ''; display: inline-block;
+  width: 7px; height: 7px;
+  border-radius: 50%; background: #ea580c;
+}
+
+/* ── Topbar search pill override ──────────────────────────── */
+.topbar-search input:focus {
+  border-color: #6366f1;
+  background: #fff;
+  box-shadow: 0 0 0 3px rgba(99,102,241,.15);
+}
+
+/* ── GE number display (tables) ──────────────────────────── */
+.ge-num-prefix {
+  color: #4338ca;
+  font-weight: 700;
+  font-family: monospace;
+}
+.ge-num-seq {
+  font-family: monospace;
+}

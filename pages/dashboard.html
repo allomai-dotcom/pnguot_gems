@@ -23,21 +23,6 @@
     .dash-welcome-date .date-day  { font-size: 22px; font-weight: 700; }
     .dash-welcome-date .date-full { font-size: 11px; opacity: .75; }
 
-    .stat-card { border-left: 4px solid var(--card-border); transition: transform .15s, box-shadow .15s; }
-    .stat-card:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0,0,0,.08); }
-    .stat-card.sc-blue   { border-left-color: #3b82f6; }
-    .stat-card.sc-green  { border-left-color: #22c55e; }
-    .stat-card.sc-yellow { border-left-color: #f59e0b; }
-    .stat-card.sc-purple { border-left-color: #8b5cf6; }
-    .stat-card.sc-teal   { border-left-color: #14b8a6; }
-    .stat-card.sc-orange { border-left-color: #f97316; }
-    .stat-card.sc-blue   .stat-icon { background: #eff6ff; color: #2563eb; }
-    .stat-card.sc-green  .stat-icon { background: #f0fdf4; color: #16a34a; }
-    .stat-card.sc-yellow .stat-icon { background: #fffbeb; color: #d97706; }
-    .stat-card.sc-purple .stat-icon { background: #f5f3ff; color: #7c3aed; }
-    .stat-card.sc-teal   .stat-icon { background: #f0fdfa; color: #0d9488; }
-    .stat-card.sc-orange .stat-icon { background: #fff7ed; color: #ea580c; }
-
     .quick-actions { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 24px; }
     .qa-btn {
       display: flex; align-items: center; gap: 8px;
@@ -54,85 +39,102 @@
       text-transform: uppercase; letter-spacing: .05em;
       margin-bottom: 12px; padding-bottom: 6px; border-bottom: 2px solid var(--card-border);
     }
-
-    .sidebar-logout-btn {
-      display: flex; align-items: center; gap: 8px;
-      width: 100%; margin-top: 8px; padding: 8px 12px;
-      background: rgba(239,68,68,.1); color: #ef4444;
-      border: 1px solid rgba(239,68,68,.25); border-radius: 6px;
-      font-size: 13px; font-weight: 600; cursor: pointer;
-      transition: background .15s, border-color .15s;
-    }
-    .sidebar-logout-btn:hover { background: rgba(239,68,68,.2); border-color: rgba(239,68,68,.5); }
   </style>
 </head>
 <body class="staff-ui">
 <div id="app-shell">
 
+  <!-- ── Sidebar ─────────────────────────────────────────── -->
   <aside id="sidebar">
+
+    <!-- Logo / workspace header -->
     <div class="sidebar-header">
-      <div class="sidebar-avatar" id="sidebar-footer-av">JD</div>
-      <div class="sidebar-workspace">
-        <div class="ws-name" id="sidebar-ws-name">Loading</div>
-        <div class="ws-sub" id="sidebar-ws-sub">PNGUOT</div>
+      <div style="display:flex;align-items:center;gap:10px;width:100%">
+        <div style="flex-shrink:0">
+          <img src="../assets/img/pnguot-logo.jpg"
+               style="width:36px;height:36px;object-fit:contain;border-radius:6px">
+        </div>
+        <div class="sidebar-workspace" style="flex:1;min-width:0">
+          <div class="ws-name" id="sidebar-ws-name">Loading</div>
+          <div class="ws-sub" id="sidebar-ws-sub">PNGUOT GEMS</div>
+        </div>
       </div>
-      <button class="sidebar-add-btn" onclick="window.location.href='ge-form.html'" title="New GE">+</button>
     </div>
 
+    <!-- Navigation -->
     <nav class="sidebar-nav">
       <a class="nav-item" data-page="dashboard.html" href="dashboard.html">
-        <span class="nav-icon">🏠</span><span class="nav-label">Overview</span>
+        <span class="nav-icon">🏠</span>
+        <span class="nav-label">Overview</span>
       </a>
       <a class="nav-item" data-page="notifications.html" href="notifications.html">
-        <span class="nav-icon">🔔</span><span class="nav-label">Notifications</span>
+        <span class="nav-icon">🔔</span>
+        <span class="nav-label">Notifications</span>
         <span class="nav-badge hidden notif-badge">0</span>
       </a>
 
       <div class="sidebar-section-label">Expenses</div>
       <a class="nav-item" data-page="ge-form.html" href="ge-form.html">
-        <span class="nav-icon">➕</span><span class="nav-label">New GE</span>
+        <span class="nav-icon">➕</span>
+        <span class="nav-label">New GE</span>
       </a>
       <a class="nav-item" data-page="my-ges.html" href="my-ges.html">
-        <span class="nav-icon">📋</span><span class="nav-label">My GE Forms</span>
-      </a>
-      <a class="nav-item" data-page="my-ges.html?status=DRAFT" href="my-ges.html?status=DRAFT">
-        <span class="nav-icon">📝</span><span class="nav-label">Drafts</span><span class="nav-badge hidden draft-count">0</span>
+        <span class="nav-icon">📋</span>
+        <span class="nav-label">My GE Forms</span>
+        <span class="nav-badge hidden draft-count">0</span>
       </a>
       <a class="nav-item" data-page="quotation-tracker.html" href="quotation-tracker.html">
-        <span class="nav-icon">📊</span><span class="nav-label">Quotation Tracker</span>
+        <span class="nav-icon">📊</span>
+        <span class="nav-label">Quotation Tracker</span>
       </a>
       <a class="nav-item" data-page="my-reports.html" href="my-reports.html">
-        <span class="nav-icon">📈</span><span class="nav-label">Reports</span>
+        <span class="nav-icon">📈</span>
+        <span class="nav-label">Reports</span>
       </a>
 
       <div class="sidebar-section-label approver-only hidden">Approvals</div>
       <a class="nav-item approver-only hidden" data-page="approvals.html" href="approvals.html">
-        <span class="nav-icon">✅</span><span class="nav-label">Pending Approvals</span>
+        <span class="nav-icon">✅</span>
+        <span class="nav-label">Pending Approvals</span>
         <span class="nav-badge hidden" id="pending-approvals-badge">0</span>
       </a>
     </nav>
 
+    <!-- User profile block (bottom) -->
     <div class="sidebar-footer">
-      <div class="footer-icon" style="background:none;padding:0"><img src="../assets/img/pnguot-logo.jpg" style="width:42px;height:42px;object-fit:contain;border-radius:4px"></div>
-      <div>
-        <div class="footer-name" id="sidebar-footer-name">PNGUOT GEMS</div>
-        <div class="footer-version">ver. 1.0</div>
+      <div class="footer-icon" id="sidebar-footer-av"
+           style="background:var(--sidebar-active);width:32px;height:32px;border-radius:50%;
+                  display:flex;align-items:center;justify-content:center;
+                  font-size:13px;font-weight:700;color:#fff;flex-shrink:0">
+        JD
       </div>
-      <div style="margin-left:auto">
-        <div class="dropdown-item" onclick="window.location.href='profile.html'" style="cursor:pointer;font-size:12px;padding:4px 8px">👤 Profile</div>
+      <div style="flex:1;min-width:0">
+        <div class="footer-name" id="sidebar-footer-name">Loading</div>
+        <div class="footer-version" id="sidebar-footer-role">Staff</div>
+      </div>
+      <div class="dropdown" style="margin-left:auto">
+        <button class="footer-menu" data-dropdown="sidebar-user-menu"
+                style="background:none;border:none;color:var(--sidebar-text);
+                       font-size:18px;cursor:pointer;padding:2px;line-height:1">⋯</button>
+        <div class="dropdown-menu" id="sidebar-user-menu">
+          <div class="dropdown-item" onclick="window.location.href='profile.html'">👤 My Profile</div>
+          <div class="dropdown-divider"></div>
+          <div class="dropdown-item danger" onclick="Auth.logout()">🚪 Sign Out</div>
+        </div>
       </div>
     </div>
-    <button class="sidebar-logout-btn" onclick="Auth.logout()">🚪 Sign Out</button>
+
   </aside>
   <div class="sidebar-overlay" id="sidebar-overlay"></div>
 
+  <!-- ── Main area ──────────────────────────────────────── -->
   <div id="main-area">
     <header id="topbar">
       <button class="hamburger" id="hamburger-btn">☰</button>
-      <span class="topbar-page-title">Overview</span>
+      <span class="topbar-page-title">Dashboard</span>
       <div class="topbar-search">
         <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
-        <input type="text" placeholder="Search GE number, payee" id="dash-search" name="dash-search">
+        <input type="text" placeholder="Search GE number, payee..." id="dash-search" name="dash-search">
       </div>
       <div class="topbar-actions">
         <div class="dropdown">
@@ -165,16 +167,35 @@
     </header>
 
     <main id="page-content">
-      <div id="dash-content">
-        <div class="page-loader"><div class="spinner"></div> Loading</div>
-      </div>
+      <!-- KPI grid — populated by JS -->
+      <div class="kpi-grid" id="kpi-grid"></div>
+
+      <!-- Dashboard panels — populated by JS -->
+      <div id="dash-panels-area"></div>
+
+      <!-- Loading state (replaced once data loads) -->
+      <div id="dash-loading" class="page-loader"><div class="spinner"></div> Loading</div>
     </main>
   </div>
+
 </div>
 
-<script src="../assets/js/api.js?v=7"></script>
-<script src="../assets/js/app.js?v=7"></script>
+<script src="../assets/js/api.js?v=8"></script>
+<script src="../assets/js/app.js?v=8"></script>
 <script>
+/**
+ * Format a GE number into a styled two-part span.
+ * e.g. "GE-2026-000011" → <span indigo>GE-2026-</span><span mono>000011</span>
+ */
+function formatGENumber(geNum) {
+  if (!geNum) return '';
+  const match = geNum.match(/^(GE-\d{4}-)(\d+)$/);
+  if (match) {
+    return `<span class="ge-num-prefix">${match[1]}</span><span class="ge-num-seq">${match[2]}</span>`;
+  }
+  return `<span class="ge-num-prefix">${geNum}</span>`;
+}
+
 (async () => {
   const ok = await requireAuth();
   if (!ok) return;
@@ -196,6 +217,7 @@
   const notifs  = notifsRes.status  === 'fulfilled' ? notifsRes.value.notifications  : [];
   const reports = reportsRes.status === 'fulfilled' ? reportsRes.value              : null;
 
+  // ── Notification badges ───────────────────────────────────
   const unread = notifs.filter(n => !n.is_read);
   if (unread.length) {
     document.querySelectorAll('.notif-badge').forEach(b => {
@@ -221,6 +243,7 @@
     });
   }
 
+  // ── Compute KPI values ────────────────────────────────────
   const byStatus = reports?.by_status || {};
   const totalGEs = reports
     ? Object.values(byStatus).reduce((s,v) => s + v.count, 0)
@@ -234,12 +257,18 @@
     ? Object.entries(byStatus).filter(([k]) => k.startsWith('PENDING')).reduce((s,[,v])=>s+v.count,0)
     : ges.filter(g => g.status.startsWith('PENDING')).length;
 
-  const container = document.getElementById('dash-content');
+  // ── Hide loading, build welcome banner ────────────────────
+  const loadingEl = document.getElementById('dash-loading');
+  if (loadingEl) loadingEl.remove();
+
   const now = new Date();
   const dayFull = now.toLocaleDateString('en-PG', { weekday:'long', day:'numeric', month:'long', year:'numeric' });
   const dayNum  = now.getDate();
 
-  container.innerHTML = `
+  // Insert welcome banner before kpi-grid
+  const kpiGrid = document.getElementById('kpi-grid');
+  const welcomeDiv = document.createElement('div');
+  welcomeDiv.innerHTML = `
     <div class="dash-welcome">
       <img src="../assets/img/pnguot-logo.jpg" alt="PNGUOT">
       <div class="dash-welcome-text">
@@ -250,71 +279,108 @@
         <div class="date-day">${dayNum}</div>
         <div class="date-full">${dayFull}</div>
       </div>
-    </div>
+    </div>`;
+  kpiGrid.before(welcomeDiv.firstElementChild);
 
-    <div class="stat-grid" style="margin-bottom:24px">
-      <div class="stat-card sc-blue">
-        <div class="stat-icon">📄</div>
-        <div class="stat-label">${isAdmin ? 'Total GE Forms' : 'My GE Forms'}</div>
-        <div class="stat-value">${totalGEs}</div>
-        <div class="stat-sub">All time</div>
+  // ── Render KPI cards ──────────────────────────────────────
+  kpiGrid.innerHTML = `
+    <div class="kpi-card kpi-indigo">
+      <div class="kpi-top-bar"></div>
+      <div class="kpi-body">
+        <div class="kpi-icon">📄</div>
+        <div class="kpi-label">${isAdmin ? 'Total GE Forms' : 'My GE Forms'}</div>
+        <div class="kpi-value">${totalGEs}</div>
+        <div class="kpi-sub">All time</div>
       </div>
-      <div class="stat-card sc-orange">
-        <div class="stat-icon">⏳</div>
-        <div class="stat-label">Pending Approval</div>
-        <div class="stat-value">${pending}</div>
-        <div class="stat-sub">In workflow</div>
-      </div>
-      <div class="stat-card sc-green">
-        <div class="stat-icon">✅</div>
-        <div class="stat-label">Completed</div>
-        <div class="stat-value">${completed}</div>
-        <div class="stat-sub">Fully approved</div>
-      </div>
-      <div class="stat-card sc-yellow">
-        <div class="stat-icon">📝</div>
-        <div class="stat-label">Drafts</div>
-        <div class="stat-value">${drafts}</div>
-        <div class="stat-sub">Not yet submitted</div>
-      </div>
-      <div class="stat-card sc-purple">
-        <div class="stat-icon">💰</div>
-        <div class="stat-label">Total Value</div>
-        <div class="stat-value" style="font-size:18px">${Fmt.currency(totalAmt)}</div>
-        <div class="stat-sub">${isAdmin ? 'All GEs' : 'My GEs'}</div>
-      </div>
-      ${tasks.length ? `
-      <div class="stat-card sc-orange" style="cursor:pointer" onclick="location.href='approvals.html'">
-        <div class="stat-icon">🔔</div>
-        <div class="stat-label">My Pending Tasks</div>
-        <div class="stat-value">${tasks.length}</div>
-        <div class="stat-sub" style="color:#f97316">Action required →</div>
-      </div>` : ''}
     </div>
+    <div class="kpi-card kpi-cyan">
+      <div class="kpi-top-bar"></div>
+      <div class="kpi-body">
+        <div class="kpi-icon">⏳</div>
+        <div class="kpi-label">Pending Approval</div>
+        <div class="kpi-value">${pending}</div>
+        <div class="kpi-sub">In workflow</div>
+      </div>
+    </div>
+    <div class="kpi-card kpi-green">
+      <div class="kpi-top-bar"></div>
+      <div class="kpi-body">
+        <div class="kpi-icon">✅</div>
+        <div class="kpi-label">Completed</div>
+        <div class="kpi-value">${completed}</div>
+        <div class="kpi-sub">Fully approved</div>
+      </div>
+    </div>
+    <div class="kpi-card kpi-amber">
+      <div class="kpi-top-bar"></div>
+      <div class="kpi-body">
+        <div class="kpi-icon">📝</div>
+        <div class="kpi-label">Drafts</div>
+        <div class="kpi-value">${drafts}</div>
+        <div class="kpi-sub">Not yet submitted</div>
+      </div>
+    </div>
+    <div class="kpi-card kpi-pink">
+      <div class="kpi-top-bar"></div>
+      <div class="kpi-body">
+        <div class="kpi-icon">💰</div>
+        <div class="kpi-label">Total Value</div>
+        <div class="kpi-value" style="font-size:20px">${Fmt.currency(totalAmt)}</div>
+        <div class="kpi-sub">${isAdmin ? 'All GEs' : 'My GEs'}</div>
+      </div>
+    </div>
+  `;
 
+  // Pending tasks card (approvers only)
+  if (tasks.length) {
+    const taskCard = document.createElement('div');
+    taskCard.className = 'kpi-grid';
+    taskCard.style.cssText = 'grid-template-columns:repeat(auto-fill,minmax(200px,1fr));margin-top:-8px;margin-bottom:24px';
+    taskCard.innerHTML = `
+      <div class="kpi-card kpi-amber" style="cursor:pointer" onclick="location.href='approvals.html'">
+        <div class="kpi-top-bar"></div>
+        <div class="kpi-body">
+          <div class="kpi-icon">🔔</div>
+          <div class="kpi-label">My Pending Tasks</div>
+          <div class="kpi-value">${tasks.length}</div>
+          <div class="kpi-sub" style="color:#d97706">Action required →</div>
+        </div>
+      </div>`;
+    kpiGrid.after(taskCard);
+  }
+
+  // ── Quick actions ─────────────────────────────────────────
+  const panelsArea = document.getElementById('dash-panels-area');
+  const quickDiv = document.createElement('div');
+  quickDiv.innerHTML = `
     <div class="dash-section-title">Quick Actions</div>
-    <div class="quick-actions" style="margin-bottom:24px">
+    <div class="quick-actions">
       <a href="ge-form.html"           class="qa-btn primary">➕ New GE Form</a>
       <a href="my-ges.html"            class="qa-btn ghost">📋 My GE Forms</a>
       <a href="quotation-tracker.html" class="qa-btn ghost">📊 Quotation Tracker</a>
       <a href="my-reports.html"        class="qa-btn ghost">📈 Reports</a>
       ${isApprover ? `<a href="approvals.html" class="qa-btn ghost">✅ Pending Approvals</a>` : ''}
-    </div>
+    </div>`;
+  panelsArea.appendChild(quickDiv);
 
-    <div class="dash-section-title">Activity</div>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px">
-      <div class="card">
-        <div class="card-header">
-          <span class="card-title">Recent GE Forms</span>
-          <a href="my-ges.html" class="btn btn-ghost btn-sm">View All →</a>
+  // ── Two-panel activity section ────────────────────────────
+  const recentGEs = (reports?.recent_ges || ges).slice(0, 8);
+
+  const panelsDiv = document.createElement('div');
+  panelsDiv.innerHTML = `
+    <div class="dash-panels">
+      <div class="dash-panel">
+        <div class="dash-panel-header">
+          <span class="dash-panel-title">Recent GE Forms</span>
+          <a href="my-ges.html" class="dash-panel-link">View All →</a>
         </div>
         <div class="table-wrap">
           <table>
             <thead><tr><th>GE Number</th><th>Payee</th><th>Amount</th><th>Status</th></tr></thead>
             <tbody>
-              ${(reports?.recent_ges || ges).slice(0,8).map(g => `
+              ${recentGEs.map(g => `
                 <tr style="cursor:pointer" onclick="location.href='my-ges.html'">
-                  <td class="font-mono fw-600">${g.ge_number||''}</td>
+                  <td>${formatGENumber(g.ge_number)}</td>
                   <td>${g.payee_name||''}</td>
                   <td class="fw-600">${Fmt.currency(g.total_amount)}</td>
                   <td>${statusBadge(g.status, g.status_label||g.status)}</td>
@@ -325,9 +391,10 @@
         </div>
       </div>
 
-      <div class="card">
-        <div class="card-header">
-          <span class="card-title">${isAdmin ? 'By Department' : 'My Recent Activity'}</span>
+      <div class="dash-panel">
+        <div class="dash-panel-header">
+          <span class="dash-panel-title">${isAdmin ? 'By Department' : 'My Recent Activity'}</span>
+          <span class="dash-panel-link">Latest 6</span>
         </div>
         <div class="table-wrap">
           <table>
@@ -343,9 +410,9 @@
               </tbody>` : `
               <thead><tr><th>GE Number</th><th>Status</th><th class="text-right">Amount</th></tr></thead>
               <tbody>
-                ${ges.slice(0,8).map(g => `
+                ${ges.slice(0,6).map(g => `
                   <tr>
-                    <td class="font-mono" style="font-size:12px">${g.ge_number||''}</td>
+                    <td style="font-size:12px">${formatGENumber(g.ge_number)}</td>
                     <td>${statusBadge(g.status, g.status_label||g.status)}</td>
                     <td class="text-right fw-600">${Fmt.currency(g.total_amount)}</td>
                   </tr>`).join('') ||
@@ -355,6 +422,7 @@
         </div>
       </div>
     </div>`;
+  panelsArea.appendChild(panelsDiv);
 })();
 </script>
 </body>
