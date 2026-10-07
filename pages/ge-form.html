@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>GE Form — PNGUOT GEMS</title>
+  <title>GE Form � PNGUOT GEMS</title>
   <link rel="stylesheet" href="../assets/css/main.css">
   <style>
     /* -- Paper Form Styles -- */
@@ -78,28 +78,29 @@
   <aside id="sidebar">
     <div class="sidebar-header">
       <div class="sidebar-avatar" id="sidebar-footer-av">JD</div>
-      <div class="sidebar-workspace"><div class="ws-name" id="sidebar-ws-name">Loading…</div><div class="ws-sub" id="sidebar-ws-sub">PNGUOT</div></div>
+      <div class="sidebar-workspace"><div class="ws-name" id="sidebar-ws-name">Loading�</div><div class="ws-sub" id="sidebar-ws-sub">PNGUOT</div></div>
       <button class="sidebar-add-btn" onclick="window.location.href='ge-form.html'" title="New GE">+</button>
     </div>
     <nav class="sidebar-nav">
-      <a class="nav-item" data-page="dashboard.html"    href="dashboard.html"><span class="nav-icon">📊</span><span class="nav-label">Overview</span></a>
-      <a class="nav-item" data-page="notifications.html" href="notifications.html"><span class="nav-icon">🔔</span><span class="nav-label">Notifications</span></a>
+      <a class="nav-item" data-page="dashboard.html"    href="dashboard.html"><span class="nav-icon">??</span><span class="nav-label">Overview</span></a>
+      <a class="nav-item" data-page="notifications.html" href="notifications.html"><span class="nav-icon">??</span><span class="nav-label">Notifications</span></a>
       <div class="sidebar-section-label">Expenses</div>
-      <a class="nav-item" data-page="ge-form.html"  href="ge-form.html"><span class="nav-icon">➕</span><span class="nav-label">New GE</span></a>
-      <a class="nav-item" data-page="my-ges.html"   href="my-ges.html"><span class="nav-icon">📋</span><span class="nav-label">My GE Forms</span></a>
-      <a class="nav-item" data-page="quotation-tracker.html" href="quotation-tracker.html"><span class="nav-icon">📎</span><span class="nav-label">Quotation Tracker</span></a>
-      <a class="nav-item" data-page="my-reports.html" href="my-reports.html"><span class="nav-icon">📊</span><span class="nav-label">Reports</span></a>
+      <a class="nav-item" data-page="ge-form.html"  href="ge-form.html"><span class="nav-icon">?</span><span class="nav-label">New GE</span></a>
+      <a class="nav-item" data-page="my-ges.html"   href="my-ges.html"><span class="nav-icon">??</span><span class="nav-label">My GE Forms</span></a>
+      <a class="nav-item" data-page="my-ges.html?status=DRAFT" href="my-ges.html?status=DRAFT"><span class="nav-icon">??</span><span class="nav-label">Drafts</span><span class="nav-badge hidden draft-count">0</span></a>
+      <a class="nav-item" data-page="quotation-tracker.html" href="quotation-tracker.html"><span class="nav-icon">??</span><span class="nav-label">Quotation Tracker</span></a>
+      <a class="nav-item" data-page="my-reports.html" href="my-reports.html"><span class="nav-icon">??</span><span class="nav-label">Reports</span></a>
       <div class="sidebar-section-label approver-only hidden">Approvals</div>
-      <a class="nav-item approver-only hidden" data-page="approvals.html" href="approvals.html"><span class="nav-icon">✅</span><span class="nav-label">Pending Approvals</span></a>
+      <a class="nav-item approver-only hidden" data-page="approvals.html" href="approvals.html"><span class="nav-icon">?</span><span class="nav-label">Pending Approvals</span></a>
     </nav>
     <div class="sidebar-footer">
       <div class="footer-icon" style="background:none;padding:0"><img src="../assets/img/pnguot-logo.jpg" style="width:42px;height:42px;object-fit:contain;border-radius:4px"></div>
       <div><div class="footer-name" id="sidebar-footer-name">PNGUOT GEMS</div><div class="footer-version">ver. 1.0</div></div>
-      <div class="dropdown"><button class="footer-menu" data-dropdown="sb-um">•••</button>
+      <div class="dropdown"><button class="footer-menu" data-dropdown="sb-um">���</button>
         <div class="dropdown-menu" id="sb-um">
-          <div class="dropdown-item" onclick="location.href='profile.html'">👤 My Profile</div>
+          <div class="dropdown-item" onclick="location.href='profile.html'">?? My Profile</div>
           <div class="dropdown-divider"></div>
-          <div class="dropdown-item danger" onclick="Auth.logout()">🚪 Sign Out</div>
+          <div class="dropdown-item danger" onclick="Auth.logout()">?? Sign Out</div>
         </div>
       </div>
     </div>
@@ -108,15 +109,15 @@
 
   <div id="main-area">
     <header id="topbar">
-      <button class="hamburger" id="hamburger-btn">☰</button>
+      <button class="hamburger" id="hamburger-btn">?</button>
       <span class="topbar-page-title" id="page-title">New GE Form</span>
       <div class="topbar-actions" style="margin-left:auto">
-        <span id="save-indicator" class="hidden" style="font-size:12px;color:var(--primary);margin-right:8px">✓ Saved</span>
+        <span id="save-indicator" class="hidden" style="font-size:12px;color:var(--primary);margin-right:8px">? Saved</span>
         <div class="topbar-user dropdown" data-dropdown="um2">
           <div class="user-avatar" id="topbar-avatar">JD</div>
-          <div><div class="user-name" id="topbar-user-name">—</div><div class="user-role" id="topbar-user-role"></div></div>
+          <div><div class="user-name" id="topbar-user-name">�</div><div class="user-role" id="topbar-user-role"></div></div>
         </div>
-        <div class="dropdown-menu" id="um2"><div class="dropdown-item danger" onclick="Auth.logout()">🚪 Sign Out</div></div>
+        <div class="dropdown-menu" id="um2"><div class="dropdown-item danger" onclick="Auth.logout()">?? Sign Out</div></div>
       </div>
     </header>
 
@@ -124,7 +125,7 @@
 
       <!-- Readonly alert -->
       <div id="ge-form-readonly-alert" class="alert alert-warning hidden mb-16">
-        <span class="alert-icon">⚠️</span>
+        <span class="alert-icon">??</span>
         This GE is no longer editable in its current status.
       </div>
 
@@ -164,35 +165,60 @@
             </div>
           </div>
 
-          <!-- ROW 1 — Dr. To / Department Info -->
+          <!-- ROW 1 � Dr. To / Department Info -->
           <div class="ge-row ge-row-2col" style="border-bottom:none">
 
-            <!-- Left — Dr. To box -->
+            <!-- Left � Dr. To box -->
             <div class="ge-box">
               <div class="ge-section-label">Dr. To:</div>
               <div style="font-size:12px;color:#555;margin-bottom:6px">............</div>
-              <input id="payee-name" type="text" class="form-control" placeholder="Payee Name">
-              <input id="payee-address" type="text" class="form-control" placeholder="Address / Location (optional)" style="margin-top:6px">
+              <input id="payee-name"    name="payee-name"    type="text" class="form-control" placeholder="Payee Name">
+              <input id="payee-address" name="payee-address" type="text" class="form-control" placeholder="Address / Location (optional)" style="margin-top:6px">
             </div>
 
-            <!-- Right — Department Info box -->
+            <!-- Right � Department Info box -->
             <div class="ge-box">
               <div class="ge-section-label">Department:</div>
               <select id="dept-display" class="form-control" style="margin-bottom:6px">
                 <option value="">Department</option>
               </select>
-              <label class="form-label" style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px">Departmental Reference:</label>
-              <input id="dept-ref" type="text" class="form-control" placeholder="e.g. ICT-EQUIPMENT-2026">
+              <label class="form-label" style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px" for="dept-ref">Departmental Reference:</label>
+              <input id="dept-ref" name="dept-ref" type="text" class="form-control" placeholder="e.g. ICT-EQUIPMENT-2026">
 
               <!-- Hidden helper fields (preserved for JS) -->
-              <input id="claimant-ref" type="hidden">
-              <select id="procurement-type" class="hidden" style="display:none">
+              <input id="claimant-ref" name="claimant-ref" type="hidden">
+
+              <label class="form-label" style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;margin-top:8px;display:block" for="procurement-type">Procurement Type:</label>
+              <select id="procurement-type" name="procurement-type" class="form-control" style="margin-bottom:6px">
                 <option value="STANDARD">Standard</option>
                 <option value="ICT">ICT</option>
               </select>
-              <select id="is-capital-item" class="hidden" style="display:none">
+
+              <label class="form-label" style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px" for="expense-category">Expense Category:</label>
+              <select id="expense-category" name="expense-category" class="form-control" style="margin-bottom:6px">
+                <option value="">Select Category...</option>
+                <option value="ICT &amp; Technology">ICT &amp; Technology</option>
+                <option value="Office Equipment &amp; Supplies">Office Equipment &amp; Supplies</option>
+                <option value="Furniture &amp; Fixtures">Furniture &amp; Fixtures</option>
+                <option value="Travel/Transport &amp; Accommodation">Travel/Transport &amp; Accommodation</option>
+                <option value="Facilities &amp; Building Maintenance">Facilities &amp; Building Maintenance</option>
+                <option value="Cleaning &amp; Hygiene">Cleaning &amp; Hygiene</option>
+                <option value="Security &amp; Safety">Security &amp; Safety</option>
+                <option value="Human Resources &amp; Staff Services">Human Resources &amp; Staff Services</option>
+                <option value="Logistics &amp; Freight">Logistics &amp; Freight</option>
+                <option value="Media &amp; Marketing">Media &amp; Marketing</option>
+                <option value="Tools, Machinery &amp; Equipment">Tools, Machinery &amp; Equipment</option>
+                <option value="Food &amp; Catering">Food &amp; Catering</option>
+                <option value="Licenses, Memberships &amp; Subscriptions">Licenses, Memberships &amp; Subscriptions</option>
+                <option value="Rental &amp; Leasing">Rental &amp; Leasing</option>
+                <option value="Professional &amp; Consulting Services">Professional &amp; Consulting Services</option>
+                <option value="Other / Miscellaneous">Other / Miscellaneous</option>
+              </select>
+
+              <label class="form-label" style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px" for="is-capital-item">Capital Item (&gt; K3,000):</label>
+              <select id="is-capital-item" name="is-capital-item" class="form-control">
                 <option value="0">No</option>
-                <option value="1">Yes</option>
+                <option value="1">Yes — Capital Item</option>
               </select>
             </div>
 
@@ -202,7 +228,7 @@
           <div class="ge-section" style="border-top:1px solid #333">
 
             <div class="ge-section-label">Particulars</div>
-            <input type="hidden" id="description" value="">
+            <input type="hidden" id="description" name="description" value="">
 
 
             <!-- Column headers -->
@@ -224,7 +250,7 @@
               <div class="gst-summary-row" style="display:grid;grid-template-columns:1fr 80px 120px 110px 36px;gap:8px;padding:6px 0;align-items:center">
                 <div style="display:flex;align-items:center;gap:8px">
                   <label style="display:flex;align-items:center;gap:6px;font-weight:600;cursor:pointer;font-size:13px">
-                    <input type="checkbox" id="gst-included" style="width:16px;height:16px;accent-color:var(--primary);cursor:pointer">
+                    <input type="checkbox" id="gst-included" name="gst-included" style="width:16px;height:16px;accent-color:var(--primary);cursor:pointer">
                     GST Included (10%)
                   </label>
                 </div>
@@ -243,7 +269,7 @@
                 <div></div>
               </div>
 
-              <!-- TOTAL K row — prominent -->
+              <!-- TOTAL K row � prominent -->
               <div style="display:grid;grid-template-columns:1fr 80px 120px 110px 36px;gap:8px;padding:6px 0;border-top:2px solid #333;margin-top:2px;align-items:center">
                 <div style="font-weight:700;font-size:14px;text-transform:uppercase;letter-spacing:0.5px">TOTAL K</div>
                 <div></div>
@@ -262,15 +288,15 @@
 
           </div><!-- /PARTICULARS SECTION -->
 
-          <!-- BOTTOM SECTION — For Departmental Use / Claimant Reference -->
+          <!-- BOTTOM SECTION � For Departmental Use / Claimant Reference -->
           <div class="ge-row ge-row-2col" style="border-top:1px solid #333;border-bottom:none">
 
-            <!-- Left — For Departmental Use Only -->
+            <!-- Left � For Departmental Use Only -->
             <div class="ge-box">
               <div class="ge-section-label">For Departmental Use Only</div>
 
               <!-- Accounting line column headers -->
-              <div style="display:grid;grid-template-columns:60px 60px 60px 70px 60px 60px 110px 36px;gap:6px;border-bottom:1px solid #333;padding-bottom:4px;margin-bottom:4px;font-weight:700;font-size:11px;text-transform:uppercase">
+              <div style="display:grid;grid-template-columns:60px 60px 60px 70px 60px 60px 120px 36px;gap:6px;border-bottom:1px solid #333;padding-bottom:4px;margin-bottom:4px;font-weight:700;font-size:11px;text-transform:uppercase">
                 <div>Div</div>
                 <div>FN</div>
                 <div>Act</div>
@@ -282,45 +308,51 @@
               </div>
 
               <div id="acct-lines-container"></div>
-              <button type="button" id="add-acct-line" class="btn btn-ghost btn-sm" style="margin-top:6px">+ Add Accounting Line</button>
+              <div style="display:flex;justify-content:space-between;align-items:center;margin-top:8px;gap:8px;flex-wrap:wrap">
+                <button type="button" id="add-acct-line" class="btn btn-ghost btn-sm">+ Add Accounting Line</button>
+                <div style="display:flex;align-items:center;gap:12px;font-size:12px">
+                  <span>Total: <strong class="acct-total-display">K 0.00</strong></span>
+                  <span id="acct-diff" style="font-weight:600"></span>
+                </div>
+              </div>
             </div>
 
-            <!-- Right — Claimant's Reference -->
+            <!-- Right � Claimant's Reference -->
             <div class="ge-box">
               <div class="ge-section-label">Claimant's Reference</div>
 
-              <label class="form-label" style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px">Claimant:</label>
-              <input id="claimant-full-name" type="text" class="form-control" placeholder="Full Name">
+              <label class="form-label" for="claimant-full-name" style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px">Claimant:</label>
+              <input id="claimant-full-name" name="claimant-full-name" type="text" class="form-control" placeholder="Full Name">
 
               <div class="form-label" style="font-weight:600;margin-bottom:4px;margin-top:10px">Signature of Claimant:</div>
               <canvas id="claimant-sig-canvas" width="600" height="120"
                 style="border:1px solid #333;background:#fff;display:block;max-width:100%"></canvas>
-              <button type="button" id="btn-clear-sig" class="btn btn-ghost btn-sm" style="margin-top:4px">🗑 Clear</button>
+              <button type="button" id="btn-clear-sig" class="btn btn-ghost btn-sm" style="margin-top:4px">?? Clear</button>
 
               <div class="form-label" style="margin-top:8px">
                 Date:
-                <input id="claimant-declaration-date" type="date" class="form-control"
+                <input id="claimant-declaration-date" name="claimant-declaration-date" type="date" class="form-control"
                   style="max-width:180px;display:inline-block">
               </div>
             </div>
 
           </div><!-- /BOTTOM SECTION -->
 
-          <!-- FOOTER SECTION — Financial Coding / HOD Certification -->
+          <!-- FOOTER SECTION � Financial Coding / HOD Certification -->
           <div class="ge-row ge-row-2col" style="border-top:1px solid #333">
 
-            <!-- Left — Financial Coding -->
+            <!-- Left � Financial Coding -->
             <div class="ge-box">
               <div class="ge-section-label">Financial Coding</div>
 
-              <label class="form-label" style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px">C.F.C. Number:</label>
-              <input id="cfc-number" type="text" class="form-control font-mono" placeholder="CFC-XXXX">
+              <label class="form-label" for="cfc-number" style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px">C.F.C. Number:</label>
+              <input id="cfc-number" name="cfc-number" type="text" class="form-control font-mono" placeholder="CFC-XXXX">
 
-              <label class="form-label" style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;margin-top:8px;display:block">Commitment Number:</label>
-              <input id="commitment-number" type="text" class="form-control font-mono" placeholder="COMM-XXXX" style="margin-top:6px">
+              <label class="form-label" for="commitment-number" style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;margin-top:8px;display:block">Commitment Number:</label>
+              <input id="commitment-number" name="commitment-number" type="text" class="form-control font-mono" placeholder="COMM-XXXX" style="margin-top:6px">
             </div>
 
-            <!-- Right — HOD Certification -->
+            <!-- Right � HOD Certification -->
             <div class="ge-box">
               <div class="ge-section-label">HOD Certification</div>
 
@@ -329,10 +361,10 @@
               <label class="form-label" style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px">Financial Delegate (HOD):</label>
               <canvas id="hod-sig-canvas" width="500" height="100"
                 style="border:1px solid #333;background:#fff;display:block;max-width:100%"></canvas>
-              <button type="button" id="btn-clear-hod-sig" class="btn btn-ghost btn-sm">🗑 Clear HOD Signature</button>
+              <button type="button" id="btn-clear-hod-sig" class="btn btn-ghost btn-sm">?? Clear HOD Signature</button>
               <div style="font-size:11px;font-style:italic;margin-top:2px;color:#666">(Financial Delegate)</div>
 
-              <label class="form-label" style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;margin-top:10px;display:block">Head of School:</label>
+              <label class="form-label" for="hod-designation" style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;margin-top:10px;display:block">Head of School:</label>
               <select id="hod-designation" class="form-control">
                 <option value="">Select Designation</option>
                 <option value="Head of Department">Head of Department</option>
@@ -343,16 +375,16 @@
                 <option value="Vice Chancellor">Vice Chancellor</option>
                 <option value="Pro Vice Chancellor Admin">Pro Vice Chancellor Admin</option>
               </select>
-              <input id="hod-name" type="text" class="form-control" placeholder="HOD Full Name" style="margin-top:6px">
+              <input id="hod-name" name="hod-name" type="text" class="form-control" placeholder="HOD Full Name" style="margin-top:6px">
 
-              <label class="form-label" style="margin-top:8px;display:block">Date:</label>
-              <input id="hod-certification-date" type="date" class="form-control" style="max-width:180px;margin-top:4px">
+              <label class="form-label" for="hod-certification-date" style="margin-top:8px;display:block">Date:</label>
+              <input id="hod-certification-date" name="hod-certification-date" type="date" class="form-control" style="max-width:180px;margin-top:4px">
 
               <label style="display:flex;align-items:center;gap:8px;margin-top:8px;font-size:13px">
-                <input id="hod-approved" type="checkbox"> Approved by HOD
+                <input id="hod-approved" name="hod-approved" type="checkbox"> Approved by HOD
               </label>
               <label style="display:flex;align-items:center;gap:8px;margin-top:4px;font-size:13px">
-                <input id="hod-sent-to-accounts" type="checkbox"> Sent to Accounts
+                <input id="hod-sent-to-accounts" name="hod-sent-to-accounts" type="checkbox"> Sent to Accounts
               </label>
             </div>
 
@@ -364,22 +396,21 @@
         <div class="ge-form-actions flex-between">
           <div class="flex gap-8">
             <button type="button" id="btn-cancel-ge" class="btn btn-danger hidden">Cancel GE</button>
-            <a href="my-ges.html" class="btn btn-secondary">← Back</a>
+            <a href="my-ges.html" class="btn btn-secondary">? Back</a>
           </div>
           <div class="flex gap-8" style="align-items:center">
-            <span id="save-indicator" class="hidden" style="font-size:12px;color:var(--primary);margin-right:8px">✓ Saved</span>
-            <button type="button" id="btn-save-draft" class="btn btn-secondary">💾 Save Draft</button>
-            <button type="button" id="btn-ready-for-docs" class="btn btn-primary">Continue to Supporting Documents →</button>
-            <button type="button" id="btn-submit-ge" class="btn btn-primary hidden">Submit for Approval →</button>
+            <button type="button" id="btn-save-draft" class="btn btn-secondary">?? Save Draft</button>
+            <button type="button" id="btn-ready-for-docs" class="btn btn-primary">Continue to Supporting Documents ?</button>
+            <button type="button" id="btn-submit-ge" class="btn btn-primary hidden">Submit for Approval ?</button>
           </div>
         </div>
 
       </form><!-- /ge-form -->
 
-      <!-- Section 7 — Supporting Documents (outside paper card, below actions) -->
+      <!-- Section 7 � Supporting Documents (outside paper card, below actions) -->
       <div class="card mb-24" id="section-7">
         <div class="card-header">
-          <span class="card-title">7 — Supporting Documents</span>
+          <span class="card-title">7 � Supporting Documents</span>
         </div>
         <div class="card-body">
           <div id="inline-docs-content">
@@ -403,18 +434,18 @@
   <div class="modal">
     <div class="modal-header">
       <span class="modal-title" id="upload-modal-title">Upload Document</span>
-      <button class="modal-close" onclick="Modal.close('upload-modal')">✕</button>
+      <button class="modal-close" onclick="Modal.close('upload-modal')">?</button>
     </div>
     <div class="modal-body">
       <div class="upload-zone" id="upload-zone">
-        <div class="uz-icon">📁</div>
+        <div class="uz-icon">??</div>
         <div class="uz-title">Drop file here or click to browse</div>
-        <div class="uz-sub">PDF, JPEG, PNG — max 10 MB</div>
+        <div class="uz-sub">PDF, JPEG, PNG � max 10 MB</div>
         <input type="file" id="file-input" style="display:none" accept=".pdf,.jpg,.jpeg,.png,.gif">
       </div>
       <div id="selected-file" class="hidden mt-8" style="font-size:13px;color:var(--text-secondary)"></div>
       <div id="upload-progress" class="hidden mt-8">
-        <div class="spinner"></div> UpLoading…
+        <div class="spinner"></div> UpLoading�
       </div>
     </div>
     <div class="modal-footer">
@@ -424,10 +455,10 @@
   </div>
 </div>
 
-<script src="../assets/js/api.js?v=3"></script>
-<script src="../assets/js/app.js?v=3"></script>
-<script src="https://cdn.jsdelivr.net/npm/signature_pad@4.1.7/dist/signature_pad.umd.min.js"></script>
-<script src="../assets/js/ge-form.js?v=3"></script>
+<script src="../assets/js/api.js?v=7"></script>
+<script src="../assets/js/app.js?v=7"></script>
+<script src="../assets/js/signature_pad.umd.min.js"></script>
+<script src="../assets/js/ge-form.js?v=7"></script>
 <script>
 (async () => {
   const ok = await requireAuth();

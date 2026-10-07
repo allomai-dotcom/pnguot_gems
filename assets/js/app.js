@@ -151,6 +151,17 @@ function renderTopbarUser(user) {
     });
   }
 
+  // Draft count badge — load in background, non-blocking
+  if (document.querySelector('.draft-count')) {
+    API.geList({ page: 1, limit: 1, status: 'DRAFT' }).then(res => {
+      const count = res.pagination?.total ?? 0;
+      document.querySelectorAll('.draft-count').forEach(b => {
+        b.textContent = count;
+        if (count > 0) b.classList.remove('hidden');
+      });
+    }).catch(() => {});
+  }
+
   // Show/hide admin nav items
   if (user.roles?.includes('SYSTEM_ADMIN')) {
     document.querySelectorAll('.admin-only').forEach(e => e.classList.remove('hidden'));

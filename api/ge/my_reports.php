@@ -31,9 +31,9 @@ if (!empty($_GET['dept_id'])) {
     $where[]           = 'ge.department_id = :dept';
     $params[':dept']   = (int)$_GET['dept_id'];
 }
-if (!empty($_GET['procurement_type'])) {
-    $where[]          = 'ge.procurement_type = :ptype';
-    $params[':ptype'] = $_GET['procurement_type'];
+if (!empty($_GET['expense_category'])) {
+    $where[]               = 'ge.expense_category = :ecat';
+    $params[':ecat']       = $_GET['expense_category'];
 }
 
 $whereSQL = implode(' AND ', $where);
@@ -41,7 +41,7 @@ $whereSQL = implode(' AND ', $where);
 // ── GE list ───────────────────────────────────────────────────
 $stmt = $db->prepare(
     "SELECT ge.id, ge.ge_number, ge.payee_name, ge.description,
-            ge.procurement_type, ge.is_capital_item,
+            ge.procurement_type, ge.is_capital_item, ge.expense_category,
             ge.total_amount, ge.status, ge.submitted_at,
             ge.completed_at, ge.created_at,
             ge.departmental_reference, ge.claimant_reference,
@@ -88,16 +88,18 @@ if ($isAccountsOfficer) {
     arsort($byDept);
 }
 
-// ── Summary by procurement type ──────────────────────────────
-$byType = ['Standard Purchase'=>['count'=>0,'total'=>0.0],
-           'ICT Purchase'     =>['count'=>0,'total'=>0.0],
-           'Capital Item'     =>['count'=>0,'total'=>0.0]];
+// ── Summary by expense category ──────────────────────────────
+$byType = [];
 foreach ($ges as $g) {
-    $key = $g['is_capital_item'] ? 'Capital Item'
-         : ($g['procurement_type']==='ICT' ? 'ICT Purchase' : 'Standard Purchase');
+    $key = !empty($g['expense_category'])
+         ? $g['expense_category']
+         : ($g['is_capital_item'] ? 'Capital Item'
+            : ($g['procurement_type'] === 'ICT' ? 'ICT Purchase' : 'Standard Purchase'));
+    if (!isset($byType[$key])) $byType[$key] = ['count' => 0, 'total' => 0.0];
     $byType[$key]['count']++;
     $byType[$key]['total'] += (float)$g['total_amount'];
 }
+arsort($byType);
 
 json_success('OK', [
     'ges'          => $ges,

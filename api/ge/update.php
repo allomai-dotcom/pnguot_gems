@@ -11,31 +11,47 @@ $id = (int)($b['id'] ?? 0);
 if (!$id) json_error('GE id required.');
 
 $db = Database::getInstance();
-$stmt = $db->prepare('SELECT * FROM general_expenses WHERE id = ? AND claimant_id = ?');
-$stmt->execute([$id, $user['id']]);
-$ge = $stmt->fetch();
-if (!$ge) json_error('GE not found or access denied.', 404);
 
-if (!in_array($ge['status'], ['DRAFT', 'READY_FOR_DOCUMENTS', 'QUERIED'])) {
-    json_error('GE cannot be edited in its current status: ' . $ge['status']);
+// Fetch GE without claimant restriction first
+$stmt = $db->prepare('SELECT * FROM general_expenses WHERE id = ?');
+$stmt->execute([$id]);
+$ge = $stmt->fetch();
+if (!$ge) json_error('GE not found.', 404);
+
+$isOwner       = ((int)$ge['claimant_id'] === (int)$user['id']);
+$isAdmin       = in_array('SYSTEM_ADMIN', $user['roles'] ?? []);
+$isAccounts    = in_array('ACCOUNTS_OFFICER', $user['roles'] ?? []);
+$isFinanceRole = $isAdmin || $isAccounts;
+
+// Must be owner or a finance role
+if (!$isOwner && !$isFinanceRole) {
+    json_error('Access denied.', 403);
+}
+
+// Finance roles (accounts/admin) may save CFC/CN on any GE regardless of status.
+// Everyone else is restricted to editable statuses.
+$financeOnlyEdit = (!$isOwner && $isFinanceRole);
+
+if (!$financeOnlyEdit) {
+    if (!in_array($ge['status'], ['DRAFT', 'READY_FOR_DOCUMENTS', 'QUERIED'])) {
+        json_error('GE cannot be edited in its current status: ' . $ge['status']);
+    }
 }
 
 // Update header fields
 $fields = [];
 $vals   = [];
 
-$allowed = ['payee_name','departmental_reference','claimant_reference',
-            'description','procurement_type','is_capital_item',
-            'claimant_full_name','claimant_declaration_date',
-            'department_id'];
-
-// CFC / Commitment — ACCOUNTS_OFFICER or SYSTEM_ADMIN only
-$isPrivileged = in_array('SYSTEM_ADMIN', $user['roles']) || in_array('ACCOUNTS_OFFICER', $user['roles']);
-if ($isPrivileged) $allowed = array_merge($allowed, ['cfc_number','commitment_number']);
-
-// HOD certification fields — claimant fills on behalf of HOD
-$hodAllowed = ['hod_name','hod_designation','hod_certification_date'];
-$allowed    = array_merge($allowed, $hodAllowed);
+// Finance-role non-owners may only update CFC/CN
+if ($financeOnlyEdit) {
+    $allowed = ['cfc_number', 'commitment_number'];
+} else {
+    $allowed = ['payee_name','departmental_reference','claimant_reference',
+                'description','expense_category','procurement_type','is_capital_item',
+                'claimant_full_name','claimant_declaration_date',
+                'department_id','cfc_number','commitment_number',
+                'hod_name','hod_designation','hod_certification_date'];
+}
 
 foreach ($allowed as $f) {
     if (array_key_exists($f, $b)) {
@@ -59,8 +75,8 @@ if ($fields) {
        ->execute($vals);
 }
 
-// Replace line items if provided
-if (isset($b['line_items']) && is_array($b['line_items'])) {
+// Replace line items if provided (owner only)
+if (!$financeOnlyEdit && isset($b['line_items']) && is_array($b['line_items'])) {
     $db->prepare('DELETE FROM ge_line_items WHERE ge_id = ?')->execute([$id]);
     $liStmt = $db->prepare(
         'INSERT INTO ge_line_items (ge_id, sort_order, description, quantity, unit_price, gst_percent)
@@ -71,14 +87,23 @@ if (isset($b['line_items']) && is_array($b['line_items'])) {
         $qty   = max(0, (float)($li['quantity']   ?? 1));
         $price = max(0, (float)($li['unit_price']  ?? 0));
         $gst   = max(0, min(100, (float)($li['gst_percent'] ?? 0)));
+
+        // If unit_price is 0 but the client supplied a direct amount, back-calculate
+        // unit_price so the generated total_price column stays consistent.
+        $clientAmt = max(0, (float)($li['amount'] ?? 0));
+        if ($price == 0 && $clientAmt > 0) {
+            $divisor = $qty > 0 ? ($qty * (1 + $gst / 100)) : 1;
+            $price   = $clientAmt / $divisor;
+        }
+
         $liStmt->execute([$id, $i, trim($li['description'] ?? ''), $qty, $price, $gst]);
         $total += $qty * $price * (1 + $gst / 100);
     }
     $db->prepare('UPDATE general_expenses SET total_amount = ? WHERE id = ?')->execute([$total, $id]);
 }
 
-// Replace accounting lines if provided
-if (isset($b['accounting_lines']) && is_array($b['accounting_lines'])) {
+// Replace accounting lines if provided (owner only)
+if (!$financeOnlyEdit && isset($b['accounting_lines']) && is_array($b['accounting_lines'])) {
     $db->prepare('DELETE FROM ge_accounting_lines WHERE ge_id = ?')->execute([$id]);
     $alStmt = $db->prepare(
         'INSERT INTO ge_accounting_lines
@@ -105,7 +130,7 @@ if (isset($b['accounting_lines']) && is_array($b['accounting_lines'])) {
 }
 
 // Claimant signature — only the owner (claimant) may save this
-if ($ge['claimant_id'] === $user['id'] &&
+if (!$financeOnlyEdit && $ge['claimant_id'] === $user['id'] &&
     isset($b['claimant_signature_data']) && trim($b['claimant_signature_data']) !== '') {
     $db->prepare(
         'UPDATE general_expenses
@@ -115,7 +140,7 @@ if ($ge['claimant_id'] === $user['id'] &&
 }
 
 // HOD signature — claimant fills on behalf of HOD
-if ($ge['claimant_id'] === $user['id'] &&
+if (!$financeOnlyEdit && $ge['claimant_id'] === $user['id'] &&
     isset($b['hod_signature_data']) && trim($b['hod_signature_data']) !== '') {
     $db->prepare(
         'UPDATE general_expenses SET hod_signature_data = ? WHERE id = ?'

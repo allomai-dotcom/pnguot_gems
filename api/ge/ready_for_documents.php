@@ -34,13 +34,28 @@ foreach ($lineItems as $i => $li) {
 }
 
 // Accounting lines total must equal GE total
+// Recompute GE total fresh from stored line items (total_price is a generated column)
+// so stale total_amount values from older saves don't cause false mismatches.
 $alStmt = $db->prepare('SELECT SUM(amount) AS al_total FROM ge_accounting_lines WHERE ge_id = ?');
 $alStmt->execute([$id]);
 $alTotal = (float)$alStmt->fetch()['al_total'];
-$geTotal = (float)$ge['total_amount'];
 
-if ($alTotal === 0.0) {
+$liTotalStmt = $db->prepare('SELECT COALESCE(SUM(total_price), 0) AS li_total FROM ge_line_items WHERE ge_id = ?');
+$liTotalStmt->execute([$id]);
+$geTotal = (float)$liTotalStmt->fetch()['li_total'];
+
+// Also sync total_amount in case it was stale
+$db->prepare('UPDATE general_expenses SET total_amount = ? WHERE id = ?')->execute([$geTotal, $id]);
+
+// Count saved accounting lines
+$alCountStmt = $db->prepare('SELECT COUNT(*) AS cnt FROM ge_accounting_lines WHERE ge_id = ?');
+$alCountStmt->execute([$id]);
+$alCount = (int)$alCountStmt->fetch()['cnt'];
+
+if ($alCount === 0) {
     $errors[] = 'At least one accounting line is required.';
+} elseif ($alTotal === 0.0) {
+    $errors[] = 'Accounting lines must have a non-zero total amount. Please fill in the Amount column in the "For Departmental Use Only" section.';
 } elseif (abs($alTotal - $geTotal) > 0.01) {
     $errors[] = sprintf(
         'Accounting total (K %s) must equal GE total (K %s).',

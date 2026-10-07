@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Reports — PNGUOT GEMS</title>
+  <title>Reports � PNGUOT GEMS</title>
   <link rel="stylesheet" href="../assets/css/main.css">
   <style>
     @media print {
@@ -64,28 +64,29 @@
   <aside id="sidebar">
     <div class="sidebar-header">
       <div class="sidebar-avatar" id="sidebar-footer-av">JD</div>
-      <div class="sidebar-workspace"><div class="ws-name" id="sidebar-ws-name">—</div><div class="ws-sub" id="sidebar-ws-sub">PNGUOT</div></div>
+      <div class="sidebar-workspace"><div class="ws-name" id="sidebar-ws-name">�</div><div class="ws-sub" id="sidebar-ws-sub">PNGUOT</div></div>
       <button class="sidebar-add-btn" onclick="location.href='ge-form.html'" title="New GE">+</button>
     </div>
     <nav class="sidebar-nav">
-      <a class="nav-item" href="dashboard.html"     data-page="dashboard.html"><span class="nav-icon">📊</span><span class="nav-label">Overview</span></a>
-      <a class="nav-item" href="notifications.html" data-page="notifications.html"><span class="nav-icon">🔔</span><span class="nav-label">Notifications</span><span class="nav-badge hidden notif-badge">0</span></a>
+      <a class="nav-item" href="dashboard.html"     data-page="dashboard.html"><span class="nav-icon">??</span><span class="nav-label">Overview</span></a>
+      <a class="nav-item" href="notifications.html" data-page="notifications.html"><span class="nav-icon">??</span><span class="nav-label">Notifications</span><span class="nav-badge hidden notif-badge">0</span></a>
       <div class="sidebar-section-label">Expenses</div>
-      <a class="nav-item" href="ge-form.html"  data-page="ge-form.html"><span class="nav-icon">➕</span><span class="nav-label">New GE</span></a>
-      <a class="nav-item" href="my-ges.html"   data-page="my-ges.html"><span class="nav-icon">📋</span><span class="nav-label">My GE Forms</span></a>
-      <a class="nav-item" href="quotation-tracker.html" data-page="quotation-tracker.html"><span class="nav-icon">📎</span><span class="nav-label">Quotation Tracker</span></a>
-      <a class="nav-item" href="my-reports.html" data-page="my-reports.html"><span class="nav-icon">📊</span><span class="nav-label">Reports</span></a>
+      <a class="nav-item" href="ge-form.html"  data-page="ge-form.html"><span class="nav-icon">?</span><span class="nav-label">New GE</span></a>
+      <a class="nav-item" href="my-ges.html"   data-page="my-ges.html"><span class="nav-icon">??</span><span class="nav-label">My GE Forms</span></a>
+      <a class="nav-item" data-page="my-ges.html?status=DRAFT" href="my-ges.html?status=DRAFT"><span class="nav-icon">??</span><span class="nav-label">Drafts</span><span class="nav-badge hidden draft-count">0</span></a>
+      <a class="nav-item" href="quotation-tracker.html" data-page="quotation-tracker.html"><span class="nav-icon">??</span><span class="nav-label">Quotation Tracker</span></a>
+      <a class="nav-item" href="my-reports.html" data-page="my-reports.html"><span class="nav-icon">??</span><span class="nav-label">Reports</span></a>
       <div class="sidebar-section-label approver-only hidden">Approvals</div>
-      <a class="nav-item approver-only hidden" href="approvals.html" data-page="approvals.html"><span class="nav-icon">✅</span><span class="nav-label">Pending Approvals</span></a>
+      <a class="nav-item approver-only hidden" href="approvals.html" data-page="approvals.html"><span class="nav-icon">?</span><span class="nav-label">Pending Approvals</span></a>
     </nav>
     <div class="sidebar-footer">
       <div class="footer-icon" style="background:none;padding:0"><img src="../assets/img/pnguot-logo.jpg" style="width:42px;height:42px;object-fit:contain;border-radius:4px"></div>
       <div><div class="footer-name" id="sidebar-footer-name">PNGUOT GEMS</div><div class="footer-version">ver. 1.0</div></div>
-      <div class="dropdown"><button class="footer-menu" data-dropdown="sidebar-user-menu">•••</button>
+      <div class="dropdown"><button class="footer-menu" data-dropdown="sidebar-user-menu">���</button>
         <div class="dropdown-menu" id="sidebar-user-menu">
-          <div class="dropdown-item" onclick="window.location.href='profile.html'">👤 My Profile</div>
+          <div class="dropdown-item" onclick="window.location.href='profile.html'">?? My Profile</div>
           <div class="dropdown-divider"></div>
-          <div class="dropdown-item danger" onclick="Auth.logout()">🚪 Sign Out</div>
+          <div class="dropdown-item danger" onclick="Auth.logout()">?? Sign Out</div>
         </div>
       </div>
     </div>
@@ -94,14 +95,14 @@
 
   <div id="main-area">
     <header id="topbar">
-      <button class="hamburger" id="hamburger-btn">☰</button>
+      <button class="hamburger" id="hamburger-btn">?</button>
       <span class="topbar-page-title" id="page-title">Reports</span>
       <div style="flex:1"></div>
       <div class="topbar-actions no-print">
-        <button class="btn btn-secondary btn-sm hidden" id="btn-export-pdf" onclick="exportPDF()">🖨 Print / PDF</button>
-        <button class="btn btn-secondary btn-sm hidden" id="btn-export-csv" onclick="exportCSV()">⬇ Export CSV</button>
+        <button class="btn btn-secondary btn-sm hidden" id="btn-export-pdf" onclick="exportPDF()">?? Print / PDF</button>
+        <button class="btn btn-secondary btn-sm hidden" id="btn-export-csv" onclick="exportCSV()">? Export CSV</button>
         <div class="user-avatar" id="topbar-avatar">JD</div>
-        <div><div class="user-name" id="topbar-user-name">—</div><div class="user-role" id="topbar-user-role"></div></div>
+        <div><div class="user-name" id="topbar-user-name">�</div><div class="user-role" id="topbar-user-role"></div></div>
       </div>
     </header>
 
@@ -113,16 +114,16 @@
         <div class="card-body">
           <div class="form-row" style="align-items:flex-end">
             <div class="form-group">
-              <label class="form-label">From Date <span class="required">*</span></label>
-              <input id="f-date-from" type="date" class="form-control">
+              <label class="form-label" for="f-date-from">From Date <span class="required">*</span></label>
+              <input id="f-date-from" name="f-date-from" type="date" class="form-control">
             </div>
             <div class="form-group">
-              <label class="form-label">To Date <span class="required">*</span></label>
-              <input id="f-date-to" type="date" class="form-control">
+              <label class="form-label" for="f-date-to">To Date <span class="required">*</span></label>
+              <input id="f-date-to" name="f-date-to" type="date" class="form-control">
             </div>
             <div class="form-group">
-              <label class="form-label">Status</label>
-              <select id="f-status" class="form-control">
+              <label class="form-label" for="f-status">Status</label>
+              <select id="f-status" name="f-status" class="form-control">
                 <option value="">All Statuses</option>
                 <option value="DRAFT">Draft</option>
                 <option value="READY_FOR_DOCUMENTS">Ready for Documents</option>
@@ -140,17 +141,31 @@
               </select>
             </div>
             <div class="form-group">
-              <label class="form-label">Procurement Type</label>
-              <select id="f-type" class="form-control">
-                <option value="">All Types</option>
-                <option value="STANDARD">Standard</option>
-                <option value="ICT">ICT</option>
+              <label class="form-label" for="f-type">Expense Category</label>
+              <select id="f-type" name="f-type" class="form-control">
+                <option value="">All Categories</option>
+                <option value="ICT &amp; Technology">ICT &amp; Technology</option>
+                <option value="Office Equipment &amp; Supplies">Office Equipment &amp; Supplies</option>
+                <option value="Furniture &amp; Fixtures">Furniture &amp; Fixtures</option>
+                <option value="Travel/Transport &amp; Accommodation">Travel/Transport &amp; Accommodation</option>
+                <option value="Facilities &amp; Building Maintenance">Facilities &amp; Building Maintenance</option>
+                <option value="Cleaning &amp; Hygiene">Cleaning &amp; Hygiene</option>
+                <option value="Security &amp; Safety">Security &amp; Safety</option>
+                <option value="Human Resources &amp; Staff Services">Human Resources &amp; Staff Services</option>
+                <option value="Logistics &amp; Freight">Logistics &amp; Freight</option>
+                <option value="Media &amp; Marketing">Media &amp; Marketing</option>
+                <option value="Tools, Machinery &amp; Equipment">Tools, Machinery &amp; Equipment</option>
+                <option value="Food &amp; Catering">Food &amp; Catering</option>
+                <option value="Licenses, Memberships &amp; Subscriptions">Licenses, Memberships &amp; Subscriptions</option>
+                <option value="Rental &amp; Leasing">Rental &amp; Leasing</option>
+                <option value="Professional &amp; Consulting Services">Professional &amp; Consulting Services</option>
+                <option value="Other / Miscellaneous">Other / Miscellaneous</option>
               </select>
             </div>
-            <!-- Department filter — accounts officer only -->
+            <!-- Department filter � accounts officer only -->
             <div class="form-group hidden" id="dept-filter-group">
-              <label class="form-label">Department</label>
-              <select id="f-dept" class="form-control">
+              <label class="form-label" for="f-dept">Department</label>
+              <select id="f-dept" name="f-dept" class="form-control">
                 <option value="">All Departments</option>
               </select>
             </div>
@@ -161,7 +176,7 @@
             <button class="btn btn-secondary btn-sm" onclick="setQuickRange('thisYear')">This Year</button>
             <button class="btn btn-secondary btn-sm" onclick="setQuickRange('lastYear')">Last Year</button>
             <button class="btn btn-primary" id="btn-generate" onclick="generateReport()">
-              📊 Generate Report
+              ?? Generate Report
             </button>
           </div>
         </div>
@@ -173,7 +188,7 @@
         <!-- Print header (hidden on screen, shown when printing) -->
         <div class="print-header">
           <h1>Papua New Guinea University of Technology</h1>
-          <h2 style="font-size:15px;margin-bottom:6px">General Expense Monitoring System — Expenditure Report</h2>
+          <h2 style="font-size:15px;margin-bottom:6px">General Expense Monitoring System � Expenditure Report</h2>
           <p id="print-period"></p>
           <p id="print-generated"></p>
         </div>
@@ -186,7 +201,7 @@
 
         <!-- By type bar chart -->
         <div class="report-section">
-          <div class="report-section-title">Expenditure by Type</div>
+          <div class="report-section-title">Expenditure by Expense Category</div>
           <div id="by-type-chart"></div>
         </div>
 
@@ -214,7 +229,7 @@
                   <th class="ao-col hidden">Claimant</th>
                   <th class="ao-col hidden">Department</th>
                   <th>Payee</th>
-                  <th>Type</th>
+                  <th>Category</th>
                   <th>Amount (K)</th>
                   <th>Status</th>
                   <th>Date</th>
@@ -232,8 +247,8 @@
   </div>
 </div>
 
-<script src="../assets/js/api.js?v=2"></script>
-<script src="../assets/js/app.js?v=2"></script>
+<script src="../assets/js/api.js?v=7"></script>
+<script src="../assets/js/app.js?v=7"></script>
 <script>
 let reportData = null;
 let isAccountsOfficer = false;
@@ -304,14 +319,14 @@ async function generateReport() {
 
   const btn = document.getElementById('btn-generate');
   btn.disabled = true;
-  btn.innerHTML = '<span class="spinner" style="width:14px;height:14px;border-width:2px"></span> Generating…';
+  btn.innerHTML = '<span class="spinner" style="width:14px;height:14px;border-width:2px"></span> Generating�';
 
   try {
     const params = {
       date_from: dateFrom,
       date_to:   dateTo,
       status:    document.getElementById('f-status').value,
-      procurement_type: document.getElementById('f-type').value,
+      expense_category: document.getElementById('f-type').value,
     };
     if (isAccountsOfficer) params.dept_id = document.getElementById('f-dept').value;
 
@@ -325,7 +340,7 @@ async function generateReport() {
     Toast.error(err.message || 'Failed to generate report.');
   } finally {
     btn.disabled = false;
-    btn.innerHTML = '📊 Generate Report';
+    btn.innerHTML = '?? Generate Report';
   }
 }
 
@@ -337,9 +352,9 @@ function renderReport(d) {
 
   // Print header
   document.getElementById('print-period').textContent =
-    `Period: ${Fmt.date(d.date_from)} — ${Fmt.date(d.date_to)}`;
+    `Period: ${Fmt.date(d.date_from)} � ${Fmt.date(d.date_to)}`;
   document.getElementById('print-generated').textContent =
-    `Generated by: ${d.generated_by}  —  ${Fmt.datetime(d.generated_at)}`;
+    `Generated by: ${d.generated_by}  �  ${Fmt.datetime(d.generated_at)}`;
 
   // Summary boxes
   const completedCount = (d.by_status?.COMPLETED?.count || 0);
@@ -399,11 +414,11 @@ function renderReport(d) {
   tbody.innerHTML = (d.ges || []).map((g, i) => `
     <tr>
       <td style="color:var(--text-muted)">${i+1}</td>
-      <td class="font-mono fw-600" style="font-size:12px">${g.ge_number||'—'}</td>
+      <td class="font-mono fw-600" style="font-size:12px">${g.ge_number||'�'}</td>
       ${isAO ? `<td style="font-size:12px">${g.claimant_name}</td>
                 <td style="font-size:12px">${g.department_name}</td>` : ''}
-      <td>${g.payee_name||'—'}</td>
-      <td>${g.is_capital_item?'Capital':g.procurement_type}</td>
+      <td>${g.payee_name||'�'}</td>
+      <td>${g.expense_category || (g.is_capital_item ? "Capital Item" : g.procurement_type) || "—"}</td>
       <td class="text-right fw-600">${Fmt.currency(g.total_amount)}</td>
       <td>${statusBadge(g.status, g.status_label)}</td>
       <td style="font-size:12px">${Fmt.date(g.created_at)}</td>
@@ -495,9 +510,9 @@ function exportPDF() {
       <td>${i+1}</td>
       <td>${esc(g.ge_number)}</td>
       ${isAO ? `<td>${esc(g.claimant_name)}</td><td>${esc(g.department_name)}</td>` : ''}
-      <td>${esc(g.payee_name || '—')}</td>
-      <td>${esc(g.departmental_reference || '—')}</td>
-      <td>${g.is_capital_item ? 'Capital Item' : esc(g.procurement_type)}</td>
+      <td>${esc(g.payee_name || '�')}</td>
+      <td>${esc(g.departmental_reference || '�')}</td>
+      <td>${esc(g.expense_category || (g.is_capital_item ? "Capital Item" : g.procurement_type) || "—")}</td>
       <td style="text-align:right">K ${parseFloat(g.total_amount).toFixed(2)}</td>
       <td>${esc(g.status_label)}</td>
       <td>${(g.created_at||'').slice(0,10)}</td>
@@ -526,7 +541,7 @@ function exportPDF() {
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>GE Report — PNGUOT GEMS</title>
+  <title>GE Report � PNGUOT GEMS</title>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body { font-family: Arial, sans-serif; font-size: 12px; color: #000; background: #fff; padding: 24px; }
@@ -554,13 +569,13 @@ function exportPDF() {
 </head>
 <body>
   <div class="no-print">
-    <button class="print-btn" onclick="window.print()">🖨 Print / Save as PDF</button>
-    <button class="close-btn" onclick="window.close()">✕ Close</button>
+    <button class="print-btn" onclick="window.print()">?? Print / Save as PDF</button>
+    <button class="close-btn" onclick="window.close()">? Close</button>
   </div>
 
   <div class="header">
     <h1>Papua New Guinea University of Technology</h1>
-    <h2>General Expense Monitoring System — Expenditure Report</h2>
+    <h2>General Expense Monitoring System � Expenditure Report</h2>
     <p>Period: ${esc(d.date_from)} to ${esc(d.date_to)}</p>
     <p>Generated by: ${esc(d.generated_by)} &nbsp;|&nbsp; ${esc(d.generated_at)}</p>
   </div>
@@ -574,7 +589,7 @@ function exportPDF() {
 
   <h3>Expenditure by Type</h3>
   <table>
-    <thead><tr><th>Type</th><th style="text-align:right">Count</th><th style="text-align:right">Total (K)</th></tr></thead>
+    <thead><tr><th>Category</th><th style="text-align:right">Count</th><th style="text-align:right">Total (K)</th></tr></thead>
     <tbody>${typeRows || '<tr><td colspan="3" style="text-align:center">No data</td></tr>'}</tbody>
   </table>
 
@@ -591,7 +606,7 @@ function exportPDF() {
     <thead>
       <tr>
         <th>#</th><th>GE Number</th>${aoExtra}
-        <th>Payee</th><th>Dept Ref</th><th>Type</th>
+        <th>Payee</th><th>Dept Ref</th><th>Category</th>
         <th style="text-align:right">Amount (K)</th><th>Status</th><th>Date</th>
       </tr>
     </thead>
@@ -625,7 +640,7 @@ function exportCSV() {
   const headers = [
     '#', 'GE Number',
     ...(isAO ? ['Claimant', 'Department'] : ['Department']),
-    'Payee', 'Dept Reference', 'Procurement Type',
+    'Payee', 'Dept Reference', 'Expense Category',
     'Amount (K)', 'Status', 'Date Created',
   ];
 
@@ -635,7 +650,7 @@ function exportCSV() {
     ...(isAO ? [g.claimant_name, g.department_name] : [g.department_name]),
     g.payee_name || '',
     g.departmental_reference || '',
-    g.is_capital_item ? 'Capital Item' : g.procurement_type,
+    g.expense_category || (g.is_capital_item ? 'Capital Item' : g.procurement_type) || '—',
     parseFloat(g.total_amount).toFixed(2),
     g.status_label,
     (g.created_at || '').slice(0, 10),

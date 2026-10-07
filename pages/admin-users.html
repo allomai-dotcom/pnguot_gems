@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>User Management — PNGUOT GEMS</title>
+  <title>User Management � PNGUOT GEMS</title>
   <link rel="stylesheet" href="../assets/css/main.css">
   <style>
     .email-input-group {
@@ -57,26 +57,26 @@
       <div class="sidebar-workspace"><div class="ws-name" id="sidebar-ws-name">Admin Panel</div><div class="ws-sub" id="sidebar-ws-sub">PNGUOT GEMS</div></div>
     </div>
     <nav class="sidebar-nav">
-      <a class="nav-item" href="admin-panel.html"    data-page="admin-panel.html"><span class="nav-icon">📊</span><span class="nav-label">Overview</span></a>
+      <a class="nav-item" href="admin-panel.html"    data-page="admin-panel.html"><span class="nav-icon">??</span><span class="nav-label">Overview</span></a>
       <div class="sidebar-section-label">Staff</div>
-      <a class="nav-item" href="admin-users.html"     data-page="admin-users.html"><span class="nav-icon">👥</span><span class="nav-label">Staff Accounts</span></a>
-      <a class="nav-item" href="admin-delegates.html" data-page="admin-delegates.html"><span class="nav-icon">🔗</span><span class="nav-label">Delegates</span></a>
+      <a class="nav-item" href="admin-users.html"     data-page="admin-users.html"><span class="nav-icon">??</span><span class="nav-label">Staff Accounts</span></a>
+      <a class="nav-item" href="admin-delegates.html" data-page="admin-delegates.html"><span class="nav-icon">??</span><span class="nav-label">Delegates</span></a>
       <div class="sidebar-section-label">GE Management</div>
-      <a class="nav-item" href="admin-all-ges.html"  data-page="admin-all-ges.html"><span class="nav-icon">📋</span><span class="nav-label">All GE Forms</span></a>
-      <a class="nav-item" href="admin-approvals.html" data-page="admin-approvals.html"><span class="nav-icon">✅</span><span class="nav-label">Pending Approvals</span><span class="nav-badge hidden" id="approval-badge">0</span></a>
+      <a class="nav-item" href="admin-all-ges.html"  data-page="admin-all-ges.html"><span class="nav-icon">??</span><span class="nav-label">All GE Forms</span></a>
+      <a class="nav-item" href="admin-approvals.html" data-page="admin-approvals.html"><span class="nav-icon">?</span><span class="nav-label">Pending Approvals</span><span class="nav-badge hidden" id="approval-badge">0</span></a>
       <div class="sidebar-section-label">System</div>
-      <a class="nav-item" href="admin-reports.html"  data-page="admin-reports.html"><span class="nav-icon">📊</span><span class="nav-label">Reports</span></a>
-      <a class="nav-item" href="admin-notifications.html" data-page="admin-notifications.html"><span class="nav-icon">🔔</span><span class="nav-label">Notifications</span><span class="nav-badge hidden notif-badge">0</span></a>
-      <a class="nav-item" href="admin-profile.html"   data-page="admin-profile.html"><span class="nav-icon">👤</span><span class="nav-label">My Profile</span></a>
+      <a class="nav-item" href="admin-reports.html"  data-page="admin-reports.html"><span class="nav-icon">??</span><span class="nav-label">Reports</span></a>
+      <a class="nav-item" href="admin-notifications.html" data-page="admin-notifications.html"><span class="nav-icon">??</span><span class="nav-label">Notifications</span><span class="nav-badge hidden notif-badge">0</span></a>
+      <a class="nav-item" href="admin-profile.html"   data-page="admin-profile.html"><span class="nav-icon">??</span><span class="nav-label">My Profile</span></a>
     </nav>
     <div class="sidebar-footer">
       <div class="footer-icon" style="background:none;padding:0"><img src="../assets/img/pnguot-logo.jpg" style="width:42px;height:42px;object-fit:contain;border-radius:4px"></div>
-      <div><div class="footer-name" id="sidebar-footer-name">PNGUOT GEMS</div><div class="footer-version">Admin · ver. 1.0</div></div>
-      <div class="dropdown"><button class="footer-menu" data-dropdown="sidebar-admin-menu">•••</button>
+      <div><div class="footer-name" id="sidebar-footer-name">PNGUOT GEMS</div><div class="footer-version">Admin � ver. 1.0</div></div>
+      <div class="dropdown"><button class="footer-menu" data-dropdown="sidebar-admin-menu">���</button>
         <div class="dropdown-menu" id="sidebar-admin-menu">
-          <div class="dropdown-item" onclick="location.href='admin-profile.html'">👤 My Profile</div>
+          <div class="dropdown-item" onclick="location.href='admin-profile.html'">?? My Profile</div>
           <div class="dropdown-divider"></div>
-          <div class="dropdown-item danger" onclick="Auth.logout()">🚪 Sign Out</div>
+          <div class="dropdown-item danger" onclick="Auth.logout()">?? Sign Out</div>
         </div>
       </div>
     </div>
@@ -85,23 +85,114 @@
 
   <div id="main-area">
     <header id="topbar">
-      <button class="hamburger" id="hamburger-btn">☰</button>
+      <button class="hamburger" id="hamburger-btn">?</button>
       <span class="topbar-page-title">User Management</span>
       <div class="topbar-search">
         <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
-        <input type="text" placeholder="Search by name, staff ID or email…" id="user-search">
+        <input  <!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>User Management � PNGUOT GEMS</title>
+  <link rel="stylesheet" href="../assets/css/main.css">
+  <style>
+    .email-input-group {
+      display: flex; align-items: center;
+      border: 1px solid var(--input-border); border-radius: var(--input-radius);
+      background: var(--input-bg); overflow: hidden;
+      transition: border-color var(--transition), box-shadow var(--transition);
+    }
+    .email-input-group:focus-within {
+      border-color: var(--input-focus);
+      box-shadow: 0 0 0 3px rgba(34,197,94,.12);
+    }
+    .email-input-group input {
+      flex: 1; border: none; background: none; padding: 9px 0 9px 12px;
+      font-size: 13.5px; color: var(--text-primary); outline: none;
+      font-family: var(--font);
+    }
+    .email-domain {
+      padding: 9px 12px 9px 4px;
+      font-size: 13.5px; color: var(--text-muted);
+      white-space: nowrap; user-select: none;
+    }
+    .role-card {
+      border: 1px solid var(--card-border); border-radius: 8px;
+      padding: 10px 12px; cursor: pointer;
+      transition: all var(--transition); display: flex; gap: 10px; align-items: flex-start;
+    }
+    .role-card:hover { border-color: var(--primary); background: var(--primary-light); }
+    .role-card input[type=checkbox] { margin-top: 2px; flex-shrink: 0; accent-color: var(--primary); }
+    .role-card-label { font-size: 13px; font-weight: 600; }
+    .role-card-desc  { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
+    .role-card.checked { border-color: var(--primary); background: var(--primary-light); }
+    .pw-toggle { position:relative; }
+    .pw-toggle input { padding-right: 38px; }
+    .pw-eye {
+      position: absolute; right: 10px; top: 50%; transform: translateY(-50%);
+      background: none; border: none; color: var(--text-muted); cursor: pointer;
+      font-size: 16px; padding: 2px;
+    }
+    .staff-id-preview {
+      font-size: 12px; color: var(--text-muted); margin-top: 4px;
+      font-family: monospace;
+    }
+  </style>
+</head>
+<body class="admin-ui">
+<div id="app-shell">
+  <!-- Admin Sidebar -->
+  <aside id="sidebar">
+    <div class="sidebar-header">
+      <div class="sidebar-avatar" id="sidebar-footer-av" style="background:#3b82f6">AD</div>
+      <div class="sidebar-workspace"><div class="ws-name" id="sidebar-ws-name">Admin Panel</div><div class="ws-sub" id="sidebar-ws-sub">PNGUOT GEMS</div></div>
+    </div>
+    <nav class="sidebar-nav">
+      <a class="nav-item" href="admin-panel.html"    data-page="admin-panel.html"><span class="nav-icon">??</span><span class="nav-label">Overview</span></a>
+      <div class="sidebar-section-label">Staff</div>
+      <a class="nav-item" href="admin-users.html"     data-page="admin-users.html"><span class="nav-icon">??</span><span class="nav-label">Staff Accounts</span></a>
+      <a class="nav-item" href="admin-delegates.html" data-page="admin-delegates.html"><span class="nav-icon">??</span><span class="nav-label">Delegates</span></a>
+      <div class="sidebar-section-label">GE Management</div>
+      <a class="nav-item" href="admin-all-ges.html"  data-page="admin-all-ges.html"><span class="nav-icon">??</span><span class="nav-label">All GE Forms</span></a>
+      <a class="nav-item" href="admin-approvals.html" data-page="admin-approvals.html"><span class="nav-icon">?</span><span class="nav-label">Pending Approvals</span><span class="nav-badge hidden" id="approval-badge">0</span></a>
+      <div class="sidebar-section-label">System</div>
+      <a class="nav-item" href="admin-reports.html"  data-page="admin-reports.html"><span class="nav-icon">??</span><span class="nav-label">Reports</span></a>
+      <a class="nav-item" href="admin-notifications.html" data-page="admin-notifications.html"><span class="nav-icon">??</span><span class="nav-label">Notifications</span><span class="nav-badge hidden notif-badge">0</span></a>
+      <a class="nav-item" href="admin-profile.html"   data-page="admin-profile.html"><span class="nav-icon">??</span><span class="nav-label">My Profile</span></a>
+    </nav>
+    <div class="sidebar-footer">
+      <div class="footer-icon" style="background:none;padding:0"><img src="../assets/img/pnguot-logo.jpg" style="width:42px;height:42px;object-fit:contain;border-radius:4px"></div>
+      <div><div class="footer-name" id="sidebar-footer-name">PNGUOT GEMS</div><div class="footer-version">Admin � ver. 1.0</div></div>
+      <div class="dropdown"><button class="footer-menu" data-dropdown="sidebar-admin-menu">���</button>
+        <div class="dropdown-menu" id="sidebar-admin-menu">
+          <div class="dropdown-item" onclick="location.href='admin-profile.html'">?? My Profile</div>
+          <div class="dropdown-divider"></div>
+          <div class="dropdown-item danger" onclick="Auth.logout()">?? Sign Out</div>
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-overlay" id="sidebar-overlay"></div>
+
+  <div id="main-area">
+    <header id="topbar">
+      <button class="hamburger" id="hamburger-btn">?</button>
+      <span class="topbar-page-title">User Management</span>
+      <div class="topbar-search">
+        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+        <input type="text" placeholder="Search by name, staff ID or email�" id="user-search" name="user-search">
       </div>
       <div class="topbar-actions">
         <button class="btn btn-primary btn-sm" onclick="openCreateUser()">+ Add Staff</button>
         <div class="dropdown">
           <div class="topbar-user" data-dropdown="user-menu">
             <div class="user-avatar" id="topbar-avatar">JD</div>
-            <div><div class="user-name" id="topbar-user-name">—</div><div class="user-role" id="topbar-user-role"></div></div>
+            <div><div class="user-name" id="topbar-user-name">�</div><div class="user-role" id="topbar-user-role"></div></div>
           </div>
           <div class="dropdown-menu" id="user-menu">
-            <div class="dropdown-item" onclick="location.href='admin-profile.html'">👤 My Profile</div>
+            <div class="dropdown-item" onclick="location.href='admin-profile.html'">?? My Profile</div>
             <div class="dropdown-divider"></div>
-            <div class="dropdown-item danger" onclick="Auth.logout()">🚪 Sign Out</div>
+            <div class="dropdown-item danger" onclick="Auth.logout()">?? Sign Out</div>
           </div>
         </div>
       </div>
@@ -129,7 +220,7 @@
   <div class="modal modal-lg">
     <div class="modal-header">
       <span class="modal-title" id="user-modal-title">Add New Staff</span>
-      <button class="modal-close" onclick="Modal.close('user-modal')">✕</button>
+      <button class="modal-close" onclick="Modal.close('user-modal')">?</button>
     </div>
     <div class="modal-body">
       <input type="hidden" id="edit-user-id">
@@ -138,35 +229,35 @@
       <div style="font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--text-muted);margin-bottom:12px">Personal Details</div>
       <div class="form-row">
         <div class="form-group">
-          <label class="form-label">First Name <span class="required">*</span></label>
-          <input id="u-first-name" type="text" class="form-control" placeholder="e.g. Alita"
+          <label class="form-label" for="u-first-name">First Name <span class="required">*</span></label>
+          <input id="u-first-name" name="u-first-name" type="text" class="form-control" placeholder="e.g. Alita"
                  oninput="autoFillFields()">
         </div>
         <div class="form-group">
-          <label class="form-label">Last Name <span class="required">*</span></label>
-          <input id="u-last-name" type="text" class="form-control" placeholder="e.g. Sari"
+          <label class="form-label" for="u-last-name">Last Name <span class="required">*</span></label>
+          <input id="u-last-name" name="u-last-name" type="text" class="form-control" placeholder="e.g. Sari"
                  oninput="autoFillFields()">
         </div>
         <div class="form-group">
-          <label class="form-label">Phone</label>
-          <input id="u-phone" type="text" class="form-control" placeholder="+675 7XXX XXXX">
+          <label class="form-label" for="u-phone">Phone</label>
+          <input id="u-phone" name="u-phone" type="text" class="form-control" placeholder="+675 7XXX XXXX">
         </div>
       </div>
 
       <!-- Staff ID -->
       <div class="form-group">
-        <label class="form-label">Staff ID <span class="required">*</span></label>
-        <input id="u-staff-id" type="text" class="form-control font-mono"
+        <label class="form-label" for="u-staff-id">Staff ID <span class="required">*</span></label>
+        <input id="u-staff-id" name="u-staff-id" type="text" class="form-control font-mono"
                placeholder="e.g. PNGUOT002" style="text-transform:uppercase"
                oninput="this.value=this.value.toUpperCase()">
-        <div class="staff-id-preview" id="staff-id-hint">Auto-suggested from name — you can edit it</div>
+        <div class="staff-id-preview" id="staff-id-hint">Auto-suggested from name � you can edit it</div>
       </div>
 
       <!-- Email -->
       <div class="form-group">
-        <label class="form-label">University Email <span class="required">*</span></label>
+        <label class="form-label" for="u-email-prefix">University Email <span class="required">*</span></label>
         <div class="email-input-group">
-          <input id="u-email-prefix" type="text" placeholder="firstname.lastname"
+          <input id="u-email-prefix" name="u-email-prefix" type="text" placeholder="firstname.lastname"
                  oninput="autoFillFields()" autocomplete="off">
           <span class="email-domain">@pnguot.ac.pg</span>
         </div>
@@ -175,7 +266,7 @@
 
       <!-- Department -->
       <div class="form-group">
-        <label class="form-label">Department <span class="required">*</span></label>
+        <label class="form-label" for="u-department">Department <span class="required">*</span></label>
         <select id="u-department" class="form-control">
           <option value="">Select Department</option>
         </select>
@@ -196,18 +287,17 @@
       <div style="font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--text-muted);margin-bottom:12px">Login Credentials</div>
       <div class="form-row">
         <div class="form-group">
-          <label class="form-label">
-            Password <span id="pass-required" class="required">*</span>
+          <label class="form-label" for="u-password">Password <span id="pass-required" class="required">*</span>
           </label>
           <div class="pw-toggle">
-            <input id="u-password" type="password" class="form-control" placeholder="Min 8 characters">
-            <button type="button" class="pw-eye" onclick="togglePassword('u-password', this)" title="Show/hide password">👁</button>
+            <input id="u-password" name="u-password" type="password" class="form-control" placeholder="Min 8 characters">
+            <button type="button" class="pw-eye" onclick="togglePassword('u-password', this)" title="Show/hide password">??</button>
           </div>
           <div class="form-hint" id="pass-hint"></div>
         </div>
         <div class="form-group" style="align-self:flex-end;padding-bottom:4px">
           <button type="button" class="btn btn-secondary btn-sm" onclick="generatePassword()">
-            🔀 Generate Password
+            ?? Generate Password
           </button>
           <div class="form-hint mt-4">Share the generated password with the staff member</div>
         </div>
@@ -215,10 +305,10 @@
 
       <!-- Active status (edit only) -->
       <div class="form-group hidden" id="active-group">
-        <label class="form-label">Account Status</label>
+        <label class="form-label" for="u-active">Account Status</label>
         <select id="u-active" class="form-control" style="max-width:200px">
-          <option value="1">✅ Active</option>
-          <option value="0">🚫 Inactive</option>
+          <option value="1">? Active</option>
+          <option value="0">?? Inactive</option>
         </select>
       </div>
     </div>
@@ -236,7 +326,7 @@
   <div class="modal">
     <div class="modal-header">
       <span class="modal-title">Staff Details</span>
-      <button class="modal-close" onclick="Modal.close('view-modal')">✕</button>
+      <button class="modal-close" onclick="Modal.close('view-modal')">?</button>
     </div>
     <div class="modal-body" id="view-modal-body"></div>
     <div class="modal-footer">
@@ -246,8 +336,8 @@
   </div>
 </div>
 
-<script src="../assets/js/api.js?v=2"></script>
-<script src="../assets/js/app.js?v=2"></script>
+<script src="../assets/js/api.js?v=7"></script>
+<script src="../assets/js/app.js?v=7"></script>
 <script>
 // -- Role definitions with descriptions -----------------------
 const ROLE_DEFS = [
@@ -258,7 +348,7 @@ const ROLE_DEFS = [
   { code: 'PROCUREMENT_MANAGER', label: 'Procurement Manager',  desc: 'Reviews and approves procurement steps' },
   { code: 'ACCOUNTS_OFFICER',    label: 'Accounts Officer',     desc: 'Financial verification and payment processing' },
   { code: 'VICE_CHANCELLOR',     label: 'Vice Chancellor',      desc: 'Final approval for capital item purchases' },
-  { code: 'SYSTEM_ADMIN',        label: 'System Administrator', desc: 'Full system access — user and delegate management' },
+  { code: 'SYSTEM_ADMIN',        label: 'System Administrator', desc: 'Full system access � user and delegate management' },
 ];
 
 const EMAIL_DOMAIN = '@pnguot.ac.pg';
@@ -320,8 +410,8 @@ document.addEventListener('DOMContentLoaded', () => {
 // -- Password helpers ------------------------------------------
 function togglePassword(inputId, btn) {
   const inp = document.getElementById(inputId);
-  if (inp.type === 'password') { inp.type = 'text'; btn.textContent = '🙈'; }
-  else                         { inp.type = 'password'; btn.textContent = '🙈'; }
+  if (inp.type === 'password') { inp.type = 'text'; btn.textContent = '??'; }
+  else                         { inp.type = 'password'; btn.textContent = '??'; }
 }
 
 function generatePassword() {
@@ -331,8 +421,8 @@ function generatePassword() {
   const inp = document.getElementById('u-password');
   inp.value = pw;
   inp.type  = 'text';
-  document.querySelector('.pw-eye').textContent = '🙈';
-  Toast.info(`Generated password: ${pw} — copy it before saving.`, 'Password Generated');
+  document.querySelector('.pw-eye').textContent = '??';
+  Toast.info(`Generated password: ${pw} � copy it before saving.`, 'Password Generated');
 }
 
 // -- Load departments ------------------------------------------
@@ -359,15 +449,15 @@ async function loadUsers() {
     const active   = users.filter(u => u.is_active).length;
     const inactive = users.length - active;
     document.getElementById('user-stats').innerHTML = `
-      <div class="stat-card"><div class="stat-icon blue">👥</div><div class="stat-label">Total Staff</div><div class="stat-value">${users.length}</div></div>
-      <div class="stat-card"><div class="stat-icon green">✅</div><div class="stat-label">Active</div><div class="stat-value">${active}</div></div>
-      <div class="stat-card"><div class="stat-icon red">🚫</div><div class="stat-label">Inactive</div><div class="stat-value">${inactive}</div></div>`;
+      <div class="stat-card"><div class="stat-icon blue">??</div><div class="stat-label">Total Staff</div><div class="stat-value">${users.length}</div></div>
+      <div class="stat-card"><div class="stat-icon green">?</div><div class="stat-label">Active</div><div class="stat-value">${active}</div></div>
+      <div class="stat-card"><div class="stat-icon red">??</div><div class="stat-label">Inactive</div><div class="stat-value">${inactive}</div></div>`;
     document.getElementById('user-count').textContent = `${users.length} staff member${users.length !== 1 ? 's' : ''}`;
 
     if (!users.length) {
       c.innerHTML = `
         <div class="empty-state">
-          <div class="es-icon">📋</div>
+          <div class="es-icon">??</div>
           <div class="es-title">No staff accounts yet</div>
           <div class="es-sub">Click <strong>+ Add Staff</strong> to create the first staff account.</div>
         </div>`;
@@ -391,16 +481,16 @@ async function loadUsers() {
                 ${u.phone ? `<div class="text-muted" style="font-size:11px">${u.phone}</div>` : ''}
               </td>
               <td style="font-size:12px">${u.email}</td>
-              <td>${u.department_name || '<span class="text-muted">—</span>'}</td>
+              <td>${u.department_name || '<span class="text-muted">�</span>'}</td>
               <td>
                 ${(u.roles || []).map(r =>
                   `<span class="status-badge status-SUBMITTED" style="margin:1px;font-size:10px">${r.replace(/_/g,' ')}</span>`
-                ).join('') || '<span class="text-muted">—</span>'}
+                ).join('') || '<span class="text-muted">�</span>'}
               </td>
               <td>
                 ${u.is_active
-                  ? '<span style="color:var(--primary);font-size:12px;font-weight:600">✅ Active</span>'
-                  : '<span style="color:var(--danger);font-size:12px;font-weight:600">🚫 Inactive</span>'}
+                  ? '<span style="color:var(--primary);font-size:12px;font-weight:600">? Active</span>'
+                  : '<span style="color:var(--danger);font-size:12px;font-weight:600">?? Inactive</span>'}
               </td>
               <td>
                 <div class="flex gap-8">
@@ -412,7 +502,7 @@ async function loadUsers() {
         </tbody>
       </table></div>`;
   } catch (err) {
-    c.innerHTML = `<div class="alert alert-error" style="margin:16px"><span>⚠️</span>${err.message}</div>`;
+    c.innerHTML = `<div class="alert alert-error" style="margin:16px"><span>??</span>${err.message}</div>`;
   }
 }
 
@@ -420,7 +510,7 @@ async function loadUsers() {
 function renderRolesCheckboxes(selected = []) {
   document.getElementById('roles-checkboxes').innerHTML = ROLE_DEFS.map(r => `
     <label class="role-card ${selected.includes(r.code) ? 'checked' : ''}" id="role-card-${r.code}">
-      <input type="checkbox" value="${r.code}" ${selected.includes(r.code) ? 'checked' : ''}
+      <input type="checkbox" id="role-cb-${r.code}" name="role-${r.code}" value="${r.code}" ${selected.includes(r.code) ? 'checked' : ''}
              onchange="document.getElementById('role-card-${r.code}').classList.toggle('checked', this.checked)">
       <div>
         <div class="role-card-label">${r.label}</div>
@@ -509,18 +599,18 @@ async function openViewUser(id) {
       </div>
       <table style="width:100%;border-collapse:collapse;font-size:13px">
         <tr><td style="padding:7px 0;color:var(--text-muted);width:120px">Email</td><td class="fw-600">${u.email}</td></tr>
-        <tr><td style="padding:7px 0;color:var(--text-muted)">Department</td><td>${u.dept_name || '—'}</td></tr>
-        <tr><td style="padding:7px 0;color:var(--text-muted)">Phone</td><td>${u.phone || '—'}</td></tr>
+        <tr><td style="padding:7px 0;color:var(--text-muted)">Department</td><td>${u.dept_name || '�'}</td></tr>
+        <tr><td style="padding:7px 0;color:var(--text-muted)">Phone</td><td>${u.phone || '�'}</td></tr>
         <tr><td style="padding:7px 0;color:var(--text-muted)">Joined</td><td>${Fmt.date(u.created_at)}</td></tr>
         <tr>
           <td style="padding:7px 0;color:var(--text-muted);vertical-align:top">Roles</td>
           <td>${(u.roles||[]).map(r =>
             `<span class="status-badge status-SUBMITTED" style="margin:2px;font-size:11px">${r.replace(/_/g,' ')}</span>`
-          ).join('') || '—'}</td>
+          ).join('') || '�'}</td>
         </tr>
       </table>`;
   } catch (err) {
-    body.innerHTML = `<div class="alert alert-error"><span>⚠️</span>${err.message}</div>`;
+    body.innerHTML = `<div class="alert alert-error"><span>??</span>${err.message}</div>`;
   }
 }
 
@@ -564,7 +654,7 @@ async function saveUser() {
 
   const btn = document.getElementById('btn-save-user');
   btn.disabled = true;
-  btn.innerHTML = '<span class="spinner" style="width:14px;height:14px;border-width:2px"></span> Saving…';
+  btn.innerHTML = '<span class="spinner" style="width:14px;height:14px;border-width:2px"></span> Saving�';
 
   try {
     if (editId) {
@@ -580,7 +670,503 @@ async function saveUser() {
     Toast.error(err.message || 'Failed to save user.');
   } finally {
     btn.disabled = false;
-    btn.innerHTML = `<span id="save-btn-label">${editId ? 'Save Changes' : 'Add Staff Member'}</span>`;
+    document.getElementById('save-btn-label').textContent = editId ? 'Save Changes' : 'Add Staff Member';
+  }
+}
+</script>
+</body>
+</html>
+.Value -replace "id=""$id""", "id=""$id"" name=""$id""" >
+      </div>
+      <div class="topbar-actions">
+        <button class="btn btn-primary btn-sm" onclick="openCreateUser()">+ Add Staff</button>
+        <div class="dropdown">
+          <div class="topbar-user" data-dropdown="user-menu">
+            <div class="user-avatar" id="topbar-avatar">JD</div>
+            <div><div class="user-name" id="topbar-user-name">�</div><div class="user-role" id="topbar-user-role"></div></div>
+          </div>
+          <div class="dropdown-menu" id="user-menu">
+            <div class="dropdown-item" onclick="location.href='admin-profile.html'">?? My Profile</div>
+            <div class="dropdown-divider"></div>
+            <div class="dropdown-item danger" onclick="Auth.logout()">?? Sign Out</div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main id="page-content">
+      <!-- Stats row -->
+      <div class="stat-grid mb-24" id="user-stats" style="grid-template-columns:repeat(auto-fill,minmax(150px,1fr))"></div>
+
+      <div class="card">
+        <div class="card-header">
+          <span class="card-title">Staff Accounts</span>
+          <span id="user-count" class="text-muted" style="font-size:13px"></span>
+        </div>
+        <div id="users-container">
+          <div class="page-loader"><div class="spinner"></div></div>
+        </div>
+      </div>
+    </main>
+  </div>
+</div>
+
+<!-- -- Add / Edit Staff Modal ------------------------------- -->
+<div class="modal-overlay" id="user-modal">
+  <div class="modal modal-lg">
+    <div class="modal-header">
+      <span class="modal-title" id="user-modal-title">Add New Staff</span>
+      <button class="modal-close" onclick="Modal.close('user-modal')">?</button>
+    </div>
+    <div class="modal-body">
+      <input type="hidden" id="edit-user-id">
+
+      <!-- Personal details -->
+      <div style="font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--text-muted);margin-bottom:12px">Personal Details</div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label" for="u-first-name">First Name <span class="required">*</span></label>
+          <input id="u-first-name" name="u-first-name" type="text" class="form-control" placeholder="e.g. Alita"
+                 oninput="autoFillFields()">
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="u-last-name">Last Name <span class="required">*</span></label>
+          <input id="u-last-name" name="u-last-name" type="text" class="form-control" placeholder="e.g. Sari"
+                 oninput="autoFillFields()">
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="u-phone">Phone</label>
+          <input id="u-phone" name="u-phone" type="text" class="form-control" placeholder="+675 7XXX XXXX">
+        </div>
+      </div>
+
+      <!-- Staff ID -->
+      <div class="form-group">
+        <label class="form-label" for="u-staff-id">Staff ID <span class="required">*</span></label>
+        <input id="u-staff-id" name="u-staff-id" type="text" class="form-control font-mono"
+               placeholder="e.g. PNGUOT002" style="text-transform:uppercase"
+               oninput="this.value=this.value.toUpperCase()">
+        <div class="staff-id-preview" id="staff-id-hint">Auto-suggested from name � you can edit it</div>
+      </div>
+
+      <!-- Email -->
+      <div class="form-group">
+        <label class="form-label" for="u-email-prefix">University Email <span class="required">*</span></label>
+        <div class="email-input-group">
+          <input id="u-email-prefix" name="u-email-prefix" type="text" placeholder="firstname.lastname"
+                 oninput="autoFillFields()" autocomplete="off">
+          <span class="email-domain">@pnguot.ac.pg</span>
+        </div>
+        <div class="form-hint">Enter only the part before @pnguot.ac.pg</div>
+      </div>
+
+      <!-- Department -->
+      <div class="form-group">
+        <label class="form-label" for="u-department">Department <span class="required">*</span></label>
+        <select id="u-department" class="form-control">
+          <option value="">Select Department</option>
+        </select>
+      </div>
+
+      <div style="height:1px;background:var(--card-border);margin:16px 0"></div>
+
+      <!-- Roles -->
+      <div style="font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--text-muted);margin-bottom:12px">
+        Roles <span class="required">*</span>
+        <span style="font-weight:400;text-transform:none;font-size:11px;margin-left:8px">Select all that apply</span>
+      </div>
+      <div id="roles-checkboxes" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:8px;margin-bottom:16px"></div>
+
+      <div style="height:1px;background:var(--card-border);margin:16px 0"></div>
+
+      <!-- Password -->
+      <div style="font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--text-muted);margin-bottom:12px">Login Credentials</div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label" for="u-password">Password <span id="pass-required" class="required">*</span>
+          </label>
+          <div class="pw-toggle">
+            <input id="u-password" name="u-password" type="password" class="form-control" placeholder="Min 8 characters">
+            <button type="button" class="pw-eye" onclick="togglePassword('u-password', this)" title="Show/hide password">??</button>
+          </div>
+          <div class="form-hint" id="pass-hint"></div>
+        </div>
+        <div class="form-group" style="align-self:flex-end;padding-bottom:4px">
+          <button type="button" class="btn btn-secondary btn-sm" onclick="generatePassword()">
+            ?? Generate Password
+          </button>
+          <div class="form-hint mt-4">Share the generated password with the staff member</div>
+        </div>
+      </div>
+
+      <!-- Active status (edit only) -->
+      <div class="form-group hidden" id="active-group">
+        <label class="form-label" for="u-active">Account Status</label>
+        <select id="u-active" class="form-control" style="max-width:200px">
+          <option value="1">? Active</option>
+          <option value="0">?? Inactive</option>
+        </select>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="Modal.close('user-modal')">Cancel</button>
+      <button class="btn btn-primary" id="btn-save-user" onclick="saveUser()">
+        <span id="save-btn-label">Add Staff Member</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- View staff modal -->
+<div class="modal-overlay" id="view-modal">
+  <div class="modal">
+    <div class="modal-header">
+      <span class="modal-title">Staff Details</span>
+      <button class="modal-close" onclick="Modal.close('view-modal')">?</button>
+    </div>
+    <div class="modal-body" id="view-modal-body"></div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="Modal.close('view-modal')">Close</button>
+      <button class="btn btn-primary" id="btn-edit-from-view">Edit</button>
+    </div>
+  </div>
+</div>
+
+<script src="../assets/js/api.js?v=7"></script>
+<script src="../assets/js/app.js?v=7"></script>
+<script>
+// -- Role definitions with descriptions -----------------------
+const ROLE_DEFS = [
+  { code: 'CLAIMANT',            label: 'Claimant',             desc: 'Can create and submit General Expense forms' },
+  { code: 'HEAD_OF_SCHOOL',      label: 'Head of School/Dept',  desc: 'First-level departmental approval of GE forms' },
+  { code: 'DEAN',                label: 'Dean',                 desc: 'Faculty-level approval of GE forms' },
+  { code: 'ICT_DIRECTOR',        label: 'ICT Director',         desc: 'Approves ICT purchases and verifications' },
+  { code: 'PROCUREMENT_MANAGER', label: 'Procurement Manager',  desc: 'Reviews and approves procurement steps' },
+  { code: 'ACCOUNTS_OFFICER',    label: 'Accounts Officer',     desc: 'Financial verification and payment processing' },
+  { code: 'VICE_CHANCELLOR',     label: 'Vice Chancellor',      desc: 'Final approval for capital item purchases' },
+  { code: 'SYSTEM_ADMIN',        label: 'System Administrator', desc: 'Full system access � user and delegate management' },
+];
+
+const EMAIL_DOMAIN = '@pnguot.ac.pg';
+let departments = [];
+let searchTimer;
+let viewingUserId = null;
+
+(async () => {
+  const ok = await requireAuth(['SYSTEM_ADMIN']);
+  if (!ok) return;
+  Sidebar.setActive('admin-users.html');
+  await loadDepts();
+  loadUsers();
+  document.getElementById('user-search').addEventListener('input', () => {
+    clearTimeout(searchTimer);
+    searchTimer = setTimeout(loadUsers, 400);
+  });
+  document.getElementById('btn-edit-from-view').addEventListener('click', () => {
+    Modal.close('view-modal');
+    if (viewingUserId) openEditUser(viewingUserId);
+  });
+})();
+
+// -- Auto-fill email prefix and staff ID from name -------------
+function autoFillFields() {
+  const first = document.getElementById('u-first-name').value.trim().toLowerCase();
+  const last  = document.getElementById('u-last-name').value.trim().toLowerCase();
+  const isNew = !document.getElementById('edit-user-id').value;
+
+  if (isNew) {
+    // Auto-suggest email prefix only if not manually edited
+    const prefix = document.getElementById('u-email-prefix');
+    if (!prefix.dataset.manuallyEdited) {
+      if (first && last) prefix.value = `${first}.${last}`.replace(/\s+/g, '');
+      else if (first)    prefix.value = first;
+    }
+
+    // Auto-suggest staff ID
+    const staffIdEl = document.getElementById('u-staff-id');
+    if (!staffIdEl.dataset.manuallyEdited && first && last) {
+      // Get highest existing staff number and increment
+      const suggested = `PNGUOT${String(Date.now()).slice(-4)}`;
+      staffIdEl.placeholder = suggested;
+    }
+  }
+}
+
+// Mark email prefix as manually edited if user types in it
+document.addEventListener('DOMContentLoaded', () => {
+  document.getElementById('u-email-prefix')?.addEventListener('input', function() {
+    this.dataset.manuallyEdited = '1';
+  });
+  document.getElementById('u-staff-id')?.addEventListener('input', function() {
+    this.dataset.manuallyEdited = '1';
+    this.value = this.value.toUpperCase();
+  });
+});
+
+// -- Password helpers ------------------------------------------
+function togglePassword(inputId, btn) {
+  const inp = document.getElementById(inputId);
+  if (inp.type === 'password') { inp.type = 'text'; btn.textContent = '??'; }
+  else                         { inp.type = 'password'; btn.textContent = '??'; }
+}
+
+function generatePassword() {
+  const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghjkmnpqrstuvwxyz23456789@#$!';
+  let pw = '';
+  for (let i = 0; i < 12; i++) pw += chars[Math.floor(Math.random() * chars.length)];
+  const inp = document.getElementById('u-password');
+  inp.value = pw;
+  inp.type  = 'text';
+  document.querySelector('.pw-eye').textContent = '??';
+  Toast.info(`Generated password: ${pw} � copy it before saving.`, 'Password Generated');
+}
+
+// -- Load departments ------------------------------------------
+async function loadDepts() {
+  try {
+    const res = await API.get('admin/departments.php').catch(() => ({ departments: [] }));
+    departments = res.departments || [];
+    const sel = document.getElementById('u-department');
+    departments.forEach(d => {
+      sel.innerHTML += `<option value="${d.id}">${d.name} (${d.code})</option>`;
+    });
+  } catch {}
+}
+
+// -- Load users table ------------------------------------------
+async function loadUsers() {
+  const c = document.getElementById('users-container');
+  c.innerHTML = `<div class="page-loader"><div class="spinner"></div></div>`;
+  try {
+    const res   = await API.adminUsers({ search: document.getElementById('user-search').value });
+    const users = res.users;
+
+    // Stats
+    const active   = users.filter(u => u.is_active).length;
+    const inactive = users.length - active;
+    document.getElementById('user-stats').innerHTML = `
+      <div class="stat-card"><div class="stat-icon blue">??</div><div class="stat-label">Total Staff</div><div class="stat-value">${users.length}</div></div>
+      <div class="stat-card"><div class="stat-icon green">?</div><div class="stat-label">Active</div><div class="stat-value">${active}</div></div>
+      <div class="stat-card"><div class="stat-icon red">??</div><div class="stat-label">Inactive</div><div class="stat-value">${inactive}</div></div>`;
+    document.getElementById('user-count').textContent = `${users.length} staff member${users.length !== 1 ? 's' : ''}`;
+
+    if (!users.length) {
+      c.innerHTML = `
+        <div class="empty-state">
+          <div class="es-icon">??</div>
+          <div class="es-title">No staff accounts yet</div>
+          <div class="es-sub">Click <strong>+ Add Staff</strong> to create the first staff account.</div>
+        </div>`;
+      return;
+    }
+
+    c.innerHTML = `
+      <div class="table-wrap"><table>
+        <thead>
+          <tr>
+            <th>Staff ID</th><th>Name</th><th>Email</th>
+            <th>Department</th><th>Roles</th><th>Status</th><th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${users.map(u => `
+            <tr>
+              <td class="font-mono fw-600">${u.staff_id}</td>
+              <td>
+                <div class="fw-600">${u.first_name} ${u.last_name}</div>
+                ${u.phone ? `<div class="text-muted" style="font-size:11px">${u.phone}</div>` : ''}
+              </td>
+              <td style="font-size:12px">${u.email}</td>
+              <td>${u.department_name || '<span class="text-muted">�</span>'}</td>
+              <td>
+                ${(u.roles || []).map(r =>
+                  `<span class="status-badge status-SUBMITTED" style="margin:1px;font-size:10px">${r.replace(/_/g,' ')}</span>`
+                ).join('') || '<span class="text-muted">�</span>'}
+              </td>
+              <td>
+                ${u.is_active
+                  ? '<span style="color:var(--primary);font-size:12px;font-weight:600">? Active</span>'
+                  : '<span style="color:var(--danger);font-size:12px;font-weight:600">?? Inactive</span>'}
+              </td>
+              <td>
+                <div class="flex gap-8">
+                  <button class="btn btn-secondary btn-sm" onclick="openViewUser(${u.id})">View</button>
+                  <button class="btn btn-ghost btn-sm" onclick="openEditUser(${u.id})">Edit</button>
+                </div>
+              </td>
+            </tr>`).join('')}
+        </tbody>
+      </table></div>`;
+  } catch (err) {
+    c.innerHTML = `<div class="alert alert-error" style="margin:16px"><span>??</span>${err.message}</div>`;
+  }
+}
+
+// -- Render role cards -----------------------------------------
+function renderRolesCheckboxes(selected = []) {
+  document.getElementById('roles-checkboxes').innerHTML = ROLE_DEFS.map(r => `
+    <label class="role-card ${selected.includes(r.code) ? 'checked' : ''}" id="role-card-${r.code}">
+      <input type="checkbox" id="role-cb-${r.code}" name="role-${r.code}" value="${r.code}" ${selected.includes(r.code) ? 'checked' : ''}
+             onchange="document.getElementById('role-card-${r.code}').classList.toggle('checked', this.checked)">
+      <div>
+        <div class="role-card-label">${r.label}</div>
+        <div class="role-card-desc">${r.desc}</div>
+      </div>
+    </label>`).join('');
+}
+
+// -- Open create form ------------------------------------------
+function openCreateUser() {
+  document.getElementById('user-modal-title').textContent = 'Add New Staff Member';
+  document.getElementById('save-btn-label').textContent   = 'Add Staff Member';
+  document.getElementById('edit-user-id').value = '';
+
+  // Clear all fields
+  ['u-first-name','u-last-name','u-phone','u-staff-id','u-password'].forEach(id => {
+    const el = document.getElementById(id);
+    el.value = '';
+    delete el.dataset.manuallyEdited;
+  });
+  const prefix = document.getElementById('u-email-prefix');
+  prefix.value = '';
+  delete prefix.dataset.manuallyEdited;
+
+  document.getElementById('u-department').value = '';
+  document.getElementById('u-active').value     = '1';
+  document.getElementById('pass-required').classList.remove('hidden');
+  document.getElementById('pass-hint').textContent = '';
+  document.getElementById('active-group').classList.add('hidden');
+  renderRolesCheckboxes(['CLAIMANT']);
+  Modal.open('user-modal');
+}
+
+// -- Open edit form --------------------------------------------
+async function openEditUser(id) {
+  document.getElementById('user-modal-title').textContent = 'Edit Staff Member';
+  document.getElementById('save-btn-label').textContent   = 'Save Changes';
+  try {
+    const res = await API.adminUserGet(id);
+    const u   = res.user;
+
+    document.getElementById('edit-user-id').value  = u.id;
+    document.getElementById('u-first-name').value  = u.first_name;
+    document.getElementById('u-last-name').value   = u.last_name;
+    document.getElementById('u-phone').value       = u.phone || '';
+    document.getElementById('u-staff-id').value    = u.staff_id;
+    document.getElementById('u-password').value    = '';
+    document.getElementById('u-active').value      = u.is_active ? '1' : '0';
+    document.getElementById('u-department').value  = u.department_id || '';
+
+    // Split email into prefix + domain
+    const emailParts = (u.email || '').split('@');
+    document.getElementById('u-email-prefix').value = emailParts[0] || '';
+
+    document.getElementById('pass-required').classList.add('hidden');
+    document.getElementById('pass-hint').textContent = 'Leave blank to keep current password.';
+    document.getElementById('active-group').classList.remove('hidden');
+
+    renderRolesCheckboxes(u.roles || []);
+    Modal.open('user-modal');
+  } catch (err) { Toast.error(err.message); }
+}
+
+// -- View staff modal ------------------------------------------
+async function openViewUser(id) {
+  viewingUserId = id;
+  const body = document.getElementById('view-modal-body');
+  body.innerHTML = `<div class="page-loader"><div class="spinner"></div></div>`;
+  Modal.open('view-modal');
+  try {
+    const res = await API.adminUserGet(id);
+    const u   = res.user;
+    const initials = ((u.first_name?.[0]||'') + (u.last_name?.[0]||'')).toUpperCase();
+    body.innerHTML = `
+      <div class="flex-center gap-8 mb-16" style="gap:16px">
+        <div style="width:56px;height:56px;background:var(--primary);border-radius:50%;
+                    display:flex;align-items:center;justify-content:center;
+                    font-size:20px;font-weight:700;color:#fff;flex-shrink:0">${initials}</div>
+        <div>
+          <div class="fw-700" style="font-size:17px">${u.first_name} ${u.last_name}</div>
+          <div class="font-mono text-muted" style="font-size:12px">${u.staff_id}</div>
+        </div>
+        <div style="margin-left:auto">${u.is_active
+          ? '<span class="status-badge status-COMPLETED">Active</span>'
+          : '<span class="status-badge status-CANCELLED">Inactive</span>'}</div>
+      </div>
+      <table style="width:100%;border-collapse:collapse;font-size:13px">
+        <tr><td style="padding:7px 0;color:var(--text-muted);width:120px">Email</td><td class="fw-600">${u.email}</td></tr>
+        <tr><td style="padding:7px 0;color:var(--text-muted)">Department</td><td>${u.dept_name || '�'}</td></tr>
+        <tr><td style="padding:7px 0;color:var(--text-muted)">Phone</td><td>${u.phone || '�'}</td></tr>
+        <tr><td style="padding:7px 0;color:var(--text-muted)">Joined</td><td>${Fmt.date(u.created_at)}</td></tr>
+        <tr>
+          <td style="padding:7px 0;color:var(--text-muted);vertical-align:top">Roles</td>
+          <td>${(u.roles||[]).map(r =>
+            `<span class="status-badge status-SUBMITTED" style="margin:2px;font-size:11px">${r.replace(/_/g,' ')}</span>`
+          ).join('') || '�'}</td>
+        </tr>
+      </table>`;
+  } catch (err) {
+    body.innerHTML = `<div class="alert alert-error"><span>??</span>${err.message}</div>`;
+  }
+}
+
+// -- Save user (create or update) -----------------------------
+async function saveUser() {
+  const editId     = document.getElementById('edit-user-id').value;
+  const firstName  = document.getElementById('u-first-name').value.trim();
+  const lastName   = document.getElementById('u-last-name').value.trim();
+  const emailPrefix = document.getElementById('u-email-prefix').value.trim().toLowerCase();
+  const staffId    = document.getElementById('u-staff-id').value.trim().toUpperCase();
+  const password   = document.getElementById('u-password').value;
+  const phone      = document.getElementById('u-phone').value.trim();
+  const deptId     = document.getElementById('u-department').value;
+  const isActive   = document.getElementById('u-active').value === '1' ? 1 : 0;
+  const roles      = [...document.querySelectorAll('#roles-checkboxes input:checked')].map(cb => cb.value);
+
+  // Validation
+  if (!firstName)    { Toast.warning('First name is required.');    return; }
+  if (!lastName)     { Toast.warning('Last name is required.');     return; }
+  if (!emailPrefix)  { Toast.warning('Email prefix is required.');  return; }
+  if (!staffId)      { Toast.warning('Staff ID is required.');      return; }
+  if (!deptId)       { Toast.warning('Department is required.');    return; }
+  if (!roles.length) { Toast.warning('Select at least one role.');  return; }
+  if (!editId && !password) { Toast.warning('Password is required for new staff.'); return; }
+  if (password && password.length < 8) { Toast.warning('Password must be at least 8 characters.'); return; }
+
+  // Build full email
+  const email = `${emailPrefix}${EMAIL_DOMAIN}`;
+
+  const data = {
+    staff_id:      staffId,
+    first_name:    firstName,
+    last_name:     lastName,
+    email,
+    phone,
+    password,
+    department_id: deptId,
+    is_active:     isActive,
+    roles,
+  };
+
+  const btn = document.getElementById('btn-save-user');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner" style="width:14px;height:14px;border-width:2px"></span> Saving�';
+
+  try {
+    if (editId) {
+      await API.adminUserUpdate({ ...data, id: editId });
+      Toast.success(`${firstName} ${lastName}'s account updated.`);
+    } else {
+      await API.adminUserCreate(data);
+      Toast.success(`${firstName} ${lastName} added successfully. Share login: ${email}`);
+    }
+    Modal.close('user-modal');
+    loadUsers();
+  } catch (err) {
+    Toast.error(err.message || 'Failed to save user.');
+  } finally {
+    btn.disabled = false;
+    document.getElementById('save-btn-label').textContent = editId ? 'Save Changes' : 'Add Staff Member';
   }
 }
 </script>

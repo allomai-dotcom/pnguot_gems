@@ -7,24 +7,24 @@
 </head>
 <body class="staff-ui">
 <div id="app-shell">
-  <!-- Staff Sidebar -->
   <aside id="sidebar">
     <div class="sidebar-header">
       <div class="sidebar-avatar" id="sidebar-footer-av">JD</div>
       <div class="sidebar-workspace">
-        <div class="ws-name" id="sidebar-ws-name">Loading…</div>
+        <div class="ws-name" id="sidebar-ws-name">Loading</div>
         <div class="ws-sub"  id="sidebar-ws-sub">PNGUOT</div>
       </div>
       <button class="sidebar-add-btn" onclick="window.location.href='ge-form.html'" title="New GE">+</button>
     </div>
     <nav class="sidebar-nav">
-      <a class="nav-item" data-page="dashboard.html"    href="dashboard.html"><span class="nav-icon">📊</span><span class="nav-label">Overview</span></a>
+      <a class="nav-item" data-page="dashboard.html"    href="dashboard.html"><span class="nav-icon">🏠</span><span class="nav-label">Overview</span></a>
       <a class="nav-item" data-page="notifications.html" href="notifications.html"><span class="nav-icon">🔔</span><span class="nav-label">Notifications</span><span class="nav-badge hidden notif-badge">0</span></a>
       <div class="sidebar-section-label">Expenses</div>
       <a class="nav-item" data-page="ge-form.html"      href="ge-form.html"><span class="nav-icon">➕</span><span class="nav-label">New GE</span></a>
       <a class="nav-item" data-page="my-ges.html"       href="my-ges.html"><span class="nav-icon">📋</span><span class="nav-label">My GE Forms</span></a>
-      <a class="nav-item" data-page="quotation-tracker.html" href="quotation-tracker.html"><span class="nav-icon">📎</span><span class="nav-label">Quotation Tracker</span></a>
-      <a class="nav-item" data-page="my-reports.html"   href="my-reports.html"><span class="nav-icon">📊</span><span class="nav-label">Reports</span></a>
+      <a class="nav-item" data-page="my-ges.html?status=DRAFT" href="my-ges.html?status=DRAFT"><span class="nav-icon">📝</span><span class="nav-label">Drafts</span><span class="nav-badge hidden draft-count">0</span></a>
+      <a class="nav-item" data-page="quotation-tracker.html" href="quotation-tracker.html"><span class="nav-icon">📊</span><span class="nav-label">Quotation Tracker</span></a>
+      <a class="nav-item" data-page="my-reports.html"   href="my-reports.html"><span class="nav-icon">📈</span><span class="nav-label">Reports</span></a>
       <div class="sidebar-section-label approver-only hidden">Approvals</div>
       <a class="nav-item approver-only hidden" data-page="approvals.html" href="approvals.html"><span class="nav-icon">✅</span><span class="nav-label">Pending Approvals</span></a>
     </nav>
@@ -32,7 +32,7 @@
       <div class="footer-icon" style="background:none;padding:0"><img src="../assets/img/pnguot-logo.jpg" style="width:42px;height:42px;object-fit:contain;border-radius:4px"></div>
       <div><div class="footer-name" id="sidebar-footer-name">PNGUOT GEMS</div><div class="footer-version">ver. 1.0</div></div>
       <div class="dropdown">
-        <button class="footer-menu" data-dropdown="sidebar-user-menu">•••</button>
+        <button class="footer-menu" data-dropdown="sidebar-user-menu">⋯</button>
         <div class="dropdown-menu" id="sidebar-user-menu">
           <div class="dropdown-item" onclick="location.href='profile.html'">👤 My Profile</div>
           <div class="dropdown-divider"></div>
@@ -49,13 +49,13 @@
       <span class="topbar-page-title">My GE Forms</span>
       <div class="topbar-search">
         <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
-        <input type="text" placeholder="Search GE, payee, reference…" id="search-input">
+        <input type="text" placeholder="Search GE, payee, reference" id="search-input" name="search-input">
       </div>
       <div class="topbar-actions">
         <button class="btn btn-primary btn-sm" onclick="window.location.href='ge-form.html'">+ New GE</button>
         <div class="topbar-user dropdown" data-dropdown="user-menu">
           <div class="user-avatar" id="topbar-avatar">JD</div>
-          <div><div class="user-name" id="topbar-user-name">—</div><div class="user-role" id="topbar-user-role"></div></div>
+          <div><div class="user-name" id="topbar-user-name"></div><div class="user-role" id="topbar-user-role"></div></div>
         </div>
         <div class="dropdown-menu" id="user-menu">
           <div class="dropdown-item danger" onclick="Auth.logout()">🚪 Sign Out</div>
@@ -64,7 +64,6 @@
     </header>
 
     <main id="page-content">
-      <!-- Filter bar -->
       <div class="card mb-24">
         <div class="card-body" style="padding:12px 16px">
           <div class="flex-between flex-wrap gap-8">
@@ -93,7 +92,7 @@
 
       <div class="card">
         <div id="ge-list-container">
-          <div class="page-loader"><div class="spinner"></div> Loading…</div>
+          <div class="page-loader"><div class="spinner"></div> Loading</div>
         </div>
         <div id="pagination-container"></div>
       </div>
@@ -101,8 +100,8 @@
   </div>
 </div>
 
-<script src="../assets/js/api.js?v=2"></script>
-<script src="../assets/js/app.js?v=2"></script>
+<script src="../assets/js/api.js?v=7"></script>
+<script src="../assets/js/app.js?v=7"></script>
 <script>
 let currentPage = 1;
 let searchTimer;
@@ -110,10 +109,32 @@ let searchTimer;
 (async () => {
   const ok = await requireAuth();
   if (!ok) return;
-  Sidebar.setActive('my-ges.html');
+
+  const params = new URLSearchParams(window.location.search);
+  const statusParam = params.get('status');
+  if (statusParam) {
+    document.getElementById('filter-status').value = statusParam;
+    if (statusParam === 'DRAFT') {
+      document.querySelector('.topbar-page-title').textContent = 'My Drafts';
+      document.title = 'My Drafts — PNGUOT GEMS';
+    }
+  }
+
+  Sidebar.setActive(statusParam ? `my-ges.html?status=${statusParam}` : 'my-ges.html');
+
   loadList();
+
+  try {
+    const res = await API.geList({ page: 1, limit: 1, status: 'DRAFT' });
+    const count = res.pagination?.total ?? 0;
+    document.querySelectorAll('.draft-count').forEach(el => {
+      el.textContent = count;
+      if (count > 0) el.classList.remove('hidden');
+    });
+  } catch (_) {}
+
   document.getElementById('filter-status').addEventListener('change', () => { currentPage=1; loadList(); });
-  document.getElementById('search-input').addEventListener('input', e => {
+  document.getElementById('search-input').addEventListener('input', () => {
     clearTimeout(searchTimer);
     searchTimer = setTimeout(() => { currentPage=1; loadList(); }, 400);
   });
@@ -156,11 +177,10 @@ async function loadList() {
           <tbody>
             ${data.map(g => `
               <tr>
-                <td><span class="font-mono fw-600">${g.ge_number||'—'}</span></td>
-                <td>${g.payee_name||'—'}</td>
-                <td class="font-mono">${g.departmental_reference||'—'}</td>
-                <td>${g.procurement_type}${g.is_capital_item?' 🏛':''}
-                </td>
+                <td><span class="font-mono fw-600">${g.ge_number||''}</span></td>
+                <td>${g.payee_name||''}</td>
+                <td class="font-mono">${g.departmental_reference||''}</td>
+                <td>${g.procurement_type}${g.is_capital_item?' 🏛':''}</td>
                 <td class="fw-600">${Fmt.currency(g.total_amount)}</td>
                 <td>${statusBadge(g.status, g.status_label)}</td>
                 <td>${Fmt.date(g.updated_at)}</td>
@@ -168,7 +188,7 @@ async function loadList() {
                   <div class="flex gap-8">
                     ${['DRAFT','READY_FOR_DOCUMENTS','QUERIED'].includes(g.status)
                       ? `<a href="ge-form.html?id=${g.id}" class="btn btn-secondary btn-sm">Edit</a>`
-                      : `<a href="ge-view.html?id=${g.id}" class="btn btn-ghost btn-sm">View</a>`}
+                      : `<a href="ge-form.html?id=${g.id}" class="btn btn-ghost btn-sm">View</a>`}
                     ${g.status==='READY_FOR_DOCUMENTS'
                       ? `<a href="ge-documents.html?id=${g.id}" class="btn btn-primary btn-sm">Documents</a>` : ''}
                   </div>
@@ -178,10 +198,9 @@ async function loadList() {
         </table>
       </div>`;
 
-    // Pagination
     renderPagination(pagination);
   } catch (err) {
-    container.innerHTML = `<div class="alert alert-error" style="margin:16px"><span>⚠️</span>${err.message}</div>`;
+    container.innerHTML = `<div class="alert alert-error" style="margin:16px"><span>❌</span>${err.message}</div>`;
   }
 }
 
@@ -190,18 +209,15 @@ function renderPagination(p) {
   if (p.pages <= 1) { c.innerHTML=''; return; }
   let html = `<div class="pagination">`;
   html += `<button class="page-btn" onclick="goPage(${p.page-1})" ${p.page<=1?'disabled':''}>‹</button>`;
-
   for (let i=1; i<=p.pages; i++) {
     if (i===1||i===p.pages||Math.abs(i-p.page)<=2)
       html += `<button class="page-btn ${i===p.page?'active':''}" onclick="goPage(${i})">${i}</button>`;
     else if (Math.abs(i-p.page)===3) html += `<span class="page-btn" style="border:none">…</span>`;
   }
-  html += `<button class="page-btn" onclick="goPage(${p.page+1})" ${p.page>=p.pages?'disabled':''}>‹</button>`;
-
+  html += `<button class="page-btn" onclick="goPage(${p.page+1})" ${p.page>=p.pages?'disabled':''}>›</button>`;
   c.innerHTML = html + '</div>';
 }
 function goPage(p) { currentPage=p; loadList(); }
 </script>
 </body>
 </html>
-

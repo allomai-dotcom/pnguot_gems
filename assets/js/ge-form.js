@@ -11,16 +11,20 @@ const GEForm = {
   hodSignaturePad: null,
   _currentUploadType: null,
   _selectedFile: null,
+  _readOnly: false,
 
   // ── Bootstrap ─────────────────────────────────────────────
   async init(geId = null) {
     this.geId = geId ? parseInt(geId) : null;
 
-    // Load department dropdown first (needed for both new and edit)
-    await this.loadDepartments();
+    // Load department dropdown — non-fatal: form must work even if this fails
+    await this.loadDepartments().catch(err => console.warn('loadDepartments failed:', err));
 
     if (this.geId) {
-      await this.load(this.geId);
+      await this.load(this.geId).catch(err => {
+        console.error('GEForm.load failed:', err);
+        Toast.error(err.message || 'Failed to load GE form.');
+      });
     } else {
       this.lineItems = [{ description: '', quantity: '', unit_price: '', amount: '' }];
       this.acctLines = [{ account_code: '', account_name: '',
@@ -62,11 +66,7 @@ const GEForm = {
       document.getElementById('btn-clear-hod-sig')?.addEventListener('click', () => this.hodSignaturePad.clear());
     }
 
-    // Finance fields — readonly for non-privileged users
-    if (!Auth.hasAnyRole(['ACCOUNTS_OFFICER', 'SYSTEM_ADMIN'])) {
-      document.getElementById('cfc-number')?.setAttribute('readonly', true);
-      document.getElementById('commitment-number')?.setAttribute('readonly', true);
-    }
+    // Finance fields — editable by all users (server enforces save restriction for non-privileged roles)
 
     this.bindEvents();
     this.bindUploadZone();
@@ -83,6 +83,7 @@ const GEForm = {
 
       // Check editable
       const isEditable = ['DRAFT','READY_FOR_DOCUMENTS','QUERIED'].includes(ge.status);
+      this._readOnly = !isEditable;
       if (!isEditable) {
         document.getElementById('ge-form-readonly-alert')?.classList.remove('hidden');
         document.querySelectorAll('#ge-form input, #ge-form select, #ge-form textarea')
@@ -92,17 +93,45 @@ const GEForm = {
         if (this.hodSignaturePad) this.hodSignaturePad.off();
       }
 
+      // Financial coding fields are always editable regardless of status
+      // (accounts staff fill these in after submission)
+      ['cfc-number', 'commitment-number'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.disabled = false;
+      });
+
+      // If form is read-only, show a dedicated save button for financial coding
+      if (!isEditable) {
+        const cfcLabel = document.querySelector('label[for="cfc-number"]');
+        if (cfcLabel && !document.getElementById('btn-save-financial')) {
+          const saveBtn = document.createElement('button');
+          saveBtn.type = 'button';
+          saveBtn.id = 'btn-save-financial';
+          saveBtn.className = 'btn btn-primary btn-sm';
+          saveBtn.style.marginTop = '10px';
+          saveBtn.textContent = '💾 Save Financial Coding';
+          saveBtn.addEventListener('click', () => this.saveFinancialCoding());
+          cfcLabel.closest('.ge-box').appendChild(saveBtn);
+        }
+      }
+
       // Section 1 — Claim Routing
       this.setVal('ge-number',        ge.ge_number);
       this.setVal('payee-name',       ge.payee_name);
-      // For the select, set the department_id value
+      // Set department after options are loaded
       const deptSel = document.getElementById('dept-display');
-      if (deptSel) deptSel.value = ge.department_id || '';
+      if (deptSel) {
+        // If options already loaded, set directly; otherwise wait a tick
+        const setDept = () => { deptSel.value = ge.department_id || ''; };
+        if (deptSel.options.length > 1) setDept();
+        else setTimeout(setDept, 200);
+      }
       this.setVal('dept-ref',         ge.departmental_reference);
       this.setVal('claimant-ref',     ge.claimant_reference);
       this.setVal('description',      ge.description);
       this.setVal('procurement-type', ge.procurement_type);
       this.setVal('is-capital-item',  ge.is_capital_item ? '1' : '0');
+      this.setVal('expense-category', ge.expense_category || '');
 
       // Restore GST checkbox state
       const gstCb = document.getElementById('gst-included');
@@ -209,12 +238,12 @@ const GEForm = {
       const amtVal   = li.amount     !== undefined ? (li.amount || '') : '';
 
       row.innerHTML = `
-        <textarea class="form-control li-desc" placeholder="Description" rows="1"
+        <textarea class="form-control li-desc" id="li-desc-${i}" name="line_item_desc_${i}" placeholder="Description" rows="1"
           style="resize:none;overflow:hidden;min-height:36px;line-height:1.4;padding:8px 10px"
         >${this.esc(li.description)}</textarea>
-        <input class="form-control li-qty"    type="number" placeholder="Qty"       min="0" step="any"  value="${qtyVal}">
-        <input class="form-control li-price"  type="number" placeholder="Unit Rate" min="0" step="0.01" value="${priceVal}">
-        <input class="form-control li-amount" type="number" placeholder="Amount"    min="0" step="0.01" value="${amtVal}" style="font-weight:600">
+        <input class="form-control li-qty"    id="li-qty-${i}"    name="line_item_qty_${i}"    type="number" placeholder="Qty"       min="0" step="any"  value="${qtyVal}">
+        <input class="form-control li-price"  id="li-price-${i}"  name="line_item_price_${i}"  type="number" placeholder="Unit Rate" min="0" step="0.01" value="${priceVal}">
+        <input class="form-control li-amount" id="li-amount-${i}" name="line_item_amount_${i}" type="number" placeholder="Amount"    min="0" step="0.01" value="${amtVal}" style="font-weight:600">
         <button class="btn btn-ghost btn-sm remove-li" title="Remove" ${this.lineItems.length <= 1 ? 'disabled' : ''}>✕</button>`;
       container.appendChild(row);
 
@@ -238,17 +267,17 @@ const GEForm = {
       const row = document.createElement('div');
       row.className = 'acct-row';
       row.dataset.index = i;
-      row.style.cssText = 'display:grid;grid-template-columns:60px 60px 60px 70px 60px 60px 110px 36px;gap:6px;margin-bottom:6px';
+      row.style.cssText = 'display:grid;grid-template-columns:60px 60px 60px 70px 60px 60px 120px 36px;gap:6px;margin-bottom:6px';
       // Show blank when amount is 0
       const amtVal = al.amount ? al.amount : '';
       row.innerHTML = `
-        <input class="form-control al-div"    type="text"   placeholder="Div"    value="${this.esc(al.budget_div)}">
-        <input class="form-control al-fn"     type="text"   placeholder="FN"     value="${this.esc(al.budget_fn)}">
-        <input class="form-control al-act"    type="text"   placeholder="Act"    value="${this.esc(al.budget_act)}">
-        <input class="form-control al-item"   type="text"   placeholder="Item"   value="${this.esc(al.budget_item)}">
-        <input class="form-control al-si"     type="text"   placeholder="SI"     value="${this.esc(al.budget_si)}">
-        <input class="form-control al-d"      type="text"   placeholder="D"      value="${this.esc(al.budget_d)}">
-        <input class="form-control al-amount" type="number" placeholder="Amount" min="0" step="0.01" value="${amtVal}" style="font-weight:600">
+        <input class="form-control al-div"    id="al-div-${i}"    name="acct_div_${i}"    type="text"   placeholder="Div"    value="${this.esc(al.budget_div)}">
+        <input class="form-control al-fn"     id="al-fn-${i}"     name="acct_fn_${i}"     type="text"   placeholder="FN"     value="${this.esc(al.budget_fn)}">
+        <input class="form-control al-act"    id="al-act-${i}"    name="acct_act_${i}"    type="text"   placeholder="Act"    value="${this.esc(al.budget_act)}">
+        <input class="form-control al-item"   id="al-item-${i}"   name="acct_item_${i}"   type="text"   placeholder="Item"   value="${this.esc(al.budget_item)}">
+        <input class="form-control al-si"     id="al-si-${i}"     name="acct_si_${i}"     type="text"   placeholder="SI"     value="${this.esc(al.budget_si)}">
+        <input class="form-control al-d"      id="al-d-${i}"      name="acct_d_${i}"      type="text"   placeholder="D"      value="${this.esc(al.budget_d)}">
+        <input class="form-control al-amount" id="al-amount-${i}" name="acct_amount_${i}" type="number" placeholder="Amount" min="0" step="0.01" value="${amtVal}" style="font-weight:600">
         <button class="btn btn-ghost btn-sm remove-al" title="Remove" ${this.acctLines.length <= 1 ? 'disabled' : ''}>✕</button>`;
       container.appendChild(row);
     });
@@ -296,11 +325,19 @@ const GEForm = {
   updateAcctTotal() {
     const total = this.acctLines.reduce((s, al) => s + parseFloat(al.amount || 0), 0);
     document.querySelectorAll('.acct-total-display').forEach(el => el.textContent = Fmt.currency(total));
-    const geTotalEl = document.querySelector('.ge-total-display');
-    const geTotal   = parseFloat(geTotalEl?.dataset.raw || 0);
-    const diffEl    = document.getElementById('acct-diff');
+
+    // Compare against the raw subtotal (sum of line amounts) — this matches what the
+    // server stores as total_amount, so the balance indicator agrees with server validation.
+    const subtotal = this.lineItems.reduce((s, li) => {
+      const amt = li.amount !== '' && li.amount !== undefined
+        ? parseFloat(li.amount) || 0
+        : (parseFloat(li.quantity) || 0) * (parseFloat(li.unit_price) || 0);
+      return s + amt;
+    }, 0);
+
+    const diffEl = document.getElementById('acct-diff');
     if (diffEl) {
-      const diff = total - geTotal;
+      const diff = total - subtotal;
       diffEl.textContent = Math.abs(diff) < 0.01 ? '✅ Balanced' : `⚠️ Difference: ${Fmt.currency(Math.abs(diff))}`;
       diffEl.style.color = Math.abs(diff) < 0.01 ? 'var(--primary)' : 'var(--danger)';
     }
@@ -409,12 +446,12 @@ const GEForm = {
       id:                        this.geId,
       department_id:             document.getElementById('dept-display')?.value || null,
       payee_name:                document.getElementById('payee-name')?.value?.trim(),
-      gst_included:              document.getElementById('gst-included')?.checked ?? false,
       departmental_reference:    document.getElementById('dept-ref')?.value?.trim(),
       claimant_reference:        document.getElementById('claimant-ref')?.value?.trim(),
       description:               document.getElementById('description')?.value?.trim(),
       procurement_type:          document.getElementById('procurement-type')?.value,
       is_capital_item:           document.getElementById('is-capital-item')?.value === '1',
+      expense_category:          document.getElementById('expense-category')?.value || null,
       cfc_number:                document.getElementById('cfc-number')?.value?.trim(),
       commitment_number:         document.getElementById('commitment-number')?.value?.trim(),
       claimant_full_name:        document.getElementById('claimant-full-name')?.value?.trim(),
@@ -440,6 +477,7 @@ const GEForm = {
         description: li.description,
         quantity:    li.quantity !== '' ? parseFloat(li.quantity) || 0 : 0,
         unit_price:  li.unit_price !== '' ? parseFloat(li.unit_price) || 0 : 0,
+        gst_percent: parseFloat(li.gst_percent) || 0,
         amount:      li.amount !== '' && li.amount !== undefined
           ? parseFloat(li.amount) || 0
           : (parseFloat(li.quantity) || 0) * (parseFloat(li.unit_price) || 0),
@@ -470,11 +508,23 @@ const GEForm = {
   },
 
   scheduleAutoSave() {
+    if (this._readOnly) return; // don't auto-save read-only forms
     if (this.autoSaveTimer) clearTimeout(this.autoSaveTimer);
-    this.autoSaveTimer = setTimeout(() => this.saveDraft(true), 3000);
+    this.autoSaveTimer = setTimeout(() => this.saveDraft(true).catch(e => console.warn('Auto-save failed:', e)), 3000);
   },
 
   async readyForDocs() {
+    // Client-side pre-check: warn if accounting lines have no amounts filled in
+    const acctTotal = this.acctLines.reduce((s, al) => s + (parseFloat(al.amount) || 0), 0);
+    if (acctTotal === 0) {
+      Toast.error(
+        'Please enter amounts in the accounting lines (the "For Departmental Use Only" section) before continuing.',
+        'Accounting Lines Required'
+      );
+      document.getElementById('acct-lines-container')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      return;
+    }
+
     await this.saveDraft(true);
     if (!this.geId) return;
     try {
@@ -660,6 +710,23 @@ const GEForm = {
           ${a.description ? `<div class="tl-desc">${a.description}</div>` : ''}
         </div>
       </div>`).join('');
+  },
+
+  async saveFinancialCoding() {
+    const btn = document.getElementById('btn-save-financial');
+    if (btn) { btn.disabled = true; btn.textContent = 'Saving…'; }
+    try {
+      await API.geUpdate({
+        id:                this.geId,
+        cfc_number:        document.getElementById('cfc-number')?.value?.trim() || null,
+        commitment_number: document.getElementById('commitment-number')?.value?.trim() || null,
+      });
+      Toast.success('Financial coding saved.');
+    } catch (err) {
+      Toast.error(err.message || 'Failed to save financial coding.');
+    } finally {
+      if (btn) { btn.disabled = false; btn.textContent = '💾 Save Financial Coding'; }
+    }
   },
 
   esc: (s) => String(s || '').replace(/"/g, '&quot;').replace(/</g, '&lt;'),

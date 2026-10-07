@@ -3,10 +3,10 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Admin Panel — PNGUOT GEMS</title>
+  <title>Admin Panel � PNGUOT GEMS</title>
   <link rel="stylesheet" href="../assets/css/main.css">
   <style>
-    /* Admin-specific overrides — deeper navy sidebar */
+    /* Admin-specific overrides � deeper navy sidebar */
     #sidebar { background: #0f1623; }
     .sidebar-header { border-bottom-color: #1e2535; }
     .sidebar-nav .nav-item:hover { background: #1e2535; }
@@ -80,36 +80,36 @@
 
     <nav class="sidebar-nav">
       <a class="nav-item" data-page="admin-panel.html" href="admin-panel.html">
-        <span class="nav-icon">📊</span><span class="nav-label">Overview</span>
+        <span class="nav-icon">??</span><span class="nav-label">Overview</span>
       </a>
 
       <div class="sidebar-section-label">Staff</div>
       <a class="nav-item" data-page="admin-users.html" href="admin-users.html">
-        <span class="nav-icon">👥</span><span class="nav-label">Staff Accounts</span>
+        <span class="nav-icon">??</span><span class="nav-label">Staff Accounts</span>
       </a>
       <a class="nav-item" data-page="admin-delegates.html" href="admin-delegates.html">
-        <span class="nav-icon">🔗</span><span class="nav-label">Delegates</span>
+        <span class="nav-icon">??</span><span class="nav-label">Delegates</span>
       </a>
 
       <div class="sidebar-section-label">GE Management</div>
       <a class="nav-item" data-page="admin-all-ges.html" href="admin-all-ges.html">
-        <span class="nav-icon">📋</span><span class="nav-label">All GE Forms</span>
+        <span class="nav-icon">??</span><span class="nav-label">All GE Forms</span>
       </a>
       <a class="nav-item" data-page="admin-approvals.html" href="admin-approvals.html">
-        <span class="nav-icon">✅</span><span class="nav-label">Pending Approvals</span>
+        <span class="nav-icon">?</span><span class="nav-label">Pending Approvals</span>
         <span class="nav-badge hidden" id="approval-badge">0</span>
       </a>
 
       <div class="sidebar-section-label">System</div>
       <a class="nav-item" data-page="admin-reports.html" href="admin-reports.html">
-        <span class="nav-icon">📊</span><span class="nav-label">Reports</span>
+        <span class="nav-icon">??</span><span class="nav-label">Reports</span>
       </a>
       <a class="nav-item" data-page="admin-notifications.html" href="admin-notifications.html">
-        <span class="nav-icon">🔔</span><span class="nav-label">Notifications</span>
+        <span class="nav-icon">??</span><span class="nav-label">Notifications</span>
         <span class="nav-badge hidden notif-badge">0</span>
       </a>
       <a class="nav-item" data-page="admin-profile.html" href="admin-profile.html">
-        <span class="nav-icon">👤</span><span class="nav-label">My Profile</span>
+        <span class="nav-icon">??</span><span class="nav-label">My Profile</span>
       </a>
     </nav>
 
@@ -117,14 +117,14 @@
       <div class="footer-icon" style="background:none;padding:0"><img src="../assets/img/pnguot-logo.jpg" style="width:42px;height:42px;object-fit:contain;border-radius:4px"></div>
       <div>
         <div class="footer-name" id="sidebar-footer-name">PNGUOT GEMS</div>
-        <div class="footer-version">Admin · ver. 1.0</div>
+        <div class="footer-version">Admin � ver. 1.0</div>
       </div>
       <div class="dropdown">
-        <button class="footer-menu" data-dropdown="sidebar-admin-menu">•••</button>
+        <button class="footer-menu" data-dropdown="sidebar-admin-menu">���</button>
         <div class="dropdown-menu" id="sidebar-admin-menu">
-          <div class="dropdown-item" onclick="location.href='admin-profile.html'">👤 My Profile</div>
+          <div class="dropdown-item" onclick="location.href='admin-profile.html'">?? My Profile</div>
           <div class="dropdown-divider"></div>
-          <div class="dropdown-item danger" onclick="Auth.logout()">🚪 Sign Out</div>
+          <div class="dropdown-item danger" onclick="Auth.logout()">?? Sign Out</div>
         </div>
       </div>
     </div>
@@ -134,19 +134,19 @@
   <!-- Main area -->
   <div id="main-area">
     <header id="topbar">
-      <button class="hamburger" id="hamburger-btn">☰</button>
+      <button class="hamburger" id="hamburger-btn">?</button>
       <span class="topbar-page-title">Admin Panel</span>
       <span class="admin-badge" style="margin-left:8px">System Admin</span>
       <div style="flex:1"></div>
       <div class="topbar-actions">
         <div class="dropdown">
           <button class="topbar-btn" data-dropdown="notif-dd" title="Notifications">
-            🔔<span class="badge hidden notif-badge">0</span>
+            ??<span class="badge hidden notif-badge">0</span>
           </button>
           <div class="dropdown-menu" id="notif-dd" style="min-width:300px">
             <div style="padding:10px 14px;font-weight:600;font-size:13px;border-bottom:1px solid var(--card-border)">Notifications</div>
             <div id="notif-list-preview" style="max-height:260px;overflow-y:auto">
-              <div style="padding:16px;text-align:center;color:var(--text-muted);font-size:13px">Loading…</div>
+              <div style="padding:16px;text-align:center;color:var(--text-muted);font-size:13px">Loading�</div>
             </div>
             <div style="padding:8px;border-top:1px solid var(--card-border)">
               <a href="admin-notifications.html" class="btn btn-ghost btn-sm w-full" style="justify-content:center">View All</a>
@@ -157,14 +157,14 @@
           <div class="topbar-user" data-dropdown="admin-user-menu">
             <div class="user-avatar" id="topbar-avatar" style="background:#3b82f6">AD</div>
             <div>
-              <div class="user-name" id="topbar-user-name">Loading…</div>
+              <div class="user-name" id="topbar-user-name">Loading�</div>
               <div class="user-role" id="topbar-user-role">System Administrator</div>
             </div>
           </div>
           <div class="dropdown-menu" id="admin-user-menu">
-            <div class="dropdown-item" onclick="location.href='admin-profile.html'">👤 My Profile</div>
+            <div class="dropdown-item" onclick="location.href='admin-profile.html'">?? My Profile</div>
             <div class="dropdown-divider"></div>
-            <div class="dropdown-item danger" onclick="Auth.logout()">🚪 Sign Out</div>
+            <div class="dropdown-item danger" onclick="Auth.logout()">?? Sign Out</div>
           </div>
         </div>
       </div>
@@ -183,12 +183,12 @@
               Welcome back, <span id="admin-first-name">Admin</span>
             </div>
             <div style="font-size:13px;opacity:.8">
-              You are logged in as System Administrator — PNGUOT General Expense Monitoring System
+              You are logged in as System Administrator � PNGUOT General Expense Monitoring System
             </div>
           </div>
           <div style="margin-left:auto;text-align:right">
             <div style="font-size:11px;opacity:.7">Today</div>
-            <div style="font-size:16px;font-weight:600" id="admin-date">—</div>
+            <div style="font-size:16px;font-weight:600" id="admin-date">�</div>
           </div>
         </div>
       </div>
@@ -204,32 +204,32 @@
       </div>
       <div class="action-grid mb-24">
         <a class="action-card" href="admin-users.html">
-          <div class="ac-icon">👥</div>
+          <div class="ac-icon">??</div>
           <div class="ac-title">Add Staff</div>
           <div class="ac-desc">Create a new staff account</div>
         </a>
         <a class="action-card" href="admin-delegates.html">
-          <div class="ac-icon">👥</div>
+          <div class="ac-icon">??</div>
           <div class="ac-title">Assign Delegate</div>
           <div class="ac-desc">Set approval role assignments</div>
         </a>
         <a class="action-card" href="admin-all-ges.html">
-          <div class="ac-icon">👥</div>
+          <div class="ac-icon">??</div>
           <div class="ac-title">View All GEs</div>
           <div class="ac-desc">Browse all expense forms</div>
         </a>
         <a class="action-card" href="admin-reports.html">
-          <div class="ac-icon">👥</div>
+          <div class="ac-icon">??</div>
           <div class="ac-title">Reports</div>
           <div class="ac-desc">Expenditure and workflow reports</div>
         </a>
         <a class="action-card" href="admin-approvals.html">
-          <div class="ac-icon">✅</div>
+          <div class="ac-icon">?</div>
           <div class="ac-title">Pending Approvals</div>
           <div class="ac-desc">Review tasks assigned to you</div>
         </a>
         <a class="action-card" href="admin-profile.html">
-          <div class="ac-icon">👥</div>
+          <div class="ac-icon">??</div>
           <div class="ac-title">Change Password</div>
           <div class="ac-desc">Update your admin password</div>
         </a>
@@ -242,7 +242,7 @@
         <div class="card">
           <div class="card-header">
             <span class="card-title">Recent Staff Accounts</span>
-            <a href="admin-users.html" class="btn btn-ghost btn-sm">View All →</a>
+            <a href="admin-users.html" class="btn btn-ghost btn-sm">View All ?</a>
           </div>
           <div id="recent-staff-list">
             <div class="page-loader"><div class="spinner"></div></div>
@@ -265,7 +265,7 @@
       <div class="card mt-24">
         <div class="card-header">
           <span class="card-title">Recent GE Activity</span>
-          <a href="admin-all-ges.html" class="btn btn-ghost btn-sm">View All →</a>
+          <a href="admin-all-ges.html" class="btn btn-ghost btn-sm">View All ?</a>
         </div>
         <div id="recent-ges">
           <div class="page-loader"><div class="spinner"></div></div>
@@ -276,8 +276,8 @@
   </div>
 </div>
 
-<script src="../assets/js/api.js?v=2"></script>
-<script src="../assets/js/app.js?v=2"></script>
+<script src="../assets/js/api.js?v=7"></script>
+<script src="../assets/js/app.js?v=7"></script>
 <script>
 (async () => {
   const ok = await requireAuth(['SYSTEM_ADMIN']);
@@ -317,8 +317,8 @@
   preview.innerHTML = unreadList.length
     ? unreadList.map(n => `
         <div class="dropdown-item" style="flex-direction:column;align-items:flex-start;gap:2px">
-          <div style="font-size:12px;font-weight:600">${n.ge_number ? n.ge_number + ' · ' : ''}${n.type.replace(/_/g,' ')}</div>
-          <div style="font-size:11px;color:var(--text-muted)">${n.message.substring(0,70)}…</div>
+          <div style="font-size:12px;font-weight:600">${n.ge_number ? n.ge_number + ' � ' : ''}${n.type.replace(/_/g,' ')}</div>
+          <div style="font-size:11px;color:var(--text-muted)">${n.message.substring(0,70)}�</div>
         </div>`).join('')
     : '<div style="padding:16px;text-align:center;color:var(--text-muted);font-size:13px">No new notifications</div>';
 
@@ -345,38 +345,38 @@
 
   document.getElementById('admin-stats').innerHTML = `
     <div class="stat-card admin-stat">
-      <div class="stat-icon blue">👥</div>
+      <div class="stat-icon blue">??</div>
       <div class="stat-label">Active Staff</div>
       <div class="stat-value">${activeStaff}</div>
       <div class="stat-sub">${users.length} total accounts</div>
     </div>
     <div class="stat-card admin-stat">
-      <div class="stat-icon blue">👥</div>
+      <div class="stat-icon blue">??</div>
       <div class="stat-label">Total GE Forms</div>
       <div class="stat-value">${totalGEs}</div>
       <div class="stat-sub">All time</div>
     </div>
     <div class="stat-card admin-stat">
-      <div class="stat-icon yellow">🔔</div>
+      <div class="stat-icon yellow">??</div>
       <div class="stat-label">In Workflow</div>
       <div class="stat-value">${pending}</div>
       <div class="stat-sub">Awaiting approval</div>
     </div>
     <div class="stat-card admin-stat">
-      <div class="stat-icon green">✅</div>
+      <div class="stat-icon green">?</div>
       <div class="stat-label">Completed GEs</div>
       <div class="stat-value">${completed}</div>
       <div class="stat-sub">Fully approved</div>
     </div>
     <div class="stat-card admin-stat">
-      <div class="stat-icon purple">💰</div>
+      <div class="stat-icon purple">??</div>
       <div class="stat-label">Total Value</div>
       <div class="stat-value" style="font-size:18px">${Fmt.currency(totalAmt)}</div>
       <div class="stat-sub">All GEs</div>
     </div>
     ${tasks.length > 0 ? `
     <div class="stat-card" style="border-left:4px solid var(--warning);cursor:pointer" onclick="location.href='admin-approvals.html'">
-      <div class="stat-icon yellow">📝</div>
+      <div class="stat-icon yellow">??</div>
       <div class="stat-label">My Pending Tasks</div>
       <div class="stat-value">${tasks.length}</div>
       <div class="stat-sub" style="color:var(--warning)">Action required</div>
@@ -392,16 +392,16 @@
             <tr>
               <td class="font-mono fw-600" style="font-size:12px">${u.staff_id}</td>
               <td>${u.first_name} ${u.last_name}</td>
-              <td style="font-size:12px">${u.department_name || '—'}</td>
+              <td style="font-size:12px">${u.department_name || '�'}</td>
               <td>${u.is_active
-                ? '<span style="color:var(--primary);font-size:12px">✅ Active</span>'
-                : '<span style="color:var(--danger);font-size:12px">🚫 Inactive</span>'}</td>
+                ? '<span style="color:var(--primary);font-size:12px">? Active</span>'
+                : '<span style="color:var(--danger);font-size:12px">?? Inactive</span>'}</td>
             </tr>`).join('')}
         </tbody>
       </table></div>`
-    : '<div class="empty-state" style="padding:24px"><div class="es-icon">📋</div><div class="es-title">No staff yet</div></div>';
+    : '<div class="empty-state" style="padding:24px"><div class="es-icon">??</div><div class="es-title">No staff yet</div></div>';
 
-  // Staff count (no sidebar badge for it in the new layout — just skip)
+  // Staff count (no sidebar badge for it in the new layout � just skip)
 
   // System status panel
   const delegates = await API.adminDelegates().catch(() => ({ delegates: [] }));
@@ -427,18 +427,18 @@
       <div class="flex-between" style="font-size:13px">
         <span>Delegate Coverage</span>
         <span style="color:${missingRoles.length ? 'var(--warning)' : 'var(--primary)'};font-weight:600">
-          ${missingRoles.length ? '⚠️ ' + missingRoles.length + ' role(s) missing' : '✅ All roles covered'}
+          ${missingRoles.length ? '?? ' + missingRoles.length + ' role(s) missing' : '? All roles covered'}
         </span>
       </div>
       <div class="flex-between" style="font-size:13px">
         <span>OTP Mode</span>
-        <span style="color:var(--info);font-weight:600">🔧 Development (bypassed)</span>
+        <span style="color:var(--info);font-weight:600">?? Development (bypassed)</span>
       </div>
       ${missingRoles.length ? `
       <div class="alert alert-warning mt-8" style="font-size:12px">
-        <span class="alert-icon">⚠️</span>
+        <span class="alert-icon">??</span>
         <div>Missing delegates for: <strong>${missingRoles.map(r=>r.replace(/_/g,' ')).join(', ')}</strong>.
-        <a href="admin-delegates.html" style="color:var(--warning);font-weight:600;margin-left:4px">Fix now →</a></div>
+        <a href="admin-delegates.html" style="color:var(--warning);font-weight:600;margin-left:4px">Fix now ?</a></div>
       </div>` : ''}
     </div>`;
 
@@ -451,15 +451,15 @@
           ${recentGEs.map(g => `
             <tr>
               <td class="font-mono fw-600">${g.ge_number}</td>
-              <td>${g.claimant_name || '—'}</td>
-              <td>${g.payee_name || '—'}</td>
+              <td>${g.claimant_name || '�'}</td>
+              <td>${g.payee_name || '�'}</td>
               <td class="fw-600">${Fmt.currency(g.total_amount)}</td>
               <td>${statusBadge(g.status, g.status_label)}</td>
               <td style="font-size:12px">${Fmt.date(g.submitted_at)}</td>
             </tr>`).join('')}
         </tbody>
       </table></div>`
-    : '<div class="empty-state" style="padding:24px"><div class="es-icon">📋</div><div class="es-title">No GE forms yet</div></div>';
+    : '<div class="empty-state" style="padding:24px"><div class="es-icon">??</div><div class="es-title">No GE forms yet</div></div>';
 })();
 </script>
 </body>

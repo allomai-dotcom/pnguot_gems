@@ -21,6 +21,7 @@ PNGUOT GEMS is the University's electronic General Expense (GE) form system. It 
 | [QUICK_START.md](#quick_startmd) | IT Administrator | Condensed step-by-step checklist to get the system live fast |
 | [USER_MANUAL.md](#user_manualmd) | All staff | How to use the system — creating GEs, uploading documents, approvals |
 | [STAFF_MANAGEMENT.md](#staff_managementmd) | System Administrator | How to create, edit, and manage staff accounts and delegates |
+| [DELEGATE_ACCESS_GUIDE.md](#delegate_access_guidemd) | All delegates + System Admin | How delegates access the system and perform their approval functions |
 
 ---
 
@@ -149,6 +150,26 @@ Read this alongside `QUICK_START.md` when onboarding staff for the first time.
 
 ---
 
+## DELEGATE_ACCESS_GUIDE.md
+
+**Audience:** HOD, Dean, ICT Director, Procurement Manager, Accounts Officer, Vice Chancellor, System Administrator  
+**File:** `DELEGATE_ACCESS_GUIDE.md`
+
+A complete guide for everyone involved in the GE approval process. Covers:
+
+- How delegates access the system from their own computers over the campus LAN
+- Step-by-step approval instructions for each role (HOD, Dean, ICT Director, Procurement Manager, Accounts Officer, Vice Chancellor)
+- OTP verification process
+- How to raise and respond to queries
+- System Administrator setup and ongoing management functions
+- Delegate assignment requirements
+- Quick reference — where each role goes first after login, GE status meanings, OTP notes
+- Getting help table
+
+Distribute this to all approvers and the System Admin before go-live.
+
+---
+
 ## Recommended Reading Order
 
 **For IT staff setting up the system for the first time:**
@@ -169,8 +190,17 @@ Read this alongside `QUICK_START.md` when onboarding staff for the first time.
 **For approvers (HOS, Dean, ICT Director, Procurement, Accounts, VC):**
 
 ```
-1. USER_MANUAL.md     — focus on Section 8 (Approval Workflow)
-                        and Section 9 (Queries)
+1. DELEGATE_ACCESS_GUIDE.md — how to access the system and perform your approval role
+2. USER_MANUAL.md           — focus on Section 8 (Approval Workflow) and Section 9 (Queries)
+```
+
+**For the System Administrator:**
+
+```
+1. SETUP_GUIDE.md           — install and configure the system
+2. QUICK_START.md           — go-live checklist
+3. STAFF_MANAGEMENT.md      — create accounts and assign delegates
+4. DELEGATE_ACCESS_GUIDE.md — Part 4 covers all admin functions
 ```
 
 ---

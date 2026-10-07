@@ -16,8 +16,8 @@ if (!$deptId) json_error('Department is required.');
 $db->prepare(
     'INSERT INTO general_expenses
         (status, claimant_id, department_id, payee_name, departmental_reference,
-         claimant_reference, description, procurement_type, is_capital_item, total_amount)
-     VALUES (?,?,?,?,?,?,?,?,?,?)'
+         claimant_reference, description, expense_category, procurement_type, is_capital_item, total_amount)
+     VALUES (?,?,?,?,?,?,?,?,?,?,?)'
 )->execute([
     'DRAFT',
     $user['id'],
@@ -26,6 +26,7 @@ $db->prepare(
     trim($b['departmental_reference'] ?? ''),
     trim($b['claimant_reference'] ?? ''),
     trim($b['description'] ?? ''),
+    trim($b['expense_category'] ?? ''),
     in_array($b['procurement_type'] ?? '', ['ICT','STANDARD']) ? $b['procurement_type'] : 'STANDARD',
     isset($b['is_capital_item']) && $b['is_capital_item'] ? 1 : 0,
     0.00,

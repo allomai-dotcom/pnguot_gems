@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Quotation Tracker — PNGUOT GEMS</title>
+  <title>Quotation Tracker � PNGUOT GEMS</title>
   <link rel="stylesheet" href="../assets/css/main.css">
 </head>
 <body class="staff-ui">
@@ -12,21 +12,22 @@
     <div class="sidebar-header">
       <div class="sidebar-avatar" id="sidebar-footer-av">JD</div>
       <div class="sidebar-workspace">
-        <div class="ws-name" id="sidebar-ws-name">Loading…</div>
+        <div class="ws-name" id="sidebar-ws-name">Loading�</div>
         <div class="ws-sub"  id="sidebar-ws-sub">PNGUOT</div>
       </div>
       <button class="sidebar-add-btn" onclick="window.location.href='ge-form.html'" title="New GE">+</button>
     </div>
     <nav class="sidebar-nav">
-      <a class="nav-item" data-page="dashboard.html"    href="dashboard.html"><span class="nav-icon">📊</span><span class="nav-label">Overview</span></a>
-      <a class="nav-item" data-page="notifications.html" href="notifications.html"><span class="nav-icon">🔔</span><span class="nav-label">Notifications</span><span class="nav-badge hidden notif-badge">0</span></a>
+      <a class="nav-item" data-page="dashboard.html"    href="dashboard.html"><span class="nav-icon">??</span><span class="nav-label">Overview</span></a>
+      <a class="nav-item" data-page="notifications.html" href="notifications.html"><span class="nav-icon">??</span><span class="nav-label">Notifications</span><span class="nav-badge hidden notif-badge">0</span></a>
       <div class="sidebar-section-label">Expenses</div>
-      <a class="nav-item" data-page="ge-form.html"  href="ge-form.html"><span class="nav-icon">➕</span><span class="nav-label">New GE</span></a>
-      <a class="nav-item" data-page="my-ges.html"   href="my-ges.html"><span class="nav-icon">📋</span><span class="nav-label">My GE Forms</span></a>
-      <a class="nav-item" data-page="quotation-tracker.html" href="quotation-tracker.html"><span class="nav-icon">📎</span><span class="nav-label">Quotation Tracker</span></a>
-      <a class="nav-item" data-page="my-reports.html" href="my-reports.html"><span class="nav-icon">📊</span><span class="nav-label">Reports</span></a>
+      <a class="nav-item" data-page="ge-form.html"  href="ge-form.html"><span class="nav-icon">?</span><span class="nav-label">New GE</span></a>
+      <a class="nav-item" data-page="my-ges.html"   href="my-ges.html"><span class="nav-icon">??</span><span class="nav-label">My GE Forms</span></a>
+      <a class="nav-item" data-page="my-ges.html?status=DRAFT" href="my-ges.html?status=DRAFT"><span class="nav-icon">??</span><span class="nav-label">Drafts</span><span class="nav-badge hidden draft-count">0</span></a>
+      <a class="nav-item" data-page="quotation-tracker.html" href="quotation-tracker.html"><span class="nav-icon">??</span><span class="nav-label">Quotation Tracker</span></a>
+      <a class="nav-item" data-page="my-reports.html" href="my-reports.html"><span class="nav-icon">??</span><span class="nav-label">Reports</span></a>
       <div class="sidebar-section-label approver-only hidden">Approvals</div>
-      <a class="nav-item approver-only hidden" data-page="approvals.html" href="approvals.html"><span class="nav-icon">✅</span><span class="nav-label">Pending Approvals</span></a>
+      <a class="nav-item approver-only hidden" data-page="approvals.html" href="approvals.html"><span class="nav-icon">?</span><span class="nav-label">Pending Approvals</span></a>
     </nav>
     <div class="sidebar-footer">
       <div class="footer-icon" style="background:none;padding:0"><img src="../assets/img/pnguot-logo.jpg" style="width:42px;height:42px;object-fit:contain;border-radius:4px"></div>
@@ -35,11 +36,11 @@
         <div class="footer-version">ver. 1.0</div>
       </div>
       <div class="dropdown">
-        <button class="footer-menu" data-dropdown="sidebar-user-menu">•••</button>
+        <button class="footer-menu" data-dropdown="sidebar-user-menu">���</button>
         <div class="dropdown-menu" id="sidebar-user-menu">
-          <div class="dropdown-item" onclick="window.location.href='profile.html'">👤 My Profile</div>
+          <div class="dropdown-item" onclick="window.location.href='profile.html'">?? My Profile</div>
           <div class="dropdown-divider"></div>
-          <div class="dropdown-item danger" onclick="Auth.logout()">🚪 Sign Out</div>
+          <div class="dropdown-item danger" onclick="Auth.logout()">?? Sign Out</div>
         </div>
       </div>
     </div>
@@ -49,15 +50,15 @@
   <!-- Main -->
   <div id="main-area">
     <header id="topbar">
-      <button class="hamburger" id="hamburger-btn">☰</button>
+      <button class="hamburger" id="hamburger-btn">?</button>
       <span class="topbar-page-title">Quotation Tracker</span>
       <div class="topbar-actions" style="margin-left:auto">
         <div class="topbar-user dropdown" data-dropdown="user-menu">
           <div class="user-avatar" id="topbar-avatar">JD</div>
-          <div><div class="user-name" id="topbar-user-name">—</div><div class="user-role" id="topbar-user-role"></div></div>
+          <div><div class="user-name" id="topbar-user-name">�</div><div class="user-role" id="topbar-user-role"></div></div>
         </div>
         <div class="dropdown-menu" id="user-menu">
-          <div class="dropdown-item danger" onclick="Auth.logout()">🚪 Sign Out</div>
+          <div class="dropdown-item danger" onclick="Auth.logout()">?? Sign Out</div>
         </div>
       </div>
     </header>
@@ -66,8 +67,8 @@
       <!-- Filter bar -->
       <div class="card mb-24">
         <div class="card-body" style="padding:12px 16px">
-          <input type="text" id="qt-filter" class="form-control"
-                 placeholder="Filter by GE number or payee name…"
+          <input type="text" id="qt-filter" name="qt-filter" class="form-control"
+                 placeholder="Filter by GE number or payee name�"
                  style="max-width:400px">
         </div>
       </div>
@@ -78,15 +79,15 @@
           <span id="qt-count" class="text-muted" style="font-size:13px"></span>
         </div>
         <div id="qt-table-container">
-          <div class="page-loader"><div class="spinner"></div> Loading…</div>
+          <div class="page-loader"><div class="spinner"></div> Loading�</div>
         </div>
       </div>
     </main>
   </div>
 </div>
 
-<script src="../assets/js/api.js?v=2"></script>
-<script src="../assets/js/app.js?v=2"></script>
+<script src="../assets/js/api.js?v=7"></script>
+<script src="../assets/js/app.js?v=7"></script>
 <script>
 let allQuotations = [];
 
@@ -110,7 +111,7 @@ async function loadQuotations() {
     renderTable(allQuotations);
   } catch (err) {
     document.getElementById('qt-table-container').innerHTML =
-      `<div class="alert alert-error" style="margin:16px"><span>⚠️</span>${err.message}</div>`;
+      `<div class="alert alert-error" style="margin:16px"><span>??</span>${err.message}</div>`;
   }
 }
 
@@ -126,12 +127,12 @@ function filterRows(term) {
 function renderTable(rows) {
   const c = document.getElementById('qt-table-container');
   if (!rows.length) {
-    c.innerHTML = `<div class="empty-state"><div class="es-icon">📋</div><div class="es-title">No quotations found</div><div class="es-sub">Upload quotation documents to see them here.</div></div>`;
+    c.innerHTML = `<div class="empty-state"><div class="es-icon">??</div><div class="es-title">No quotations found</div><div class="es-sub">Upload quotation documents to see them here.</div></div>`;
     return;
   }
   const makeQCell = (ge, slot) => {
     const q = ge.quotations.find(q => q.slot === slot);
-    if (!q) return '<td class="text-muted" style="font-size:12px">—</td>';
+    if (!q) return '<td class="text-muted" style="font-size:12px">�</td>';
     return `<td>
       <div class="font-mono" style="font-size:11px;color:var(--text-muted)">${q.reference}</div>
       <div style="font-size:12px">${q.original_name}</div>
@@ -156,9 +157,9 @@ function renderTable(rows) {
         <tbody>
           ${rows.map(ge => `
             <tr>
-              <td class="font-mono fw-600">${ge.ge_number || '—'}</td>
-              <td>${ge.payee_name || '—'}</td>
-              <td>${ge.department_name || '—'}</td>
+              <td class="font-mono fw-600">${ge.ge_number || '�'}</td>
+              <td>${ge.payee_name || '�'}</td>
+              <td>${ge.department_name || '�'}</td>
               <td class="fw-600">${Fmt.currency(ge.total_amount)}</td>
               ${makeQCell(ge, 1)}
               ${makeQCell(ge, 2)}

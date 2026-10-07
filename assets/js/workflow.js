@@ -17,6 +17,8 @@ const Workflow = {
       const tasks = res.tasks;
       const countEl = document.getElementById('pending-task-count');
       if (countEl) countEl.textContent = tasks.length;
+      const badgeEl = document.getElementById('task-count-badge');
+      if (badgeEl) badgeEl.textContent = tasks.length;
 
       if (!tasks.length) {
         container.innerHTML = `
@@ -139,8 +141,8 @@ const Workflow = {
           <p class="text-muted mb-16" style="font-size:13px">This step requires OTP verification. Request an OTP and enter it below to approve.</p>
           <div class="form-row">
             <div class="form-group">
-              <label class="form-label">OTP Code</label>
-              <input id="otp-input" class="form-control" type="text" maxlength="6" placeholder="6-digit code" style="letter-spacing:6px;font-size:18px;font-weight:700">
+              <label class="form-label" for="otp-input">OTP Code</label>
+              <input id="otp-input" name="otp-input" class="form-control" type="text" maxlength="6" placeholder="6-digit code" style="letter-spacing:6px;font-size:18px;font-weight:700">
               <span class="form-hint" id="otp-hint"></span>
             </div>
           </div>
@@ -214,8 +216,8 @@ const Workflow = {
       ${sendToAccountsHtml}
 
       <div class="form-group mt-16">
-        <label class="form-label">Comments</label>
-        <textarea id="task-comments" class="form-control" rows="3" placeholder="Add comments (required for rejection)…"></textarea>
+        <label class="form-label" for="task-comments">Comments</label>
+        <textarea id="task-comments" name="task-comments" class="form-control" rows="3" placeholder="Add comments (required for rejection)…"></textarea>
       </div>`;
   },
 

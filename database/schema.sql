@@ -104,6 +104,7 @@ CREATE TABLE general_expenses (
     departmental_reference  VARCHAR(100) NULL,
     claimant_reference      VARCHAR(100) NULL,
     description             TEXT         NULL,
+    expense_category        VARCHAR(100) NULL,          -- e.g. 'ICT & Technology', 'Food & Catering'
     -- GAP 2: claimant declaration signature
     claimant_signature_data MEDIUMTEXT   NULL,
     claimant_signed_at      DATETIME     NULL,
