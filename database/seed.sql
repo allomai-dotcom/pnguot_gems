@@ -57,6 +57,26 @@ FROM users u, roles r
 WHERE u.staff_id = 'PNGUOT001' AND r.code = 'SYSTEM_ADMIN';
 
 -- ============================================================
+-- TEST STAFF USER  (password: Staff@GEMS2026!)
+-- bcrypt hash generated with cost 12
+-- ============================================================
+INSERT INTO users (staff_id, first_name, last_name, email, password_hash, department_id)
+VALUES (
+    'PNGUOT002',
+    'John',
+    'Smith',
+    'staff@pnguot.ac.pg',
+    '$2y$12$8qmGWtXUo4DnDRI2q3QeZ.nyJh0I5qEcL4TrClRm4Xgznn6Tu42K2',
+    (SELECT id FROM departments WHERE code = 'SBS')
+);
+
+-- Assign CLAIMANT role to test staff user
+INSERT INTO user_roles (user_id, role_id)
+SELECT u.id, r.id
+FROM users u, roles r
+WHERE u.staff_id = 'PNGUOT002' AND r.code = 'CLAIMANT';
+
+-- ============================================================
 -- WORKFLOW DEFINITIONS
 -- ============================================================
 INSERT INTO workflow_definitions (code, label, description) VALUES
