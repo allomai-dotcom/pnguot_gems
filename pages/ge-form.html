@@ -78,38 +78,34 @@
   <aside id="sidebar">
     <div class="sidebar-header">
       <div class="sidebar-avatar" id="sidebar-footer-av">JD</div>
-      <div class="sidebar-workspace"><div class="ws-name" id="sidebar-ws-name">Loading�</div><div class="ws-sub" id="sidebar-ws-sub">PNGUOT</div></div>
+      <div class="sidebar-workspace"><div class="ws-name" id="sidebar-ws-name">Loading�</div><div class="ws-sub" id="sidebar-ws-sub">General Expense and Monitoring System</div></div>
       <button class="sidebar-add-btn" onclick="window.location.href='ge-form.html'" title="New GE">+</button>
     </div>
     <nav class="sidebar-nav">
-      <a class="nav-item" data-page="dashboard.html"    href="dashboard.html"><span class="nav-icon">??</span><span class="nav-label">Overview</span></a>
-      <a class="nav-item" data-page="notifications.html" href="notifications.html"><span class="nav-icon">??</span><span class="nav-label">Notifications</span></a>
+      <a class="nav-item" data-page="dashboard.html"    href="dashboard.html"><span class="nav-icon">🏠</span><span class="nav-label">Overview</span></a>
+      <a class="nav-item" data-page="notifications.html" href="notifications.html"><span class="nav-icon">🔔</span><span class="nav-label">Notifications</span></a>
       <div class="sidebar-section-label">Expenses</div>
-      <a class="nav-item" data-page="ge-form.html"  href="ge-form.html"><span class="nav-icon">?</span><span class="nav-label">New GE</span></a>
-      <a class="nav-item" data-page="my-ges.html"   href="my-ges.html"><span class="nav-icon">??</span><span class="nav-label">My GE Forms</span></a>
-      <a class="nav-item" data-page="my-ges.html?status=DRAFT" href="my-ges.html?status=DRAFT"><span class="nav-icon">??</span><span class="nav-label">Drafts</span><span class="nav-badge hidden draft-count">0</span></a>
-      <a class="nav-item" data-page="quotation-tracker.html" href="quotation-tracker.html"><span class="nav-icon">??</span><span class="nav-label">Quotation Tracker</span></a>
-      <a class="nav-item" data-page="my-reports.html" href="my-reports.html"><span class="nav-icon">??</span><span class="nav-label">Reports</span></a>
+      <a class="nav-item" data-page="ge-form.html"  href="ge-form.html"><span class="nav-icon">➕</span><span class="nav-label">New GE</span></a>
+      <a class="nav-item" data-page="my-ges.html"   href="my-ges.html"><span class="nav-icon">📋</span><span class="nav-label">My GE Forms</span></a>
+      <a class="nav-item" data-page="my-ges.html?status=DRAFT" href="my-ges.html?status=DRAFT"><span class="nav-icon">📝</span><span class="nav-label">Drafts</span><span class="nav-badge hidden draft-count">0</span></a>
+      <a class="nav-item" data-page="quotation-tracker.html" href="quotation-tracker.html"><span class="nav-icon">📊</span><span class="nav-label">Quotation Tracker</span></a>
+      <a class="nav-item" data-page="my-reports.html" href="my-reports.html"><span class="nav-icon">📈</span><span class="nav-label">Reports</span></a>
       <div class="sidebar-section-label approver-only hidden">Approvals</div>
-      <a class="nav-item approver-only hidden" data-page="approvals.html" href="approvals.html"><span class="nav-icon">?</span><span class="nav-label">Pending Approvals</span></a>
+      <a class="nav-item approver-only hidden" data-page="approvals.html" href="approvals.html"><span class="nav-icon">✅</span><span class="nav-label">Pending Approvals</span></a>
     </nav>
     <div class="sidebar-footer">
+      <div class="sidebar-footer-user">
       <div class="footer-icon" style="background:none;padding:0"><img src="../assets/img/pnguot-logo.jpg" style="width:42px;height:42px;object-fit:contain;border-radius:4px"></div>
-      <div><div class="footer-name" id="sidebar-footer-name">PNGUOT GEMS</div><div class="footer-version">ver. 1.0</div></div>
-      <div class="dropdown"><button class="footer-menu" data-dropdown="sb-um">���</button>
-        <div class="dropdown-menu" id="sb-um">
-          <div class="dropdown-item" onclick="location.href='profile.html'">?? My Profile</div>
-          <div class="dropdown-divider"></div>
-          <div class="dropdown-item danger" onclick="Auth.logout()">?? Sign Out</div>
-        </div>
+      <div><div class="footer-name" id="sidebar-footer-name">GEMS</div><div class="footer-version">ver. 1.0</div></div>
       </div>
+      <button class="sidebar-logout-btn" onclick="Auth.logout()">🚪 Sign Out</button>
     </div>
   </aside>
   <div class="sidebar-overlay" id="sidebar-overlay"></div>
 
   <div id="main-area">
     <header id="topbar">
-      <button class="hamburger" id="hamburger-btn">?</button>
+      <button class="hamburger" id="hamburger-btn">☰</button>
       <span class="topbar-page-title" id="page-title">New GE Form</span>
       <div class="topbar-actions" style="margin-left:auto">
         <span id="save-indicator" class="hidden" style="font-size:12px;color:var(--primary);margin-right:8px">? Saved</span>
@@ -117,7 +113,7 @@
           <div class="user-avatar" id="topbar-avatar">JD</div>
           <div><div class="user-name" id="topbar-user-name">�</div><div class="user-role" id="topbar-user-role"></div></div>
         </div>
-        <div class="dropdown-menu" id="um2"><div class="dropdown-item danger" onclick="Auth.logout()">?? Sign Out</div></div>
+        <div class="dropdown-menu" id="um2"><div class="dropdown-item danger" onclick="Auth.logout()">🚪 Sign Out</div></div>
       </div>
     </header>
 
@@ -125,7 +121,7 @@
 
       <!-- Readonly alert -->
       <div id="ge-form-readonly-alert" class="alert alert-warning hidden mb-16">
-        <span class="alert-icon">??</span>
+        <span class="alert-icon">⚠️</span>
         This GE is no longer editable in its current status.
       </div>
 
@@ -159,7 +155,7 @@
             <div style="display:flex;align-items:center;justify-content:space-between;margin-top:10px">
               <div style="font-weight:700;font-size:22px">GENERAL EXPENSES</div>
               <div style="display:flex;align-items:center;gap:8px">
-                <input id="ge-number" readonly class="form-control font-mono" style="width:200px;text-align:right" placeholder="GE-XXXX-XXXX">
+                <input id="ge-number" class="form-control font-mono" style="width:200px;text-align:right" placeholder="Auto-generated">
                 <span id="ge-status-badge"></span>
               </div>
             </div>
@@ -327,7 +323,7 @@
               <div class="form-label" style="font-weight:600;margin-bottom:4px;margin-top:10px">Signature of Claimant:</div>
               <canvas id="claimant-sig-canvas" width="600" height="120"
                 style="border:1px solid #333;background:#fff;display:block;max-width:100%"></canvas>
-              <button type="button" id="btn-clear-sig" class="btn btn-ghost btn-sm" style="margin-top:4px">?? Clear</button>
+              <button type="button" id="btn-clear-sig" class="btn btn-ghost btn-sm" style="margin-top:4px">✏️ Clear</button>
 
               <div class="form-label" style="margin-top:8px">
                 Date:
@@ -361,7 +357,7 @@
               <label class="form-label" style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px">Financial Delegate (HOD):</label>
               <canvas id="hod-sig-canvas" width="500" height="100"
                 style="border:1px solid #333;background:#fff;display:block;max-width:100%"></canvas>
-              <button type="button" id="btn-clear-hod-sig" class="btn btn-ghost btn-sm">?? Clear HOD Signature</button>
+              <button type="button" id="btn-clear-hod-sig" class="btn btn-ghost btn-sm">✏️ Clear HOD Signature</button>
               <div style="font-size:11px;font-style:italic;margin-top:2px;color:#666">(Financial Delegate)</div>
 
               <label class="form-label" for="hod-designation" style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;margin-top:10px;display:block">Head of School:</label>
@@ -396,12 +392,12 @@
         <div class="ge-form-actions flex-between">
           <div class="flex gap-8">
             <button type="button" id="btn-cancel-ge" class="btn btn-danger hidden">Cancel GE</button>
-            <a href="my-ges.html" class="btn btn-secondary">? Back</a>
+            <a href="my-ges.html" class="btn btn-secondary">← Back</a>
           </div>
           <div class="flex gap-8" style="align-items:center">
-            <button type="button" id="btn-save-draft" class="btn btn-secondary">?? Save Draft</button>
-            <button type="button" id="btn-ready-for-docs" class="btn btn-primary">Continue to Supporting Documents ?</button>
-            <button type="button" id="btn-submit-ge" class="btn btn-primary hidden">Submit for Approval ?</button>
+            <button type="button" id="btn-save-draft" class="btn btn-secondary">💾 Save Draft</button>
+            <button type="button" id="btn-ready-for-docs" class="btn btn-primary">Continue to Supporting Documents →</button>
+            <button type="button" id="btn-submit-ge" class="btn btn-primary hidden">Submit for Approval →</button>
           </div>
         </div>
 
@@ -434,11 +430,11 @@
   <div class="modal">
     <div class="modal-header">
       <span class="modal-title" id="upload-modal-title">Upload Document</span>
-      <button class="modal-close" onclick="Modal.close('upload-modal')">?</button>
+      <button class="modal-close" onclick="Modal.close('upload-modal')">✕</button>
     </div>
     <div class="modal-body">
       <div class="upload-zone" id="upload-zone">
-        <div class="uz-icon">??</div>
+        <div class="uz-icon">📁</div>
         <div class="uz-title">Drop file here or click to browse</div>
         <div class="uz-sub">PDF, JPEG, PNG � max 10 MB</div>
         <input type="file" id="file-input" style="display:none" accept=".pdf,.jpg,.jpeg,.png,.gif">

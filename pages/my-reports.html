@@ -64,43 +64,39 @@
   <aside id="sidebar">
     <div class="sidebar-header">
       <div class="sidebar-avatar" id="sidebar-footer-av">JD</div>
-      <div class="sidebar-workspace"><div class="ws-name" id="sidebar-ws-name">�</div><div class="ws-sub" id="sidebar-ws-sub">PNGUOT</div></div>
+      <div class="sidebar-workspace"><div class="ws-name" id="sidebar-ws-name">�</div><div class="ws-sub" id="sidebar-ws-sub">General Expense and Monitoring System</div></div>
       <button class="sidebar-add-btn" onclick="location.href='ge-form.html'" title="New GE">+</button>
     </div>
     <nav class="sidebar-nav">
-      <a class="nav-item" href="dashboard.html"     data-page="dashboard.html"><span class="nav-icon">??</span><span class="nav-label">Overview</span></a>
-      <a class="nav-item" href="notifications.html" data-page="notifications.html"><span class="nav-icon">??</span><span class="nav-label">Notifications</span><span class="nav-badge hidden notif-badge">0</span></a>
+      <a class="nav-item" href="dashboard.html"     data-page="dashboard.html"><span class="nav-icon">🏠</span><span class="nav-label">Overview</span></a>
+      <a class="nav-item" href="notifications.html" data-page="notifications.html"><span class="nav-icon">🔔</span><span class="nav-label">Notifications</span><span class="nav-badge hidden notif-badge">0</span></a>
       <div class="sidebar-section-label">Expenses</div>
-      <a class="nav-item" href="ge-form.html"  data-page="ge-form.html"><span class="nav-icon">?</span><span class="nav-label">New GE</span></a>
-      <a class="nav-item" href="my-ges.html"   data-page="my-ges.html"><span class="nav-icon">??</span><span class="nav-label">My GE Forms</span></a>
-      <a class="nav-item" data-page="my-ges.html?status=DRAFT" href="my-ges.html?status=DRAFT"><span class="nav-icon">??</span><span class="nav-label">Drafts</span><span class="nav-badge hidden draft-count">0</span></a>
-      <a class="nav-item" href="quotation-tracker.html" data-page="quotation-tracker.html"><span class="nav-icon">??</span><span class="nav-label">Quotation Tracker</span></a>
-      <a class="nav-item" href="my-reports.html" data-page="my-reports.html"><span class="nav-icon">??</span><span class="nav-label">Reports</span></a>
+      <a class="nav-item" href="ge-form.html"  data-page="ge-form.html"><span class="nav-icon">➕</span><span class="nav-label">New GE</span></a>
+      <a class="nav-item" href="my-ges.html"   data-page="my-ges.html"><span class="nav-icon">📋</span><span class="nav-label">My GE Forms</span></a>
+      <a class="nav-item" data-page="my-ges.html?status=DRAFT" href="my-ges.html?status=DRAFT"><span class="nav-icon">📝</span><span class="nav-label">Drafts</span><span class="nav-badge hidden draft-count">0</span></a>
+      <a class="nav-item" href="quotation-tracker.html" data-page="quotation-tracker.html"><span class="nav-icon">📊</span><span class="nav-label">Quotation Tracker</span></a>
+      <a class="nav-item" href="my-reports.html" data-page="my-reports.html"><span class="nav-icon">📈</span><span class="nav-label">Reports</span></a>
       <div class="sidebar-section-label approver-only hidden">Approvals</div>
-      <a class="nav-item approver-only hidden" href="approvals.html" data-page="approvals.html"><span class="nav-icon">?</span><span class="nav-label">Pending Approvals</span></a>
+      <a class="nav-item approver-only hidden" href="approvals.html" data-page="approvals.html"><span class="nav-icon">✅</span><span class="nav-label">Pending Approvals</span></a>
     </nav>
     <div class="sidebar-footer">
+      <div class="sidebar-footer-user">
       <div class="footer-icon" style="background:none;padding:0"><img src="../assets/img/pnguot-logo.jpg" style="width:42px;height:42px;object-fit:contain;border-radius:4px"></div>
-      <div><div class="footer-name" id="sidebar-footer-name">PNGUOT GEMS</div><div class="footer-version">ver. 1.0</div></div>
-      <div class="dropdown"><button class="footer-menu" data-dropdown="sidebar-user-menu">���</button>
-        <div class="dropdown-menu" id="sidebar-user-menu">
-          <div class="dropdown-item" onclick="window.location.href='profile.html'">?? My Profile</div>
-          <div class="dropdown-divider"></div>
-          <div class="dropdown-item danger" onclick="Auth.logout()">?? Sign Out</div>
-        </div>
+      <div><div class="footer-name" id="sidebar-footer-name">GEMS</div><div class="footer-version">ver. 1.0</div></div>
       </div>
+      <button class="sidebar-logout-btn" onclick="Auth.logout()">🚪 Sign Out</button>
     </div>
   </aside>
   <div class="sidebar-overlay" id="sidebar-overlay"></div>
 
   <div id="main-area">
     <header id="topbar">
-      <button class="hamburger" id="hamburger-btn">?</button>
+      <button class="hamburger" id="hamburger-btn">☰</button>
       <span class="topbar-page-title" id="page-title">Reports</span>
       <div style="flex:1"></div>
       <div class="topbar-actions no-print">
-        <button class="btn btn-secondary btn-sm hidden" id="btn-export-pdf" onclick="exportPDF()">?? Print / PDF</button>
-        <button class="btn btn-secondary btn-sm hidden" id="btn-export-csv" onclick="exportCSV()">? Export CSV</button>
+        <button class="btn btn-secondary btn-sm hidden" id="btn-export-pdf" onclick="exportPDF()">🖨️ Print / PDF</button>
+        <button class="btn btn-secondary btn-sm hidden" id="btn-export-csv" onclick="exportCSV()">📥 Export CSV</button>
         <div class="user-avatar" id="topbar-avatar">JD</div>
         <div><div class="user-name" id="topbar-user-name">�</div><div class="user-role" id="topbar-user-role"></div></div>
       </div>
@@ -176,7 +172,7 @@
             <button class="btn btn-secondary btn-sm" onclick="setQuickRange('thisYear')">This Year</button>
             <button class="btn btn-secondary btn-sm" onclick="setQuickRange('lastYear')">Last Year</button>
             <button class="btn btn-primary" id="btn-generate" onclick="generateReport()">
-              ?? Generate Report
+              📊 Generate Report
             </button>
           </div>
         </div>
@@ -340,7 +336,7 @@ async function generateReport() {
     Toast.error(err.message || 'Failed to generate report.');
   } finally {
     btn.disabled = false;
-    btn.innerHTML = '?? Generate Report';
+    btn.innerHTML = '📊 Generate Report';
   }
 }
 
@@ -569,8 +565,8 @@ function exportPDF() {
 </head>
 <body>
   <div class="no-print">
-    <button class="print-btn" onclick="window.print()">?? Print / Save as PDF</button>
-    <button class="close-btn" onclick="window.close()">? Close</button>
+    <button class="print-btn" onclick="window.print()">🖨️ Print / Save as PDF</button>
+    <button class="close-btn" onclick="window.close()">✕ Close</button>
   </div>
 
   <div class="header">

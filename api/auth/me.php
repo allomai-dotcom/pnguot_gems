@@ -9,4 +9,10 @@ $nStmt = $db->prepare('SELECT COUNT(*) AS cnt FROM notifications WHERE user_id =
 $nStmt->execute([$user['id']]);
 $user['unread_notifications'] = (int)$nStmt->fetch()['cnt'];
 
+// Resolve avatar URL
+$user['avatar_url'] = null;
+if (!empty($user['avatar_path'])) {
+    $user['avatar_url'] = '/uploads/avatars/' . $user['avatar_path'];
+}
+
 json_success('OK', ['user' => $user]);

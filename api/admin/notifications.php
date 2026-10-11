@@ -34,3 +34,5 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
     json_error('Invalid request.');
 }
+
+json_error('Method not allowed.', 405);

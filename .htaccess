@@ -1,61 +1,55 @@
 # ============================================================
-# PNGUOT GEMS — Root .htaccess
-# Apache shared hosting
+# PNGUOT GEMS — .htaccess
 # ============================================================
 
 Options -Indexes
 
-# ── PHP settings (shared hosting — ini_set in .htaccess) ─────
-php_value upload_max_filesize 12M
-php_value post_max_size 13M
-php_value max_execution_time 60
-php_value memory_limit 128M
+# ── Force UTF-8 charset on all text responses ────────────────
+AddDefaultCharset UTF-8
 
-# ── Protect sensitive directories from direct access ─────────
+# ── PHP limits ───────────────────────────────────────────────
+php_value upload_max_filesize 12M
+php_value post_max_size       13M
+php_value max_execution_time  60
+php_value memory_limit        128M
+
+# ── Block direct access to sensitive directories ─────────────
 <IfModule mod_rewrite.c>
     RewriteEngine On
-
-    # Block direct access to config/ directory
-    RewriteRule ^config/ - [F,L]
-
-    # Block direct access to database/ directory
+    RewriteRule ^config/   - [F,L]
     RewriteRule ^database/ - [F,L]
 </IfModule>
 
-# ── Protect sensitive files ───────────────────────────────────
+# ── Block direct access to sensitive file types ───────────────
 <FilesMatch "\.(sql|log|md|json|lock|env|sh|bak)$">
     Order allow,deny
     Deny from all
 </FilesMatch>
 
-# ── Security + Cache-Control headers ─────────────────────────
+# ── Security + cache headers ──────────────────────────────────
 <IfModule mod_headers.c>
-    # Security headers
-    Header always set X-Content-Type-Options "nosniff"
-    Header always set X-Frame-Options "SAMEORIGIN"
-    Header always set X-XSS-Protection "1; mode=block"
-    Header always set Referrer-Policy "strict-origin-when-cross-origin"
+    Header always set X-Content-Type-Options  "nosniff"
+    Header always set X-Frame-Options         "SAMEORIGIN"
+    Header always set X-XSS-Protection        "1; mode=block"
+    Header always set Referrer-Policy         "strict-origin-when-cross-origin"
 
-    # Force no-cache for HTML, JS, and CSS so changes show immediately
+    # No-cache for HTML, JS, CSS — changes show immediately
     <FilesMatch "\.(html|js|css)$">
         Header set Cache-Control "no-store, no-cache, must-revalidate, max-age=0"
-        Header set Pragma "no-cache"
-        Header set Expires "0"
+        Header set Pragma        "no-cache"
+        Header set Expires       "0"
     </FilesMatch>
 </IfModule>
 
-# ── Cache static assets ───────────────────────────────────────
+# ── Cache images for 30 days ──────────────────────────────────
 <IfModule mod_expires.c>
     ExpiresActive On
-    ExpiresByType text/html              "access plus 0 seconds"
-    ExpiresByType text/css               "access plus 0 seconds"
-    ExpiresByType application/javascript "access plus 0 seconds"
-    ExpiresByType image/jpeg             "access plus 30 days"
-    ExpiresByType image/png              "access plus 30 days"
-    ExpiresByType image/gif              "access plus 30 days"
+    ExpiresByType image/jpeg "access plus 30 days"
+    ExpiresByType image/png  "access plus 30 days"
+    ExpiresByType image/gif  "access plus 30 days"
 </IfModule>
 
-# ── Gzip compression ─────────────────────────────────────────
+# ── Gzip compression ──────────────────────────────────────────
 <IfModule mod_deflate.c>
     AddOutputFilterByType DEFLATE text/html text/css application/javascript application/json
 </IfModule>

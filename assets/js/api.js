@@ -3,8 +3,16 @@
 // ============================================================
 
 const API = {
-  // Relative-to-origin base — works on any hostname (localhost or live hosting)
-  base: '/api',
+  // Derive base path from current page location so it works under any subfolder
+  // e.g. localhost/pnguot_gems/pages/dashboard.html  →  /pnguot_gems/api
+  base: (() => {
+    const parts = window.location.pathname.split('/').filter(Boolean);
+    // If serving from a subfolder (e.g. pnguot_gems), include it; otherwise bare /api
+    if (parts.length >= 1 && parts[0] !== 'api' && parts[0] !== 'pages') {
+      return '/' + parts[0] + '/api';
+    }
+    return '/api';
+  })(),
 
   async request(method, url, data = null, isFormData = false) {
     const opts = {
@@ -15,13 +23,22 @@ const API = {
     if (data) opts.body = isFormData ? data : JSON.stringify(data);
 
     try {
-      const res = await fetch(url, opts);
-      const json = await res.json();
-      if (!res.ok && !json.success) throw { status: res.status, message: json.message || 'Request failed.', data: json };
+      const res  = await fetch(url, opts);
+      let json;
+      try {
+        json = await res.json();
+      } catch {
+        // PHP may have output a warning before JSON — treat as server error
+        throw { status: res.status, message: res.status === 500 ? 'Server error. Please try again.' : 'Unexpected server response.' };
+      }
+      if (!res.ok || !json.success) {
+        throw { status: res.status, message: json.message || 'Request failed.', data: json };
+      }
       return json;
     } catch (err) {
-      if (err.message) throw err;
-      throw { message: 'Network error. Please check your connection.' };
+      // Re-throw our own error objects; wrap plain JS errors
+      if (err.status !== undefined) throw err;
+      throw { status: 0, message: 'Network error. Please check your connection.' };
     }
   },
 
@@ -39,10 +56,25 @@ const API = {
   logout:         () => API.post('auth/logout.php'),
   me:             () => API.get('auth/me.php'),
   changePassword: d  => API.post('auth/change_password.php', d),
+  uploadAvatar:   file => { const fd = new FormData(); fd.append('avatar', file); return API.upload('auth/upload_avatar.php', fd); },
 
   // GE
   geCreate:            d  => API.post('ge/create.php', d),
   geList:              p  => API.get('ge/list.php', p),
+  geListRecent:        ()  => API.get('ge/list.php', { recent: '1', limit: 10 }),
+
+  // Uploaded paper GE forms
+  uploadedForms:       ()  => API.get('ge/uploaded_forms.php'),
+  uploadForm:          (title, reference, notes, deptId, file) => {
+    const fd = new FormData();
+    fd.append('title',         title);
+    fd.append('ge_reference',  reference  || '');
+    fd.append('notes',         notes      || '');
+    fd.append('department_id', deptId     || '');
+    fd.append('ge_form',       file);
+    return API.upload('ge/upload_form.php', fd);
+  },
+  deleteUploadedForm:  d  => API.delete('ge/uploaded_forms.php', d),
   geGet:               id => API.get('ge/get.php', { id }),
   geUpdate:            d  => API.post('ge/update.php', d),
   geReadyForDocs:      d  => API.post('ge/ready_for_documents.php', d),
@@ -69,7 +101,6 @@ const API = {
   myTasks:   ()  => API.get('workflow/my_tasks.php'),
   taskApprove: d => API.post('workflow/approve.php', d),
   taskQuery:   d => API.post('workflow/query.php', d),
-  requestOtp:  d => API.post('workflow/otp.php', d),
 
   // Admin
   adminUsers:       p  => API.get('admin/users.php', p),

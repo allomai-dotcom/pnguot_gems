@@ -77,11 +77,20 @@ if ($action === 'raise') {
     $db->prepare(
         'UPDATE workflow_instances SET status = "ACTIVE" WHERE ge_id = ?'
     )->execute([$query['ge_id']]);
+    // Restore GE status to the current step's ge_status_on_reach
+    // (can't subquery the same table in UPDATE on MySQL, so fetch first)
+    $stepRow = $db->prepare(
+        'SELECT ws.ge_status_on_reach
+         FROM workflow_steps ws
+         JOIN workflow_instances wi ON wi.current_step_id = ws.id
+         WHERE wi.ge_id = ?'
+    );
+    $stepRow->execute([$query['ge_id']]);
+    $stepData   = $stepRow->fetch();
+    $geStatus   = $stepData ? $stepData['ge_status_on_reach'] : 'SUBMITTED';
     $db->prepare(
-        'UPDATE general_expenses SET status = (SELECT ge_status_on_reach FROM workflow_steps
-         WHERE id = (SELECT current_step_id FROM workflow_instances WHERE ge_id = ?)),
-         version = version + 1 WHERE id = ?'
-    )->execute([$query['ge_id'], $query['ge_id']]);
+        'UPDATE general_expenses SET status = ?, version = version + 1 WHERE id = ?'
+    )->execute([$geStatus, $query['ge_id']]);
 
     if ($query['assignee_id']) {
         notify($query['assignee_id'], 'QUERY_RESPONDED',

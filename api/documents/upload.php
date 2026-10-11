@@ -35,7 +35,11 @@ if (!in_array($mimeType, ALLOWED_MIME_TYPES)) {
 }
 
 // Ensure upload dir exists
-if (!is_dir(UPLOAD_BASE_PATH)) mkdir(UPLOAD_BASE_PATH, 0750, true);
+if (!is_dir(UPLOAD_BASE_PATH)) {
+    if (!mkdir(UPLOAD_BASE_PATH, 0750, true)) {
+        json_error('Upload directory could not be created. Check server permissions.', 500);
+    }
+}
 
 // UUID-based stored filename
 $ext        = pathinfo($file['name'], PATHINFO_EXTENSION);
@@ -66,10 +70,17 @@ $insStmt = $db->prepare(
     'INSERT INTO ge_documents (ge_id, document_type, label, original_name, stored_name, mime_type, file_size, uploaded_by)
      VALUES (?,?,?,?,?,?,?,?)'
 );
-$insStmt->execute([
-    $geId, $type, $labels[$type] ?? $type,
-    $file['name'], $storedName, $mimeType, $file['size'], $user['id'],
-]);
+try {
+    $insStmt->execute([
+        $geId, $type, $labels[$type] ?? $type,
+        $file['name'], $storedName, $mimeType, $file['size'], $user['id'],
+    ]);
+} catch (PDOException $e) {
+    // Clean up the file we just moved if DB insert fails
+    @unlink($destPath);
+    error_log('Document insert error: ' . $e->getMessage());
+    json_error('Failed to save document record. Please try again.', 500);
+}
 $docId = $db->lastInsertId();
 
 audit($user['id'], 'DOCUMENT_UPLOADED', "Document uploaded: $type", $geId);

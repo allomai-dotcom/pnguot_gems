@@ -84,9 +84,7 @@ const Workflow = {
 
       body.innerHTML = this.renderTaskBody(task, ge);
 
-      // OTP button
-      document.getElementById('btn-request-otp')?.addEventListener('click', () => this.requestOtp(task));
-
+      // OTP button — removed
       // Approve / Reject
       document.getElementById('btn-approve')?.addEventListener('click', () => this.submitDecision('APPROVED', task));
       document.getElementById('btn-reject') ?.addEventListener('click', () => this.submitDecision('REJECTED', task));
@@ -134,21 +132,7 @@ const Workflow = {
         </div>
       </div>`).join('') || '<p class="text-muted">No documents.</p>';
 
-    const otpSection = task.requires_otp ? `
-      <div class="card mt-16">
-        <div class="card-header"><span class="card-title">🔐 OTP Authorization</span></div>
-        <div class="card-body">
-          <p class="text-muted mb-16" style="font-size:13px">This step requires OTP verification. Request an OTP and enter it below to approve.</p>
-          <div class="form-row">
-            <div class="form-group">
-              <label class="form-label" for="otp-input">OTP Code</label>
-              <input id="otp-input" name="otp-input" class="form-control" type="text" maxlength="6" placeholder="6-digit code" style="letter-spacing:6px;font-size:18px;font-weight:700">
-              <span class="form-hint" id="otp-hint"></span>
-            </div>
-          </div>
-          <button id="btn-request-otp" class="btn btn-secondary btn-sm">📱 Send OTP to Phone</button>
-        </div>
-      </div>` : '';
+    const otpSection = '';
 
     const sendToAccountsHtml = (() => {
       const isAccountsOfficer = Auth.hasRole('ACCOUNTS_OFFICER') || Auth.hasRole('SYSTEM_ADMIN');
@@ -221,31 +205,8 @@ const Workflow = {
       </div>`;
   },
 
-  async requestOtp(task) {
-    const btn = document.getElementById('btn-request-otp');
-    btn.disabled = true; btn.textContent = 'Sending…';
-    try {
-      const res = await API.requestOtp({ task_id: task.task_id });
-      Toast.success(res.message);
-      if (res.otp) { // dev mode
-        document.getElementById('otp-input').value = res.otp;
-        document.getElementById('otp-hint').textContent = '[Dev] OTP auto-filled: ' + res.otp;
-      }
-      // Countdown
-      let secs = 60;
-      const interval = setInterval(() => {
-        btn.textContent = `Resend in ${--secs}s`;
-        if (secs <= 0) { clearInterval(interval); btn.disabled = false; btn.textContent = '📱 Send OTP to Phone'; }
-      }, 1000);
-    } catch (err) {
-      Toast.error(err.message);
-      btn.disabled = false; btn.textContent = '📱 Send OTP to Phone';
-    }
-  },
-
   async submitDecision(action, task) {
     const comments = document.getElementById('task-comments')?.value?.trim();
-    const otp      = document.getElementById('otp-input')?.value?.trim();
 
     if (action === 'REJECTED' && !comments) {
       Toast.warning('Comments are required when rejecting.'); return;
@@ -278,7 +239,7 @@ const Workflow = {
 
         try {
           const res = await API.taskApprove({
-            task_id: task.task_id, action, comments, otp,
+            task_id: task.task_id, action, comments,
             hod_signature_data: hodSigData,
             hod_designation:    desig,
             hod_certified_at:   hodCertAt,
@@ -298,7 +259,7 @@ const Workflow = {
     if (!ok) return;
 
     try {
-      const res = await API.taskApprove({ task_id: task.task_id, action, comments, otp });
+      const res = await API.taskApprove({ task_id: task.task_id, action, comments });
       Toast.success(res.message);
       Modal.close('task-modal');
       await this.loadMyTasks();

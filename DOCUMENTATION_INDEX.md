@@ -199,7 +199,8 @@ Distribute this to all approvers and the System Admin before go-live.
 ```
 1. SETUP_GUIDE.md           — install and configure the system
 2. QUICK_START.md           — go-live checklist
-3. STAFF_MANAGEMENT.md      — create accounts and assign delegates
+3. STAFF_MANAGEMENT.md      — create accounts and assimysql is stop
+gn delegates
 4. DELEGATE_ACCESS_GUIDE.md — Part 4 covers all admin functions
 ```
 

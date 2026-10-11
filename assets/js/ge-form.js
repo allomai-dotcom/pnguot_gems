@@ -117,6 +117,9 @@ const GEForm = {
 
       // Section 1 — Claim Routing
       this.setVal('ge-number',        ge.ge_number);
+      // Lock GE number — cannot change once assigned
+      const geNumEl = document.getElementById('ge-number');
+      if (geNumEl) { geNumEl.readOnly = true; geNumEl.style.opacity = '0.7'; }
       this.setVal('payee-name',       ge.payee_name);
       // Set department after options are loaded
       const deptSel = document.getElementById('dept-display');
@@ -444,6 +447,7 @@ const GEForm = {
   collectHeader() {
     return {
       id:                        this.geId,
+      ge_number:                 !this.geId ? (document.getElementById('ge-number')?.value?.trim() || '') : undefined,
       department_id:             document.getElementById('dept-display')?.value || null,
       payee_name:                document.getElementById('payee-name')?.value?.trim(),
       departmental_reference:    document.getElementById('dept-ref')?.value?.trim(),
@@ -492,7 +496,10 @@ const GEForm = {
       if (!this.geId) {
         const res = await API.geCreate(data);
         this.geId = res.ge_id;
-        document.getElementById('ge-number').value = res.ge_number;
+        const geNumEl = document.getElementById('ge-number');
+        geNumEl.value = res.ge_number;
+        geNumEl.readOnly = true; // lock after first save — number is now permanent
+        geNumEl.style.opacity = '0.7';
         history.replaceState({}, '', `ge-form.html?id=${this.geId}`);
         // Now that we have an ID, bind upload zone and load docs
         this.loadDocuments();

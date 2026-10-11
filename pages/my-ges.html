@@ -4,6 +4,86 @@
   <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>My GE Forms — PNGUOT GEMS</title>
   <link rel="stylesheet" href="../assets/css/main.css">
+  <style>
+    /* Recent submissions banner */
+    .recent-section {
+      margin-bottom: 24px;
+    }
+    .recent-header {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 12px;
+    }
+    .recent-title {
+      font-size: 13px; font-weight: 700; color: var(--text-secondary);
+      text-transform: uppercase; letter-spacing: .05em;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .recent-dot {
+      width: 8px; height: 8px; border-radius: 50%;
+      background: #22c55e;
+      animation: pulse-dot 1.8s ease-in-out infinite;
+    }
+    @keyframes pulse-dot {
+      0%,100% { opacity:1; transform:scale(1); }
+      50%      { opacity:.5; transform:scale(1.4); }
+    }
+
+    /* Recent GE card */
+    .recent-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-left: 4px solid #22c55e;
+      border-radius: var(--card-radius);
+      padding: 14px 18px;
+      display: flex; align-items: center; gap: 16px;
+      margin-bottom: 8px;
+      transition: box-shadow .15s;
+    }
+    .recent-card:hover { box-shadow: 0 4px 12px rgba(0,0,0,.08); }
+    .recent-card-ge   { font-size: 13px; font-weight: 700; font-family: monospace; color: var(--text-primary); min-width: 140px; }
+    .recent-card-payee{ font-size: 13px; color: var(--text-secondary); flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .recent-card-amount{ font-size: 13px; font-weight: 700; color: var(--primary); min-width: 100px; text-align: right; }
+    .recent-card-timer {
+      font-size: 11px; font-weight: 600;
+      padding: 3px 10px; border-radius: 20px;
+      background: #fef3c7; color: #92400e;
+      min-width: 80px; text-align: center;
+    }
+    .recent-card-timer.urgent { background: #fee2e2; color: #991b1b; }
+
+    /* Tabs */
+    .ge-tabs {
+      display: flex; gap: 2px;
+      border-bottom: 2px solid var(--card-border);
+      margin-bottom: 20px;
+    }
+    .ge-tab {
+      padding: 8px 20px; font-size: 13px; font-weight: 600;
+      color: var(--text-secondary); background: none; border: none;
+      border-bottom: 2px solid transparent; margin-bottom: -2px;
+      cursor: pointer; transition: all .15s;
+    }
+    .ge-tab:hover { color: var(--text-primary); }
+    .ge-tab.active {
+      color: var(--primary);
+      border-bottom-color: var(--primary);
+    }
+    .ge-tab .tab-count {
+      display: inline-flex; align-items: center; justify-content: center;
+      background: var(--primary-light); color: var(--primary-dark);
+      font-size: 10px; font-weight: 700;
+      border-radius: 10px; padding: 1px 6px; margin-left: 6px;
+    }
+    .ge-tab.active .tab-count { background: var(--primary); color: #fff; }
+
+    /* Archive label */
+    .archive-label {
+      display: flex; align-items: center; gap: 6px;
+      font-size: 11px; color: var(--text-muted);
+      background: var(--input-bg); border-radius: 6px;
+      padding: 4px 10px; margin-bottom: 12px;
+    }
+  </style>
 </head>
 <body class="staff-ui">
 <div id="app-shell">
@@ -12,7 +92,7 @@
       <div class="sidebar-avatar" id="sidebar-footer-av">JD</div>
       <div class="sidebar-workspace">
         <div class="ws-name" id="sidebar-ws-name">Loading</div>
-        <div class="ws-sub"  id="sidebar-ws-sub">PNGUOT</div>
+        <div class="ws-sub" id="sidebar-ws-sub">General Expense and Monitoring System</div>
       </div>
       <button class="sidebar-add-btn" onclick="window.location.href='ge-form.html'" title="New GE">+</button>
     </div>
@@ -29,16 +109,11 @@
       <a class="nav-item approver-only hidden" data-page="approvals.html" href="approvals.html"><span class="nav-icon">✅</span><span class="nav-label">Pending Approvals</span></a>
     </nav>
     <div class="sidebar-footer">
-      <div class="footer-icon" style="background:none;padding:0"><img src="../assets/img/pnguot-logo.jpg" style="width:42px;height:42px;object-fit:contain;border-radius:4px"></div>
-      <div><div class="footer-name" id="sidebar-footer-name">PNGUOT GEMS</div><div class="footer-version">ver. 1.0</div></div>
-      <div class="dropdown">
-        <button class="footer-menu" data-dropdown="sidebar-user-menu">⋯</button>
-        <div class="dropdown-menu" id="sidebar-user-menu">
-          <div class="dropdown-item" onclick="location.href='profile.html'">👤 My Profile</div>
-          <div class="dropdown-divider"></div>
-          <div class="dropdown-item danger" onclick="Auth.logout()">🚪 Sign Out</div>
-        </div>
+      <div class="sidebar-footer-user">
+        <div class="footer-icon" style="background:none;padding:0"><img src="../assets/img/pnguot-logo.jpg" style="width:36px;height:36px;object-fit:contain;border-radius:4px"></div>
+        <div><div class="footer-name" id="sidebar-footer-name">GEMS</div><div class="footer-version">ver. 1.0</div></div>
       </div>
+      <button class="sidebar-logout-btn" onclick="Auth.logout()">🚪 Sign Out</button>
     </div>
   </aside>
   <div class="sidebar-overlay" id="sidebar-overlay"></div>
@@ -49,7 +124,7 @@
       <span class="topbar-page-title">My GE Forms</span>
       <div class="topbar-search">
         <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
-        <input type="text" placeholder="Search GE, payee, reference" id="search-input" name="search-input">
+        <input type="text" placeholder="Search GE number, payee…" id="search-input" name="search-input">
       </div>
       <div class="topbar-actions">
         <button class="btn btn-primary btn-sm" onclick="window.location.href='ge-form.html'">+ New GE</button>
@@ -58,54 +133,169 @@
           <div><div class="user-name" id="topbar-user-name"></div><div class="user-role" id="topbar-user-role"></div></div>
         </div>
         <div class="dropdown-menu" id="user-menu">
+          <div class="dropdown-item" onclick="location.href='profile.html'">👤 My Profile</div>
+          <div class="dropdown-divider"></div>
           <div class="dropdown-item danger" onclick="Auth.logout()">🚪 Sign Out</div>
         </div>
       </div>
     </header>
 
     <main id="page-content">
-      <div class="card mb-24">
-        <div class="card-body" style="padding:12px 16px">
+
+      <!-- Recent submissions (last 24 hrs) -->
+      <div class="recent-section" id="recent-section" style="display:none">
+        <div class="recent-header">
+          <div class="recent-title">
+            <span class="recent-dot"></span>
+            Recently Submitted
+          </div>
+          <span style="font-size:11px;color:var(--text-muted)">Auto-archives after 24 hrs</span>
+        </div>
+        <div id="recent-list"></div>
+      </div>
+
+      <!-- Tabs: Active / Archived / Uploaded -->
+      <div class="ge-tabs">
+        <button class="ge-tab active" id="tab-active" onclick="switchTab('active')">
+          Active <span class="tab-count" id="tab-active-count">0</span>
+        </button>
+        <button class="ge-tab" id="tab-archive" onclick="switchTab('archive')">
+          Archived <span class="tab-count" id="tab-archive-count">0</span>
+        </button>
+        <button class="ge-tab" id="tab-uploaded" onclick="switchTab('uploaded')">
+          Uploaded Forms <span class="tab-count" id="tab-uploaded-count">0</span>
+        </button>
+      </div>
+
+      <!-- Filter bar -->
+      <div class="card mb-16">
+        <div class="card-body" style="padding:10px 16px">
           <div class="flex-between flex-wrap gap-8">
-            <div class="flex gap-8 flex-wrap">
-              <select class="form-control" id="filter-status" style="width:auto">
-                <option value="">All Statuses</option>
-                <option value="DRAFT">Draft</option>
-                <option value="READY_FOR_DOCUMENTS">Ready for Documents</option>
-                <option value="SUBMITTED">Submitted</option>
-                <option value="PENDING_HOS">Pending HOS</option>
-                <option value="PENDING_DEAN">Pending Dean</option>
-                <option value="PENDING_ICT">Pending ICT</option>
-                <option value="PENDING_PROCUREMENT">Pending Procurement</option>
-                <option value="PENDING_ACCOUNTS_VERIFICATION">Pending Accounts</option>
-                <option value="PENDING_VC">Pending VC</option>
-                <option value="PENDING_PAYMENT">Pending Payment</option>
-                <option value="QUERIED">Queried</option>
-                <option value="COMPLETED">Completed</option>
-                <option value="CANCELLED">Cancelled</option>
-              </select>
-            </div>
+            <select class="form-control" id="filter-status" style="width:auto">
+              <option value="">All Statuses</option>
+              <option value="DRAFT">Draft</option>
+              <option value="READY_FOR_DOCUMENTS">Ready for Documents</option>
+              <option value="SUBMITTED">Submitted</option>
+              <option value="PENDING_HOS">Pending HOS</option>
+              <option value="PENDING_DEAN">Pending Dean</option>
+              <option value="PENDING_ICT">Pending ICT</option>
+              <option value="PENDING_PROCUREMENT">Pending Procurement</option>
+              <option value="PENDING_ACCOUNTS_VERIFICATION">Pending Accounts</option>
+              <option value="PENDING_VC">Pending VC</option>
+              <option value="PENDING_PAYMENT">Pending Payment</option>
+              <option value="QUERIED">Queried</option>
+              <option value="COMPLETED">Completed</option>
+              <option value="CANCELLED">Cancelled</option>
+            </select>
             <div id="total-count" class="text-muted" style="font-size:13px"></div>
           </div>
         </div>
       </div>
 
-      <div class="card">
-        <div id="ge-list-container">
-          <div class="page-loader"><div class="spinner"></div> Loading</div>
+      <!-- GE list (active & archive tabs) -->
+      <div id="main-list-section">
+        <div class="card">
+          <div id="ge-list-container">
+            <div class="page-loader"><div class="spinner"></div> Loading</div>
+          </div>
+          <div id="pagination-container"></div>
         </div>
-        <div id="pagination-container"></div>
       </div>
+
+      <!-- Uploaded GE Forms panel -->
+      <div id="uploaded-section" style="display:none">
+        <div class="flex-between mb-16">
+          <div style="font-size:13px;color:var(--text-muted)">
+            Upload filled paper GE forms for archiving. Accepted: PDF, JPEG, PNG.
+          </div>
+          <button class="btn btn-primary btn-sm" onclick="Modal.open('upload-form-modal')">
+            + Upload GE Form
+          </button>
+        </div>
+        <div class="card">
+          <div id="uploaded-list-container">
+            <div class="page-loader"><div class="spinner"></div> Loading</div>
+          </div>
+        </div>
+      </div>
+
     </main>
   </div>
 </div>
 
-<script src="../assets/js/api.js?v=7"></script>
-<script src="../assets/js/app.js?v=7"></script>
-<script>
-let currentPage = 1;
-let searchTimer;
+<!-- Upload GE Form Modal -->
+<div class="modal-overlay" id="upload-form-modal">
+  <div class="modal" style="max-width:480px">
+    <div class="modal-header">
+      <span class="modal-title">Upload Filled GE Form</span>
+      <button class="modal-close" onclick="Modal.close('upload-form-modal')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label class="form-label" for="uf-title">Title / Description <span class="required">*</span></label>
+        <input id="uf-title" name="uf-title" type="text" class="form-control"
+          placeholder="e.g. Office Supplies GE — Oct 2026">
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="uf-reference">GE Reference Number <span style="font-weight:400;color:var(--text-muted)">(optional)</span></label>
+        <input id="uf-reference" name="uf-reference" type="text" class="form-control font-mono"
+          placeholder="e.g. GE-2026-000042">
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="uf-notes">Notes <span style="font-weight:400;color:var(--text-muted)">(optional)</span></label>
+        <textarea id="uf-notes" name="uf-notes" class="form-control" rows="2"
+          placeholder="Any additional notes…"></textarea>
+      </div>
+      <div class="form-group">
+        <label class="form-label">File <span class="required">*</span></label>
+        <div class="upload-zone" id="uf-drop-zone" style="cursor:pointer">
+          <div class="uz-icon">📁</div>
+          <div class="uz-title" id="uf-zone-title">Drop file here or click to browse</div>
+          <div class="uz-sub">PDF, JPEG, PNG — max 10 MB</div>
+          <input type="file" id="uf-file-input" style="display:none"
+            accept=".pdf,.jpg,.jpeg,.png,.gif,.webp">
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="Modal.close('upload-form-modal')">Cancel</button>
+      <button class="btn btn-primary" id="btn-do-upload-form" disabled onclick="doUploadForm()">
+        Upload &amp; Archive
+      </button>
+    </div>
+  </div>
+</div>
 
+<script src="../assets/js/api.js?v=8"></script>
+<script src="../assets/js/app.js?v=8"></script>
+<script>
+let currentPage  = 1;
+let currentTab   = 'active'; // 'active' | 'archive'
+let searchTimer;
+let countdownInterval;
+
+// ── 24-hr archive threshold ────────────────────────────────
+const ARCHIVE_MS = 24 * 60 * 60 * 1000; // 24 hours
+
+function isArchived(ge) {
+  // A GE is "archived" if it was submitted more than 24 hrs ago
+  if (!ge.submitted_at) return false;
+  return (Date.now() - new Date(ge.submitted_at).getTime()) > ARCHIVE_MS;
+}
+
+function msRemaining(ge) {
+  if (!ge.submitted_at) return 0;
+  return Math.max(0, ARCHIVE_MS - (Date.now() - new Date(ge.submitted_at).getTime()));
+}
+
+function fmtCountdown(ms) {
+  const h = Math.floor(ms / 3600000);
+  const m = Math.floor((ms % 3600000) / 60000);
+  if (h > 0) return `Archives in ${h}h ${m}m`;
+  return `Archives in ${m}m`;
+}
+
+// ── Init ───────────────────────────────────────────────────
 (async () => {
   const ok = await requireAuth();
   if (!ok) return;
@@ -122,16 +312,21 @@ let searchTimer;
 
   Sidebar.setActive(statusParam ? `my-ges.html?status=${statusParam}` : 'my-ges.html');
 
+  // Load recent submissions banner
+  loadRecent();
+
+  // Load main list
   loadList();
 
+  // Draft count badge
   try {
-    const res = await API.geList({ page: 1, limit: 1, status: 'DRAFT' });
-    const count = res.pagination?.total ?? 0;
+    const r = await API.geList({ page:1, limit:1, status:'DRAFT' });
+    const cnt = r.pagination?.total ?? 0;
     document.querySelectorAll('.draft-count').forEach(el => {
-      el.textContent = count;
-      if (count > 0) el.classList.remove('hidden');
+      el.textContent = cnt;
+      if (cnt > 0) el.classList.remove('hidden');
     });
-  } catch (_) {}
+  } catch {}
 
   document.getElementById('filter-status').addEventListener('change', () => { currentPage=1; loadList(); });
   document.getElementById('search-input').addEventListener('input', () => {
@@ -140,9 +335,74 @@ let searchTimer;
   });
 })();
 
+// ── Recent submissions (last 24 hrs) ──────────────────────
+async function loadRecent() {
+  try {
+    const res = await API.geListRecent();
+    const recent = (res.data || []).filter(g => !isArchived(g) && g.submitted_at);
+    const section = document.getElementById('recent-section');
+    const list    = document.getElementById('recent-list');
+
+    if (!recent.length) { section.style.display = 'none'; return; }
+
+    section.style.display = 'block';
+    renderRecentCards(recent, list);
+
+    // Refresh countdown every 30s
+    if (countdownInterval) clearInterval(countdownInterval);
+    countdownInterval = setInterval(() => renderRecentCards(recent, list), 30000);
+  } catch {}
+}
+
+function renderRecentCards(items, container) {
+  // Remove any that have now passed 24hrs
+  const still = items.filter(g => !isArchived(g));
+  if (!still.length) {
+    document.getElementById('recent-section').style.display = 'none';
+    return;
+  }
+  container.innerHTML = still.map(g => {
+    const ms     = msRemaining(g);
+    const urgent = ms < 3 * 3600000; // < 3 hrs left
+    const timer  = fmtCountdown(ms);
+    return `
+      <div class="recent-card">
+        <div class="recent-card-ge">${g.ge_number || '—'}</div>
+        <div class="recent-card-payee">${g.payee_name || '—'}</div>
+        <div>${statusBadge(g.status, g.status_label)}</div>
+        <div class="recent-card-amount">${Fmt.currency(g.total_amount)}</div>
+        <div class="recent-card-timer${urgent?' urgent':''}">${timer}</div>
+        <a href="ge-form.html?id=${g.id}" class="btn btn-ghost btn-sm">View</a>
+      </div>`;
+  }).join('');
+}
+
+// ── Tab switching ─────────────────────────────────────────
+function switchTab(tab) {
+  currentTab = tab;
+  currentPage = 1;
+  document.getElementById('tab-active').classList.toggle('active',   tab === 'active');
+  document.getElementById('tab-archive').classList.toggle('active',  tab === 'archive');
+  document.getElementById('tab-uploaded').classList.toggle('active', tab === 'uploaded');
+
+  const isUploaded = tab === 'uploaded';
+  document.getElementById('main-list-section').style.display = isUploaded ? 'none' : 'block';
+  document.getElementById('uploaded-section').style.display  = isUploaded ? 'block' : 'none';
+  // Hide filter bar on uploaded tab — it doesn't apply
+  document.querySelector('.card.mb-16').style.display = isUploaded ? 'none' : 'block';
+
+  if (isUploaded) {
+    loadUploadedForms();
+  } else {
+    loadList();
+  }
+}
+
+// ── Main list ─────────────────────────────────────────────
 async function loadList() {
   const container = document.getElementById('ge-list-container');
   container.innerHTML = `<div class="page-loader"><div class="spinner"></div></div>`;
+
   try {
     const res = await API.geList({
       page:   currentPage,
@@ -150,46 +410,71 @@ async function loadList() {
       status: document.getElementById('filter-status').value,
       search: document.getElementById('search-input').value,
     });
-    const { data, pagination } = res;
-    document.getElementById('total-count').textContent = `${pagination.total} GE form${pagination.total!=1?'s':''}`;
 
-    if (!data.length) {
-      container.innerHTML = `
-        <div class="empty-state">
-          <div class="es-icon">📋</div>
-          <div class="es-title">No GE forms found</div>
-          <div class="es-sub">Create your first GE form to get started.</div>
-          <div style="margin-top:16px"><a href="ge-form.html" class="btn btn-primary">+ New GE Form</a></div>
-        </div>`;
+    let { data, pagination } = res;
+
+    // Split into active vs archived by submitted_at
+    const active  = data.filter(g => !g.submitted_at || !isArchived(g));
+    const archive = data.filter(g =>  g.submitted_at &&  isArchived(g));
+
+    // Update tab counts (approximate from current page data)
+    document.getElementById('tab-active-count').textContent  = active.length;
+    document.getElementById('tab-archive-count').textContent = archive.length;
+
+    const rows = currentTab === 'archive' ? archive : active;
+
+    document.getElementById('total-count').textContent =
+      `${pagination.total} GE form${pagination.total !== 1 ? 's' : ''}`;
+
+    if (!rows.length) {
+      container.innerHTML = currentTab === 'archive'
+        ? `<div class="empty-state">
+             <div class="es-icon">📦</div>
+             <div class="es-title">No archived GE forms</div>
+             <div class="es-sub">GEs submitted more than 24 hours ago will appear here.</div>
+           </div>`
+        : `<div class="empty-state">
+             <div class="es-icon">📋</div>
+             <div class="es-title">No GE forms found</div>
+             <div class="es-sub">Create your first GE form to get started.</div>
+             <div style="margin-top:16px"><a href="ge-form.html" class="btn btn-primary">+ New GE Form</a></div>
+           </div>`;
       document.getElementById('pagination-container').innerHTML = '';
       return;
     }
 
-    container.innerHTML = `
+    // Archive tab — show info label
+    const archiveLabel = currentTab === 'archive'
+      ? `<div class="archive-label">📦 These GEs were submitted more than 24 hours ago and are archived for reference.</div>`
+      : '';
+
+    container.innerHTML = archiveLabel + `
       <div class="table-wrap">
         <table>
           <thead>
             <tr>
               <th>GE Number</th><th>Payee</th><th>Dept Ref</th>
-              <th>Type</th><th>Amount</th><th>Status</th><th>Updated</th><th>Actions</th>
+              <th>Type</th><th>Amount</th><th>Status</th>
+              <th>${currentTab === 'archive' ? 'Submitted' : 'Updated'}</th>
+              <th>Actions</th>
             </tr>
           </thead>
           <tbody>
-            ${data.map(g => `
-              <tr>
-                <td><span class="font-mono fw-600">${g.ge_number||''}</span></td>
-                <td>${g.payee_name||''}</td>
-                <td class="font-mono">${g.departmental_reference||''}</td>
-                <td>${g.procurement_type}${g.is_capital_item?' 🏛':''}</td>
+            ${rows.map(g => `
+              <tr${currentTab === 'archive' ? ' style="opacity:.8"' : ''}>
+                <td><span class="font-mono fw-600">${g.ge_number || ''}</span></td>
+                <td>${g.payee_name || ''}</td>
+                <td class="font-mono" style="font-size:12px">${g.departmental_reference || ''}</td>
+                <td>${g.procurement_type}${g.is_capital_item ? ' 🏛' : ''}</td>
                 <td class="fw-600">${Fmt.currency(g.total_amount)}</td>
                 <td>${statusBadge(g.status, g.status_label)}</td>
-                <td>${Fmt.date(g.updated_at)}</td>
+                <td style="font-size:12px">${Fmt.date(currentTab === 'archive' ? g.submitted_at : g.updated_at)}</td>
                 <td>
                   <div class="flex gap-8">
                     ${['DRAFT','READY_FOR_DOCUMENTS','QUERIED'].includes(g.status)
                       ? `<a href="ge-form.html?id=${g.id}" class="btn btn-secondary btn-sm">Edit</a>`
                       : `<a href="ge-form.html?id=${g.id}" class="btn btn-ghost btn-sm">View</a>`}
-                    ${g.status==='READY_FOR_DOCUMENTS'
+                    ${g.status === 'READY_FOR_DOCUMENTS'
                       ? `<a href="ge-documents.html?id=${g.id}" class="btn btn-primary btn-sm">Documents</a>` : ''}
                   </div>
                 </td>
@@ -204,9 +489,10 @@ async function loadList() {
   }
 }
 
+// ── Pagination ────────────────────────────────────────────
 function renderPagination(p) {
   const c = document.getElementById('pagination-container');
-  if (p.pages <= 1) { c.innerHTML=''; return; }
+  if (p.pages <= 1) { c.innerHTML = ''; return; }
   let html = `<div class="pagination">`;
   html += `<button class="page-btn" onclick="goPage(${p.page-1})" ${p.page<=1?'disabled':''}>‹</button>`;
   for (let i=1; i<=p.pages; i++) {
@@ -217,7 +503,148 @@ function renderPagination(p) {
   html += `<button class="page-btn" onclick="goPage(${p.page+1})" ${p.page>=p.pages?'disabled':''}>›</button>`;
   c.innerHTML = html + '</div>';
 }
-function goPage(p) { currentPage=p; loadList(); }
+function goPage(p) { currentPage = p; loadList(); }
+
+// ── Uploaded GE Forms ─────────────────────────────────────
+async function loadUploadedForms() {
+  const c = document.getElementById('uploaded-list-container');
+  c.innerHTML = `<div class="page-loader"><div class="spinner"></div></div>`;
+  try {
+    const res   = await API.uploadedForms();
+    const forms = res.forms || [];
+
+    // Update tab count
+    document.getElementById('tab-uploaded-count').textContent = forms.length;
+
+    if (!forms.length) {
+      c.innerHTML = `
+        <div class="empty-state">
+          <div class="es-icon">📁</div>
+          <div class="es-title">No uploaded GE forms</div>
+          <div class="es-sub">Upload a filled paper GE form to archive it here.</div>
+          <div style="margin-top:16px">
+            <button class="btn btn-primary" onclick="Modal.open('upload-form-modal')">+ Upload GE Form</button>
+          </div>
+        </div>`;
+      return;
+    }
+
+    c.innerHTML = `
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Title</th><th>GE Reference</th><th>Department</th>
+              <th>File</th><th>Size</th><th>Uploaded</th><th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${forms.map(f => `
+              <tr>
+                <td class="fw-600">${f.title}</td>
+                <td class="font-mono" style="font-size:12px">${f.ge_reference || '—'}</td>
+                <td style="font-size:12px">${f.department_name || '—'}</td>
+                <td style="font-size:12px">
+                  <span style="display:inline-flex;align-items:center;gap:4px">
+                    ${f.mime_type === 'application/pdf' ? '📄' : '🖼️'}
+                    ${f.original_name}
+                  </span>
+                </td>
+                <td style="font-size:12px">${Fmt.fileSize(f.file_size)}</td>
+                <td style="font-size:12px">${Fmt.datetime(f.uploaded_at)}</td>
+                <td>
+                  <div class="flex gap-8">
+                    <a href="/pnguot_gems/uploads/documents/${f.stored_name}" target="_blank"
+                       class="btn btn-ghost btn-sm">View</a>
+                    <button class="btn btn-danger btn-sm"
+                      onclick="deleteUploadedForm(${f.id}, this)">Delete</button>
+                  </div>
+                </td>
+              </tr>`).join('')}
+          </tbody>
+        </table>
+      </div>`;
+  } catch (err) {
+    c.innerHTML = `<div class="alert alert-error" style="margin:16px"><span>❌</span>${err.message}</div>`;
+  }
+}
+
+async function deleteUploadedForm(id, btn) {
+  const ok = await window.confirm('Delete this uploaded GE form? This cannot be undone.', 'Delete');
+  if (!ok) return;
+  btn.disabled = true;
+  try {
+    await API.deleteUploadedForm({ id });
+    Toast.success('Record deleted.');
+    loadUploadedForms();
+  } catch (err) {
+    Toast.error(err.message);
+    btn.disabled = false;
+  }
+}
+
+// ── Upload form modal ─────────────────────────────────────
+let _ufFile = null;
+
+document.addEventListener('DOMContentLoaded', () => {
+  const zone  = document.getElementById('uf-drop-zone');
+  const input = document.getElementById('uf-file-input');
+  if (!zone) return;
+
+  zone.addEventListener('click',    () => input.click());
+  zone.addEventListener('dragover',  e => { e.preventDefault(); zone.classList.add('drag-over'); });
+  zone.addEventListener('dragleave', ()  => zone.classList.remove('drag-over'));
+  zone.addEventListener('drop', e => {
+    e.preventDefault(); zone.classList.remove('drag-over');
+    handleUFFile(e.dataTransfer.files[0]);
+  });
+  input.addEventListener('change', () => handleUFFile(input.files[0]));
+});
+
+function handleUFFile(file) {
+  if (!file) return;
+  _ufFile = file;
+  document.getElementById('uf-zone-title').textContent = `📄 ${file.name} (${Fmt.fileSize(file.size)})`;
+  document.getElementById('btn-do-upload-form').disabled = false;
+}
+
+async function doUploadForm() {
+  const title = document.getElementById('uf-title').value.trim();
+  if (!title)   { Toast.warning('Please enter a title.'); return; }
+  if (!_ufFile) { Toast.warning('Please select a file.'); return; }
+
+  const btn = document.getElementById('btn-do-upload-form');
+  btn.disabled = true;
+  btn.textContent = 'Uploading…';
+
+  try {
+    await API.uploadForm(
+      title,
+      document.getElementById('uf-reference').value.trim(),
+      document.getElementById('uf-notes').value.trim(),
+      null,
+      _ufFile
+    );
+    Toast.success('GE form uploaded and archived successfully.');
+    Modal.close('upload-form-modal');
+    // Reset form
+    document.getElementById('uf-title').value     = '';
+    document.getElementById('uf-reference').value = '';
+    document.getElementById('uf-notes').value     = '';
+    document.getElementById('uf-file-input').value = '';
+    document.getElementById('uf-zone-title').textContent = 'Drop file here or click to browse';
+    _ufFile = null;
+    // Refresh uploaded tab
+    loadUploadedForms();
+    // Switch to uploaded tab to show result
+    switchTab('uploaded');
+  } catch (err) {
+    Toast.error(err.message || 'Upload failed.');
+  } finally {
+    btn.disabled = false;
+    btn.textContent = 'Upload & Archive';
+  }
+}
 </script>
 </body>
 </html>

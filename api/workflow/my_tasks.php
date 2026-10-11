@@ -13,7 +13,7 @@ $stmt = $db->prepare(
             ge.submitted_at,
             CONCAT(u.first_name," ",u.last_name) AS claimant_name,
             d.name AS department_name,
-            ws.label AS step_label, ws.step_code, ws.requires_otp
+            ws.label AS step_label, ws.step_code
      FROM workflow_tasks wt
      JOIN workflow_instances wi ON wi.id = wt.instance_id
      JOIN general_expenses ge ON ge.id = wi.ge_id
@@ -28,7 +28,6 @@ $tasks = $stmt->fetchAll();
 foreach ($tasks as &$t) {
     $t['ge_status_label']  = ge_status_label($t['ge_status']);
     $t['is_capital_item']  = (bool)$t['is_capital_item'];
-    $t['requires_otp']     = (bool)$t['requires_otp'];
 }
 
 json_success('OK', ['tasks' => $tasks, 'count' => count($tasks)]);

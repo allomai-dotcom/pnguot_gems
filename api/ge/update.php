@@ -147,7 +147,12 @@ if (!$financeOnlyEdit && $ge['claimant_id'] === $user['id'] &&
     )->execute([$b['hod_signature_data'], $id]);
 }
 
-// Bump version
-$db->prepare('UPDATE general_expenses SET version = version + 1 WHERE id = ?')->execute([$id]);
-audit($user['id'], 'GE_UPDATED', 'GE draft updated', $id);
-json_success('GE updated successfully.');
+try {
+    // Bump version
+    $db->prepare('UPDATE general_expenses SET version = version + 1 WHERE id = ?')->execute([$id]);
+    audit($user['id'], 'GE_UPDATED', 'GE draft updated', $id);
+    json_success('GE updated successfully.');
+} catch (PDOException $e) {
+    error_log('GE update error: ' . $e->getMessage());
+    json_error('Failed to save GE. Please try again.', 500);
+}

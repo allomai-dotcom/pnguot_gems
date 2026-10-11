@@ -31,12 +31,16 @@ function set_cors_headers(): void {
 
 // ── Auth / Session ────────────────────────────────────────────
 function start_session(): void {
+    if (session_status() === PHP_SESSION_ACTIVE) return; // already running, nothing to do
     $secure = !empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off';
-    ini_set('session.cookie_httponly', 1);
-    ini_set('session.use_strict_mode', 1);
-    session_name(SESSION_NAME);
-    session_set_cookie_params(SESSION_LIFETIME, '/', '', $secure, true);
-    if (session_status() === PHP_SESSION_NONE) session_start();
+    if (session_status() === PHP_SESSION_NONE) {
+        // Safe to configure before starting
+        ini_set('session.cookie_httponly', 1);
+        ini_set('session.use_strict_mode', 1);
+        session_name(SESSION_NAME);
+        session_set_cookie_params(SESSION_LIFETIME, '/', '', $secure, true);
+    }
+    session_start();
 }
 
 function get_authenticated_user(): ?array {
@@ -45,7 +49,7 @@ function get_authenticated_user(): ?array {
     $db = Database::getInstance();
     $stmt = $db->prepare(
         'SELECT u.id, u.staff_id, u.first_name, u.last_name, u.email,
-                u.phone, u.department_id, d.code AS dept_code, d.name AS dept_name,
+                u.phone, u.avatar_path, u.department_id, d.code AS dept_code, d.name AS dept_name,
                 GROUP_CONCAT(r.code ORDER BY r.code SEPARATOR ",") AS roles
          FROM users u
          LEFT JOIN departments d ON d.id = u.department_id

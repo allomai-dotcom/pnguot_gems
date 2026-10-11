@@ -6,44 +6,78 @@
   <title>Login — PNGUOT GEMS</title>
   <link rel="stylesheet" href="assets/css/main.css">
 </head>
-<body>
+<body class="login-body">
+
 <div class="login-page">
   <div class="login-card">
-    <div class="login-logo">
-      <div class="logo-icon" style="background:none;padding:4px">
-        <img src="assets/img/pnguot-logo.jpg" style="width:160px;height:160px;object-fit:contain">
+
+    <!-- ── Left panel ── -->
+    <div class="login-left">
+      <div class="login-left-brand">
+        <img src="assets/img/pnguot-logo.jpg" alt="PNGUOT Logo" class="login-left-logo-img">
+        <div class="login-left-school-name">Papua New Guinea<br>University of Technology</div>
       </div>
-      <div class="logo-title">PNGUOT GEMS</div>
-      <div class="logo-sub">General Expense Monitoring System</div>
+
+      <div class="login-left-body">
+        <span class="login-badge">GENERAL EXPENSE WORKFLOW</span>
+        <h1 class="login-headline">Procurement,<br>made clear.</h1>
+        <p class="login-sub">Create, review, authorise, and track General Expense claims in one secure workspace.</p>
+      </div>
+
+      <!-- decorative circles -->
+      <div class="login-deco login-deco-1"></div>
+      <div class="login-deco login-deco-2"></div>
     </div>
 
-    <div id="login-alert" class="alert alert-error hidden">
-      <span class="alert-icon">⚠️</span>
-      <span id="login-alert-msg"></span>
+    <!-- ── Right panel ── -->
+    <div class="login-right">
+      <h2 class="login-title">GEMS LOGIN</h2>
+
+      <!-- Error alert — shown on wrong email/password -->
+      <div id="login-alert" class="login-alert-box hidden">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0">
+          <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
+        </svg>
+        <span id="login-alert-msg">Invalid email or password. Please try again.</span>
+      </div>
+
+      <form id="login-form">
+        <div class="form-group">
+          <label class="form-label" for="email">Staff ID / Email</label>
+          <input id="email" name="email" type="text" class="form-control"
+            placeholder="you@pnguot.ac.pg" autocomplete="email" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="password">Password</label>
+          <input id="password" name="password" type="password" class="form-control"
+            placeholder="••••••••" autocomplete="current-password" required>
+        </div>
+        <button type="submit" id="login-btn" class="btn login-btn">
+          Login
+        </button>
+      </form>
+
+      <div class="login-hint">
+        <div class="login-hint-title">Test Account:</div>
+        <div><span class="login-hint-label">Staff ID / Email:</span> <span class="login-hint-val">admin@pnguot.ac.pg</span></div>
+        <div><span class="login-hint-label">Password:</span> <span class="login-hint-val">Admin@GEMS2026!</span></div>
+      </div>
     </div>
 
-    <form id="login-form">
-      <div class="form-group">
-        <label class="form-label" for="email">Email Address</label>
-        <input id="email" name="email" type="email" class="form-control" placeholder="you@pnguot.ac.pg" autocomplete="email" required>
-      </div>
-      <div class="form-group">
-        <label class="form-label" for="password">Password</label>
-        <input id="password" name="password" type="password" class="form-control" placeholder="••••••••" autocomplete="current-password" required>
-      </div>
-      <button type="submit" id="login-btn" class="btn btn-primary w-full btn-lg" style="margin-top:8px">
-        Sign In
-      </button>
-    </form>
-
-    <div class="login-divider">Papua New Guinea University of Technology</div>
-    <div style="text-align:center;font-size:11px;color:var(--text-muted)">v1.0 · &copy; 2026 PNGUOT</div>
   </div>
 </div>
 
+<footer class="login-footer">
+  <span>© 2026 Papua New Guinea University of Technology</span>
+  <span class="login-footer-sep">·</span>
+  <span>General Expense Monitoring System</span>
+  <span class="login-footer-sep">·</span>
+  <span>v1.0</span>
+</footer>
+
 <script src="assets/js/api.js?v=7"></script>
 <script>
-  // Redirect if already logged in — route by role
+  // Redirect if already logged in
   (async () => {
     try {
       const res = await API.me();
@@ -59,28 +93,79 @@
   document.getElementById('login-form').addEventListener('submit', async e => {
     e.preventDefault();
     const btn      = document.getElementById('login-btn');
-    const alert    = document.getElementById('login-alert');
+    const alertEl  = document.getElementById('login-alert');
     const alertMsg = document.getElementById('login-alert-msg');
-    alert.classList.add('hidden');
+
+    // Hide any previous error and reset classes
+    alertEl.className = 'login-alert-box hidden';
+    alertEl.classList.add('hidden');
+    // Shake animation reset
+    document.getElementById('email').classList.remove('input-error');
+    document.getElementById('password').classList.remove('input-error');
+
     btn.disabled = true;
-    btn.innerHTML = '<span class="spinner" style="width:16px;height:16px;border-width:2px"></span> Signing in…';
+    btn.innerHTML = '<span class="spinner" style="width:16px;height:16px;border-width:2px;border-color:#fff transparent #fff transparent"></span> Signing in…';
 
     try {
       const res = await API.login({
-        email:    document.getElementById('email').value,
+        email:    document.getElementById('email').value.trim(),
         password: document.getElementById('password').value,
       });
-      // Route based on role
       const roles = res.user?.roles || [];
-      window.location.href = roles.includes('SYSTEM_ADMIN')
-        ? 'pages/admin-panel.html'
-        : 'pages/dashboard.html';
+      const name  = res.user?.first_name || 'User';
+
+      // Show success message briefly before redirecting
+      alertEl.className = 'login-alert-box login-alert-success';
+      alertMsg.innerHTML = `Welcome back, <strong>${name}</strong>! Redirecting…`;
+      alertEl.classList.remove('hidden');
+      btn.innerHTML = '<span class="spinner" style="width:16px;height:16px;border-width:2px;border-color:#fff transparent #fff transparent"></span> Redirecting…';
+
+      setTimeout(() => {
+        window.location.href = roles.includes('SYSTEM_ADMIN')
+          ? 'pages/admin-panel.html'
+          : 'pages/dashboard.html';
+      }, 1200);
     } catch (err) {
-      alertMsg.textContent = err.message || 'Login failed.';
-      alert.classList.remove('hidden');
+      const status = err.status || 0;
+      const msg    = (err.message || '').toLowerCase();
+
+      let displayMsg;
+      if (status === 401 || msg.includes('invalid') || msg.includes('password') || msg.includes('email')) {
+        displayMsg = 'Incorrect email or password. Please check your credentials and try again.';
+        // Shake both fields for wrong credential errors
+        document.getElementById('email').classList.add('input-error');
+        document.getElementById('password').classList.add('input-error');
+      } else if (status === 403 || msg.includes('inactive')) {
+        displayMsg = 'Your account has been deactivated. Please contact your administrator.';
+      } else if (status === 400 || msg.includes('required')) {
+        displayMsg = 'Please enter both your email address and password.';
+      } else if (status === 0 || msg.includes('network') || msg.includes('connection')) {
+        displayMsg = 'Unable to connect to the server. Please check your network and try again.';
+      } else if (status === 500) {
+        displayMsg = 'A server error occurred. Please try again in a moment.';
+      } else {
+        displayMsg = err.message || 'Login failed. Please try again.';
+      }
+
+      alertMsg.textContent = displayMsg;
+      alertEl.classList.remove('hidden');
+
+      // Always shake the password field and focus it
+      document.getElementById('password').classList.add('input-error');
+      document.getElementById('password').focus();
+      document.getElementById('password').select();
+
       btn.disabled = false;
-      btn.textContent = 'Sign In';
+      btn.textContent = 'Login';
     }
+  });
+
+  // Clear error when user starts typing again
+  ['email', 'password'].forEach(id => {
+    document.getElementById(id).addEventListener('input', () => {
+      document.getElementById('login-alert').classList.add('hidden');
+      document.getElementById(id).classList.remove('input-error');
+    });
   });
 </script>
 </body>

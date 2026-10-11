@@ -10,17 +10,16 @@ $b      = get_json_body();
 $taskId = (int)($b['task_id'] ?? 0);
 $action = strtoupper(trim($b['action'] ?? '')); // APPROVED | REJECTED
 $comment= trim($b['comments'] ?? '');
-$otp    = trim($b['otp'] ?? '');
 
-if (!$taskId)                           json_error('task_id required.');
+if (!$taskId)                                    json_error('task_id required.');
 if (!in_array($action, ['APPROVED','REJECTED'])) json_error('action must be APPROVED or REJECTED.');
-if ($action === 'REJECTED' && !$comment) json_error('Comments are required when rejecting.');
+if ($action === 'REJECTED' && !$comment)         json_error('Comments are required when rejecting.');
 
 $db = Database::getInstance();
 
 // Fetch task
 $stmt = $db->prepare(
-    'SELECT wt.*, ws.requires_otp, ws.step_code, ws.workflow_id,
+    'SELECT wt.*, ws.step_code, ws.workflow_id,
             wi.ge_id, wi.id AS instance_id,
             ge.status AS ge_status, ge.version AS ge_version, ge.ge_number,
             ge.claimant_id
@@ -34,31 +33,10 @@ $stmt->execute([$taskId, $user['id']]);
 $task = $stmt->fetch();
 if (!$task) json_error('Task not found or already completed.', 404);
 
-// OTP verification
-if ($task['requires_otp'] && !DEV_BYPASS_OTP) {
-    if (!$otp) json_error('OTP is required for this step.');
-    $otpStmt = $db->prepare(
-        'SELECT * FROM otp_tokens WHERE user_id = ? AND task_id = ? AND is_used = 0
-         AND expires_at > NOW() ORDER BY created_at DESC LIMIT 1'
-    );
-    $otpStmt->execute([$user['id'], $taskId]);
-    $otpRow = $otpStmt->fetch();
-    if (!$otpRow) json_error('OTP not found or expired. Please request a new one.', 400);
-    if ((int)$otpRow['attempts'] >= OTP_MAX_ATTEMPTS) json_error('Too many OTP attempts.', 429);
-
-    $db->prepare('UPDATE otp_tokens SET attempts = attempts + 1 WHERE id = ?')
-       ->execute([$otpRow['id']]);
-
-    if ($otpRow['code'] !== $otp) json_error('Invalid OTP.', 400);
-
-    // Mark used
-    $db->prepare('UPDATE otp_tokens SET is_used = 1 WHERE id = ?')->execute([$otpRow['id']]);
-}
-
 // HOD Certification validation
-$hodSigData   = trim($b['hod_signature_data'] ?? '');
-$hodDesig     = trim($b['hod_designation']    ?? '');
-$hodCertAt    = trim($b['hod_certified_at']   ?? '');
+$hodSigData = trim($b['hod_signature_data'] ?? '');
+$hodDesig   = trim($b['hod_designation']    ?? '');
+$hodCertAt  = trim($b['hod_certified_at']   ?? '');
 
 if ($task['step_code'] === 'HEAD_OF_SCHOOL' && $action === 'APPROVED') {
     if ($hodSigData === '' || $hodDesig === '') {
@@ -69,13 +47,12 @@ if ($task['step_code'] === 'HEAD_OF_SCHOOL' && $action === 'APPROVED') {
 // Complete task
 $db->prepare(
     'UPDATE workflow_tasks SET status = "COMPLETED", action_taken = ?,
-     comments = ?, otp_verified = ?, ge_version_at_action = ?,
+     comments = ?, otp_verified = 1, ge_version_at_action = ?,
      hod_signature_data = ?, hod_designation = ?, hod_certified_at = ?,
      completed_at = NOW()
      WHERE id = ?'
 )->execute([
     $action, $comment,
-    ($task['requires_otp'] && !DEV_BYPASS_OTP) ? 1 : (DEV_BYPASS_OTP ? 1 : 0),
     $task['ge_version'],
     ($hodSigData !== '' ? $hodSigData : null),
     ($hodDesig   !== '' ? $hodDesig   : null),
@@ -84,18 +61,23 @@ $db->prepare(
 ]);
 
 if ($action === 'REJECTED') {
-    // Cancel GE and workflow
-    $db->prepare(
-        'UPDATE general_expenses SET status = "CANCELLED",
-         cancel_reason = ?, cancelled_at = NOW() WHERE id = ?'
-    )->execute(["Rejected by {$user['first_name']} {$user['last_name']}: $comment", $task['ge_id']]);
-    $db->prepare('UPDATE workflow_instances SET status = "CANCELLED" WHERE id = ?')
-       ->execute([$task['instance_id']]);
-    notify($task['claimant_id'], 'GE_REJECTED',
-           "Your GE {$task['ge_number']} was rejected at step {$task['step_code']}: $comment",
-           $task['ge_id']);
-    audit($user['id'], 'TASK_REJECTED', "Task rejected: $comment", $task['ge_id']);
-    json_success('GE rejected and cancelled.');
+    try {
+        // Cancel GE and workflow
+        $db->prepare(
+            'UPDATE general_expenses SET status = "CANCELLED",
+             cancel_reason = ?, cancelled_at = NOW() WHERE id = ?'
+        )->execute(["Rejected by {$user['first_name']} {$user['last_name']}: $comment", $task['ge_id']]);
+        $db->prepare('UPDATE workflow_instances SET status = "CANCELLED" WHERE id = ?')
+           ->execute([$task['instance_id']]);
+        notify($task['claimant_id'], 'GE_REJECTED',
+               "Your GE {$task['ge_number']} was rejected at step {$task['step_code']}: $comment",
+               $task['ge_id']);
+        audit($user['id'], 'TASK_REJECTED', "Task rejected: $comment", $task['ge_id']);
+        json_success('GE rejected and cancelled.');
+    } catch (PDOException $e) {
+        error_log('Workflow reject error: ' . $e->getMessage());
+        json_error('Failed to process rejection. Please try again.', 500);
+    }
 }
 
 // Advance to next step

@@ -14,7 +14,7 @@ if (!$email || !$pass) json_error('Email and password are required.');
 $db   = Database::getInstance();
 $stmt = $db->prepare(
     'SELECT u.id, u.staff_id, u.first_name, u.last_name, u.email,
-            u.password_hash, u.is_active, u.department_id,
+            u.password_hash, u.is_active, u.department_id, u.avatar_path,
             d.code AS dept_code, d.name AS dept_name,
             GROUP_CONCAT(r.code ORDER BY r.code SEPARATOR ",") AS roles
      FROM users u
@@ -40,6 +40,9 @@ $_SESSION['logged_in'] = true;
 
 $user['roles'] = $user['roles'] ? explode(',', $user['roles']) : [];
 unset($user['password_hash'], $user['is_active']);
+
+$user['avatar_url'] = !empty($user['avatar_path']) ? '/uploads/avatars/' . $user['avatar_path'] : null;
+unset($user['avatar_path']);
 
 // Count unread notifications
 $nStmt = $db->prepare('SELECT COUNT(*) AS cnt FROM notifications WHERE user_id = ? AND is_read = 0');

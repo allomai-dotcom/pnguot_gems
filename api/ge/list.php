@@ -40,6 +40,12 @@ if ($search) {
     array_push($params, $like, $like, $like);
 }
 
+// recent=1 → only GEs submitted within the last 24 hours
+if (!empty($_GET['recent']) && $_GET['recent'] === '1') {
+    $where[] = "ge.submitted_at >= DATE_SUB(NOW(), INTERVAL 24 HOUR)";
+    $where[] = "ge.submitted_at IS NOT NULL";
+}
+
 $whereClause = $where ? 'WHERE ' . implode(' AND ', $where) : '';
 
 $countSql = "SELECT COUNT(DISTINCT ge.id) AS total

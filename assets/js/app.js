@@ -20,9 +20,11 @@ const Auth = {
     // Redirect immediately — don't wait for the server response
     API.logout().catch(() => {}); // fire and forget
     Auth.user = null;
-    // Detect depth from current page location
-    const depth = window.location.pathname.split('/').filter(Boolean).length;
-    window.location.href = depth > 1 ? '../index.html' : 'index.html';
+    // Navigate to the app root (index.html) relative to the subfolder
+    const parts = window.location.pathname.split('/').filter(Boolean);
+    // Find the app root: if we're in pages/, go up one level; otherwise stay
+    const inPages = parts.includes('pages');
+    window.location.href = inPages ? '../index.html' : 'index.html';
   },
 
   hasRole(role) {
@@ -137,11 +139,24 @@ function renderTopbarUser(user) {
 
   if (nameEl)    nameEl.textContent  = fullName;
   if (roleEl)    roleEl.textContent  = roleLbl;
-  if (avatarEl)  avatarEl.textContent = initials;
+  if (avatarEl) {
+    if (user.avatar_url) {
+      avatarEl.innerHTML = `<img src="${user.avatar_url}" style="width:100%;height:100%;object-fit:cover;border-radius:50%">`;
+    } else {
+      avatarEl.textContent = initials;
+    }
+  }
   if (sidebarWs)   sidebarWs.textContent  = fullName;
   if (sidebarSub)  sidebarSub.textContent = user.dept_name || 'PNGUOT';
   if (sidebarFooterName) sidebarFooterName.textContent = fullName;
-  if (sidebarFooterAv)   sidebarFooterAv.textContent   = initials;
+  if (sidebarFooterAv) {
+    if (user.avatar_url) {
+      sidebarFooterAv.innerHTML = `<img src="${user.avatar_url}" style="width:100%;height:100%;object-fit:cover;border-radius:50%">`;
+      sidebarFooterAv.style.background = 'none';
+    } else {
+      sidebarFooterAv.textContent = initials;
+    }
+  }
 
   // Notification badge
   if (user.unread_notifications > 0) {
@@ -245,7 +260,12 @@ function confirm(message, title = 'Confirm') {
 // ── Page guard ────────────────────────────────────────────────
 async function requireAuth(allowedRoles = []) {
   const ok = await Auth.init();
-  if (!ok) { window.location.href = '../index.html'; return false; }
+  if (!ok) {
+    // Redirect to login — go up to app root if we're in pages/
+    const inPages = window.location.pathname.includes('/pages/');
+    window.location.href = inPages ? '../index.html' : 'index.html';
+    return false;
+  }
   if (allowedRoles.length && !Auth.hasAnyRole(allowedRoles)) {
     Toast.error('You do not have permission to view this page.');
     window.location.href = 'dashboard.html';
