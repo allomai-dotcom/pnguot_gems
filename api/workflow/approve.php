@@ -47,7 +47,7 @@ if ($task['step_code'] === 'HEAD_OF_SCHOOL' && $action === 'APPROVED') {
 // Complete task
 $db->prepare(
     'UPDATE workflow_tasks SET status = "COMPLETED", action_taken = ?,
-     comments = ?, otp_verified = 1, ge_version_at_action = ?,
+     comments = ?, ge_version_at_action = ?,
      hod_signature_data = ?, hod_designation = ?, hod_certified_at = ?,
      completed_at = NOW()
      WHERE id = ?'

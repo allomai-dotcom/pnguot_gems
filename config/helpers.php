@@ -33,14 +33,15 @@ function set_cors_headers(): void {
 function start_session(): void {
     if (session_status() === PHP_SESSION_ACTIVE) return; // already running, nothing to do
     $secure = !empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off';
+    if (session_status() === PHP_SESSION_DISABLED) return; // sessions disabled at PHP level — nothing to do
     if (session_status() === PHP_SESSION_NONE) {
         // Safe to configure before starting
         ini_set('session.cookie_httponly', 1);
         ini_set('session.use_strict_mode', 1);
         session_name(SESSION_NAME);
         session_set_cookie_params(SESSION_LIFETIME, '/', '', $secure, true);
+        session_start();
     }
-    session_start();
 }
 
 function get_authenticated_user(): ?array {

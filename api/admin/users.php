@@ -74,24 +74,29 @@ if ($method === 'POST') {
     if ($check->fetch()) json_error('Email or staff ID already exists.', 409);
 
     $hash = password_hash($b['password'], PASSWORD_BCRYPT, ['cost' => 12]);
-    $db->prepare(
-        'INSERT INTO users (staff_id, first_name, last_name, email, password_hash, phone, department_id)
-         VALUES (?,?,?,?,?,?,?)'
-    )->execute([
-        strtoupper(trim($b['staff_id'])),
-        trim($b['first_name']), trim($b['last_name']),
-        $email, $hash,
-        trim($b['phone'] ?? ''),
-        $b['department_id'] ? (int)$b['department_id'] : null,
-    ]);
-    $newId = (int)$db->lastInsertId();
+    try {
+        $db->prepare(
+            'INSERT INTO users (staff_id, first_name, last_name, email, password_hash, phone, department_id)
+             VALUES (?,?,?,?,?,?,?)'
+        )->execute([
+            strtoupper(trim($b['staff_id'])),
+            trim($b['first_name']), trim($b['last_name']),
+            $email, $hash,
+            trim($b['phone'] ?? ''),
+            $b['department_id'] ? (int)$b['department_id'] : null,
+        ]);
+        $newId = (int)$db->lastInsertId();
 
-    // Assign roles
-    if (!empty($b['roles']) && is_array($b['roles'])) {
-        assign_roles($newId, $b['roles'], $user['id'], $db);
+        // Assign roles
+        if (!empty($b['roles']) && is_array($b['roles'])) {
+            assign_roles($newId, $b['roles'], $user['id'], $db);
+        }
+        audit($user['id'], 'USER_CREATED', "User created: {$b['email']}");
+        json_success('User created.', ['user_id' => $newId], 201);
+    } catch (PDOException $e) {
+        error_log('User create error: ' . $e->getMessage());
+        json_error('Failed to create user. A database error occurred.', 500);
     }
-    audit($user['id'], 'USER_CREATED', "User created: {$b['email']}");
-    json_success('User created.', ['user_id' => $newId], 201);
 }
 
 // ── UPDATE ────────────────────────────────────────────────────
@@ -109,16 +114,21 @@ if ($method === 'PATCH' || ($method === 'POST' && isset($_GET['update']))) {
         $fields[] = 'password_hash = ?';
         $vals[]   = password_hash($b['password'], PASSWORD_BCRYPT, ['cost' => 12]);
     }
-    if ($fields) {
-        $vals[] = $id;
-        $db->prepare('UPDATE users SET ' . implode(', ', $fields) . ' WHERE id = ?')->execute($vals);
+    try {
+        if ($fields) {
+            $vals[] = $id;
+            $db->prepare('UPDATE users SET ' . implode(', ', $fields) . ' WHERE id = ?')->execute($vals);
+        }
+        if (isset($b['roles']) && is_array($b['roles'])) {
+            $db->prepare('DELETE FROM user_roles WHERE user_id = ?')->execute([$id]);
+            assign_roles($id, $b['roles'], $user['id'], $db);
+        }
+        audit($user['id'], 'USER_UPDATED', "User $id updated");
+        json_success('User updated.');
+    } catch (PDOException $e) {
+        error_log('User update error: ' . $e->getMessage());
+        json_error('Failed to update user. A database error occurred.', 500);
     }
-    if (isset($b['roles']) && is_array($b['roles'])) {
-        $db->prepare('DELETE FROM user_roles WHERE user_id = ?')->execute([$id]);
-        assign_roles($id, $b['roles'], $user['id'], $db);
-    }
-    audit($user['id'], 'USER_UPDATED', "User $id updated");
-    json_success('User updated.');
 }
 
 function assign_roles(int $userId, array $roleCodes, int $assignedBy, PDO $db): void {
