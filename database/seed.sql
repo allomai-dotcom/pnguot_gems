@@ -123,3 +123,67 @@ INSERT INTO workflow_steps (workflow_id, step_order, step_code, label, role_requ
 -- ============================================================
 INSERT INTO ge_number_sequence (year, next_val) VALUES (YEAR(NOW()), 1)
 ON DUPLICATE KEY UPDATE next_val = next_val;
+
+-- ============================================================
+-- TEST ROLE ACCOUNTS (password pattern: Role@GEMS2026!)
+-- ============================================================
+
+-- PNGUOT003 — Claimant (password: Claimant@GEMS2026!)
+INSERT IGNORE INTO users (staff_id, first_name, last_name, email, password_hash, department_id)
+VALUES ('PNGUOT003','Alice','Brown','claimant@pnguot.ac.pg',
+    '$2y$12$LUuEci3dPiwFfbolZnlzzOWyiJ3.EVLsLbuqPWPYOD/tyhVcFMUJO',
+    (SELECT id FROM departments WHERE code='SBS'));
+INSERT IGNORE INTO user_roles (user_id, role_id)
+SELECT u.id, r.id FROM users u, roles r WHERE u.staff_id='PNGUOT003' AND r.code='CLAIMANT';
+
+-- PNGUOT004 — Head of School (password: Hos@GEMS2026!)
+INSERT IGNORE INTO users (staff_id, first_name, last_name, email, password_hash, department_id)
+VALUES ('PNGUOT004','Robert','Kila','hos@pnguot.ac.pg',
+    '$2y$12$S50YCvT2HjvaOfsbQLySJuRFaFvFPj35BrNL64fbaqTe01ILzU1/S',
+    (SELECT id FROM departments WHERE code='SBS'));
+INSERT IGNORE INTO user_roles (user_id, role_id)
+SELECT u.id, r.id FROM users u, roles r WHERE u.staff_id='PNGUOT004' AND r.code='HEAD_OF_SCHOOL';
+INSERT IGNORE INTO user_roles (user_id, role_id)
+SELECT u.id, r.id FROM users u, roles r WHERE u.staff_id='PNGUOT004' AND r.code='CLAIMANT';
+
+-- PNGUOT005 — Dean (password: Dean@GEMS2026!)
+INSERT IGNORE INTO users (staff_id, first_name, last_name, email, password_hash, department_id)
+VALUES ('PNGUOT005','Mary','Tali','dean@pnguot.ac.pg',
+    '$2y$12$Ibo9ctK21.8SvNZUoBU6iesxtgOdOriy/zBE0tTX9xPZ55a0h6r6i',
+    (SELECT id FROM departments WHERE code='SBS'));
+INSERT IGNORE INTO user_roles (user_id, role_id)
+SELECT u.id, r.id FROM users u, roles r WHERE u.staff_id='PNGUOT005' AND r.code='DEAN';
+INSERT IGNORE INTO user_roles (user_id, role_id)
+SELECT u.id, r.id FROM users u, roles r WHERE u.staff_id='PNGUOT005' AND r.code='CLAIMANT';
+
+-- PNGUOT006 — ICT Director (password: Ict@GEMS2026!)
+INSERT IGNORE INTO users (staff_id, first_name, last_name, email, password_hash, department_id)
+VALUES ('PNGUOT006','Peter','Amos','ict@pnguot.ac.pg',
+    '$2y$12$Y6Xgqn7zws5jIHY2tJj23.IbDeuayDsgXAHOANM8c1SUZNY20CsXW',
+    (SELECT id FROM departments WHERE code='SMCS'));
+INSERT IGNORE INTO user_roles (user_id, role_id)
+SELECT u.id, r.id FROM users u, roles r WHERE u.staff_id='PNGUOT006' AND r.code='ICT_DIRECTOR';
+
+-- PNGUOT007 — Procurement Manager (password: Procurement@GEMS2026!)
+INSERT IGNORE INTO users (staff_id, first_name, last_name, email, password_hash, department_id)
+VALUES ('PNGUOT007','Grace','Mondo','procurement@pnguot.ac.pg',
+    '$2y$12$vR.NgYFSa9AnLx8HBfKagejja/jsL8L8nAX.GycGIXuTarkYR/CS.',
+    (SELECT id FROM departments WHERE code='SBS'));
+INSERT IGNORE INTO user_roles (user_id, role_id)
+SELECT u.id, r.id FROM users u, roles r WHERE u.staff_id='PNGUOT007' AND r.code='PROCUREMENT_MANAGER';
+
+-- PNGUOT008 — Accounts Officer (password: Accounts@GEMS2026!)
+INSERT IGNORE INTO users (staff_id, first_name, last_name, email, password_hash, department_id)
+VALUES ('PNGUOT008','David','Ovia','accounts@pnguot.ac.pg',
+    '$2y$12$.pKmuHhYshbRIaONzUH5K.uLGmOigYtW3dLTbsRd.SIE4qTjwXmUS',
+    (SELECT id FROM departments WHERE code='SBS'));
+INSERT IGNORE INTO user_roles (user_id, role_id)
+SELECT u.id, r.id FROM users u, roles r WHERE u.staff_id='PNGUOT008' AND r.code='ACCOUNTS_OFFICER';
+
+-- PNGUOT009 — Vice Chancellor (password: Vc@GEMS2026!)
+INSERT IGNORE INTO users (staff_id, first_name, last_name, email, password_hash, department_id)
+VALUES ('PNGUOT009','Thomas','Naupa','vc@pnguot.ac.pg',
+    '$2y$12$u3TdSbtcwISUdS5B9wpakObmUxBmA1gFZEzo2usiCbQpC4IRz51BK',
+    (SELECT id FROM departments WHERE code='SBS'));
+INSERT IGNORE INTO user_roles (user_id, role_id)
+SELECT u.id, r.id FROM users u, roles r WHERE u.staff_id='PNGUOT009' AND r.code='VICE_CHANCELLOR';
