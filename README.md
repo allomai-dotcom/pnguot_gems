@@ -129,6 +129,38 @@ A **Recently Submitted** banner at the top shows GEs submitted within the last 2
 
 ---
 
+## Test Accounts
+
+The following accounts are seeded automatically via `database/seed.sql` for testing the full approval workflow end-to-end. All accounts belong to the **School of Business Studies (SBS)** department.
+
+| Staff ID | Name | Email | Password | Role(s) |
+|----------|------|-------|----------|---------|
+| PNGUOT001 | Jane Doe | admin@pnguot.ac.pg | Admin@GEMS2026! | SYSTEM_ADMIN |
+| PNGUOT002 | John Smith | staff@pnguot.ac.pg | Staff@GEMS2026! | CLAIMANT |
+| PNGUOT003 | Alice Brown | claimant@pnguot.ac.pg | Claimant@GEMS2026! | CLAIMANT |
+| PNGUOT004 | Robert Kila | hos@pnguot.ac.pg | Hos@GEMS2026! | HEAD_OF_SCHOOL, CLAIMANT |
+| PNGUOT005 | Mary Tali | dean@pnguot.ac.pg | Dean@GEMS2026! | DEAN, CLAIMANT |
+| PNGUOT006 | Peter Amos | ict@pnguot.ac.pg | Ict@GEMS2026! | ICT_DIRECTOR |
+| PNGUOT007 | Grace Mondo | procurement@pnguot.ac.pg | Procurement@GEMS2026! | PROCUREMENT_MANAGER |
+| PNGUOT008 | David Ovia | accounts@pnguot.ac.pg | Accounts@GEMS2026! | ACCOUNTS_OFFICER |
+| PNGUOT009 | Thomas Naupa | vc@pnguot.ac.pg | Vc@GEMS2026! | VICE_CHANCELLOR |
+
+> Delegate assignments for all 6 approver roles are also pre-configured globally, so a submitted GE routes automatically to the correct approver at each workflow step.
+
+### Testing the Full Workflow
+
+1. Log in as **Claimant** (`claimant@pnguot.ac.pg`) — create and submit a GE
+2. Log in as **Head of School** (`hos@pnguot.ac.pg`) — approve the first step
+3. Log in as **Dean** (`dean@pnguot.ac.pg`) — approve the second step
+4. Log in as **Procurement Manager** (`procurement@pnguot.ac.pg`) — approve
+5. Log in as **Accounts Officer** (`accounts@pnguot.ac.pg`) — verify and process
+6. GE status becomes **COMPLETED** ✅
+
+For an **ICT Purchase**, step 3 routes to **ICT Director** (`ict@pnguot.ac.pg`) before Procurement.  
+For a **Capital Item** (> K3,000), step 4 routes to **Vice Chancellor** (`vc@pnguot.ac.pg`) before Accounts.
+
+---
+
 ## Quick Start — Local XAMPP
 
 ### Requirements
