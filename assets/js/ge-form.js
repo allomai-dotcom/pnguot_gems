@@ -56,7 +56,26 @@ const GEForm = {
     const sigCanvas = document.getElementById('claimant-sig-canvas');
     if (sigCanvas && typeof SignaturePad !== 'undefined') {
       this.signaturePad = new SignaturePad(sigCanvas, { backgroundColor: 'rgb(255,255,255)' });
-      document.getElementById('btn-clear-sig')?.addEventListener('click', () => this.signaturePad.clear());
+
+      // Hide placeholder when user starts drawing, show signed status
+      this.signaturePad.addEventListener('beginStroke', () => {
+        document.getElementById('claimant-sig-placeholder')?.classList.add('hidden');
+      });
+      this.signaturePad.addEventListener('endStroke', () => {
+        if (!this.signaturePad.isEmpty()) {
+          document.getElementById('claimant-sig-wrap')?.classList.add('signed');
+          const s = document.getElementById('claimant-sig-status');
+          if (s) s.textContent = '✅ Signature captured';
+        }
+      });
+
+      document.getElementById('btn-clear-sig')?.addEventListener('click', () => {
+        this.signaturePad.clear();
+        document.getElementById('claimant-sig-placeholder')?.classList.remove('hidden');
+        document.getElementById('claimant-sig-wrap')?.classList.remove('signed');
+        const s = document.getElementById('claimant-sig-status');
+        if (s) s.textContent = '';
+      });
     }
 
     // HOD signature pad
@@ -183,6 +202,11 @@ const GEForm = {
       // Restore claimant signature
       if (ge.claimant_signature_data && this.signaturePad) {
         this.signaturePad.fromDataURL(ge.claimant_signature_data);
+        // Show signed state
+        document.getElementById('claimant-sig-placeholder')?.classList.add('hidden');
+        document.getElementById('claimant-sig-wrap')?.classList.add('signed');
+        const s = document.getElementById('claimant-sig-status');
+        if (s) s.textContent = '✅ Signature captured';
       }
 
       // Section 5 — Financial Coding (visible to all)

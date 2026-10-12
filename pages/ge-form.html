@@ -320,10 +320,19 @@
               <label class="form-label" for="claimant-full-name" style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px">Claimant:</label>
               <input id="claimant-full-name" name="claimant-full-name" type="text" class="form-control" placeholder="Full Name">
 
-              <div class="form-label" style="font-weight:600;margin-bottom:4px;margin-top:10px">Signature of Claimant:</div>
-              <canvas id="claimant-sig-canvas" width="600" height="120"
-                style="border:1px solid #333;background:#fff;display:block;max-width:100%"></canvas>
-              <button type="button" id="btn-clear-sig" class="btn btn-ghost btn-sm" style="margin-top:4px">✏️ Clear</button>
+              <div class="form-label" style="font-weight:600;margin-bottom:6px;margin-top:10px">Signature of Claimant:</div>
+              <div class="sig-field-wrap" id="claimant-sig-wrap">
+                <div class="sig-placeholder" id="claimant-sig-placeholder">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" opacity=".35"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+                  <span>Sign here</span>
+                </div>
+                <canvas id="claimant-sig-canvas" width="600" height="150"
+                  style="display:block;width:100%;touch-action:none"></canvas>
+              </div>
+              <div class="sig-field-footer">
+                <span class="sig-status" id="claimant-sig-status"></span>
+                <button type="button" id="btn-clear-sig" class="btn btn-ghost btn-sm">✏️ Clear Signature</button>
+              </div>
 
               <div class="form-label" style="margin-top:8px">
                 Date:

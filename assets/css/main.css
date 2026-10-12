@@ -999,7 +999,48 @@ body.login-body {
   color: #6366f1;
 }
 
-/* Responsive — stack on small screens */
+/* ── Signature field ──────────────────────────────────────── */
+.sig-field-wrap {
+  position: relative;
+  border: 2px solid #ccc;
+  border-radius: 6px;
+  background: #fff;
+  overflow: hidden;
+  cursor: crosshair;
+  transition: border-color .15s;
+}
+.sig-field-wrap:hover,
+.sig-field-wrap:focus-within { border-color: #4338ca; }
+.sig-field-wrap.signed       { border-color: #22c55e; }
+
+.sig-placeholder {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  color: #aaa;
+  font-size: 13px;
+  pointer-events: none;
+  user-select: none;
+  transition: opacity .2s;
+}
+.sig-placeholder.hidden { opacity: 0; }
+
+.sig-field-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 6px;
+  min-height: 28px;
+}
+.sig-status {
+  font-size: 12px;
+  font-weight: 600;
+  color: #22c55e;
+}
 @media (max-width: 640px) {
   .login-card { flex-direction: column; max-width: 420px; }
   .login-left  { flex: none; padding: 28px 24px; min-height: 220px; }
