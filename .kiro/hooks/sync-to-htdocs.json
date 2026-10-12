@@ -1,0 +1,14 @@
+{
+  "version": "v1",
+  "hooks": [
+    {
+      "name": "Auto-sync to XAMPP pnguot_gems",
+      "trigger": "PostFileSave",
+      "description": "Auto-syncs every saved file from Desktop workspace to C:\\xampp\\htdocs\\pnguot_gems so localhost changes are instant",
+      "action": {
+        "type": "command",
+        "command": "robocopy \"C:\\Users\\allon\\OneDrive\\Desktop\\pnguot_general_expense_monitoring_system\" \"C:\\xampp\\htdocs\\pnguot_gems\" /MIR /XD \".git\" \".agents\" \"uploads\" /XF \"*.log\" /NFL /NDL /NJH /NJS"
+      }
+    }
+  ]
+}
