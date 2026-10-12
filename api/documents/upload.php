@@ -31,7 +31,7 @@ if ($file['size'] > MAX_UPLOAD_SIZE) json_error('File exceeds maximum size of 10
 $finfo    = new finfo(FILEINFO_MIME_TYPE);
 $mimeType = $finfo->file($file['tmp_name']);
 if (!in_array($mimeType, ALLOWED_MIME_TYPES)) {
-    json_error('Only PDF, JPEG, PNG, and GIF files are accepted.');
+    json_error('Unsupported file type. Accepted: PDF, Word, Excel, PowerPoint, images (JPEG, PNG, GIF, WEBP, BMP, TIFF), and plain text files.');
 }
 
 // Ensure upload dir exists

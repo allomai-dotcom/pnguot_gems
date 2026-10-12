@@ -18,12 +18,22 @@ $file = $_FILES['ge_form'];
 if ($file['error'] !== UPLOAD_ERR_OK) json_error('File upload error: ' . $file['error']);
 if ($file['size'] > MAX_UPLOAD_SIZE) json_error('File exceeds maximum size of 10 MB.');
 
-// Validate MIME type — only PDF and images
+// Validate MIME type — accept all common document and image formats
 $finfo    = new finfo(FILEINFO_MIME_TYPE);
 $mimeType = $finfo->file($file['tmp_name']);
-$allowed  = ['application/pdf', 'image/jpeg', 'image/png', 'image/gif', 'image/webp'];
+$allowed  = [
+    'application/pdf',
+    'application/msword',
+    'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+    'application/vnd.ms-excel',
+    'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+    'application/vnd.ms-powerpoint',
+    'application/vnd.openxmlformats-officedocument.presentationml.presentation',
+    'text/plain',
+    'image/jpeg', 'image/png', 'image/gif', 'image/webp', 'image/bmp', 'image/tiff',
+];
 if (!in_array($mimeType, $allowed)) {
-    json_error('Only PDF, JPEG, PNG, GIF, and WEBP files are accepted.');
+    json_error('Unsupported file type. Accepted: PDF, Word, Excel, PowerPoint, images, and text files.');
 }
 
 // Ensure upload dir exists

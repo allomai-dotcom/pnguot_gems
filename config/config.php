@@ -22,7 +22,24 @@ define('SESSION_LIFETIME', 28800); // 8 hours in seconds
 // File uploads — stored inside public root under /uploads/documents/ (InfinityFree)
 define('UPLOAD_BASE_PATH', rtrim($_SERVER['DOCUMENT_ROOT'], '/') . '/uploads/documents/');
 define('MAX_UPLOAD_SIZE',  10 * 1024 * 1024); // 10 MB
-define('ALLOWED_MIME_TYPES', ['application/pdf', 'image/jpeg', 'image/png', 'image/gif']);
+define('ALLOWED_MIME_TYPES', [
+    // Documents
+    'application/pdf',
+    'application/msword',                                                    // .doc
+    'application/vnd.openxmlformats-officedocument.wordprocessingml.document', // .docx
+    'application/vnd.ms-excel',                                              // .xls
+    'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',     // .xlsx
+    'application/vnd.ms-powerpoint',                                         // .ppt
+    'application/vnd.openxmlformats-officedocument.presentationml.presentation', // .pptx
+    'text/plain',                                                            // .txt
+    // Images
+    'image/jpeg',
+    'image/png',
+    'image/gif',
+    'image/webp',
+    'image/bmp',
+    'image/tiff',
+]);
 
 // OTP
 define('OTP_LENGTH',          6);
