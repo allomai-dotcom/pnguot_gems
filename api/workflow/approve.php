@@ -33,6 +33,11 @@ $stmt->execute([$taskId, $user['id']]);
 $task = $stmt->fetch();
 if (!$task) json_error('Task not found or already completed.', 404);
 
+// Self-approval guard — prevent approving your own GE
+if ((int)$task['claimant_id'] === (int)$user['id']) {
+    json_error('You cannot approve your own General Expense form.', 403);
+}
+
 // HOD Certification validation
 $hodSigData = trim($b['hod_signature_data'] ?? '');
 $hodDesig   = trim($b['hod_designation']    ?? '');

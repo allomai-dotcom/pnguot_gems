@@ -84,8 +84,13 @@ const Workflow = {
 
       body.innerHTML = this.renderTaskBody(task, ge);
 
-      // OTP button — removed
-      // Approve / Reject
+      // Clone-replace footer buttons to remove any previously stacked listeners
+      ['btn-approve', 'btn-reject', 'btn-query'].forEach(id => {
+        const old = document.getElementById(id);
+        if (old) { const n = old.cloneNode(true); old.parentNode.replaceChild(n, old); }
+      });
+
+      // Wire up fresh listeners
       document.getElementById('btn-approve')?.addEventListener('click', () => this.submitDecision('APPROVED', task));
       document.getElementById('btn-reject') ?.addEventListener('click', () => this.submitDecision('REJECTED', task));
       document.getElementById('btn-query')  ?.addEventListener('click', () => this.raiseQuery(task));

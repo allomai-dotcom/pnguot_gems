@@ -63,6 +63,13 @@ if (!$steps) {
 
 // Resolve first step delegate
 $firstStep = $steps[0];
+
+// Safety net: ensure ge_number is set before submission
+if (empty($ge['ge_number'])) {
+    $geNumber = generate_ge_number();
+    $db->prepare('UPDATE general_expenses SET ge_number = ? WHERE id = ?')->execute([$geNumber, $id]);
+    $ge['ge_number'] = $geNumber;
+}
 $delegate  = resolve_delegate($firstStep, $ge, $db);
 
 // Create workflow instance
