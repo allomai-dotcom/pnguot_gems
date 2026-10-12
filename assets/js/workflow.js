@@ -217,52 +217,152 @@ const Workflow = {
       Toast.warning('Comments are required when rejecting.'); return;
     }
 
-    // HOD certification intercept
-    if (action === 'APPROVED' && task.step_code === 'HEAD_OF_SCHOOL') {
-      const modal = document.getElementById('hod-cert-modal');
-      modal.classList.remove('hidden');
+    // Steps that require a signature from the approver
+    const sigSteps = ['HEAD_OF_SCHOOL','DEAN','ICT_DIRECTOR','PROCUREMENT_MANAGER','VICE_CHANCELLOR','ACCOUNTS_VERIFICATION','ACCOUNTS_PROCESSING','ACCOUNTS_PAYMENT'];
 
-      // Replace confirm button to avoid stacking listeners
-      const oldBtn = document.getElementById('btn-hod-confirm');
-      const newBtn = oldBtn.cloneNode(true);
-      oldBtn.parentNode.replaceChild(newBtn, oldBtn);
+    if (action === 'APPROVED' && sigSteps.includes(task.step_code)) {
 
-      newBtn.addEventListener('click', async () => {
-        if (!Workflow.hodSigPad || Workflow.hodSigPad.isEmpty()) {
-          Toast.warning('Please provide your signature.'); return;
+      // HOD uses its own dedicated modal with designation field
+      if (task.step_code === 'HEAD_OF_SCHOOL') {
+        const modal = document.getElementById('hod-cert-modal');
+        modal.classList.remove('hidden');
+        const oldBtn = document.getElementById('btn-hod-confirm');
+        const newBtn = oldBtn.cloneNode(true);
+        oldBtn.parentNode.replaceChild(newBtn, oldBtn);
+        newBtn.addEventListener('click', async () => {
+          if (!Workflow.hodSigPad || Workflow.hodSigPad.isEmpty()) {
+            Toast.warning('Please provide your signature.'); return;
+          }
+          const desig = document.getElementById('hod-designation')?.value?.trim();
+          if (!desig) { Toast.warning('Designation is required.'); return; }
+          modal.classList.add('hidden');
+          const hodSigData = Workflow.hodSigPad.toDataURL();
+          const hodCertAt  = new Date().toISOString();
+          const ok = await window.confirm('Are you sure you want to approve this GE?', 'Confirm Decision');
+          if (!ok) return;
+          try {
+            const res = await API.taskApprove({
+              task_id: task.task_id, action, comments,
+              hod_signature_data: hodSigData,
+              hod_designation:    desig,
+              hod_certified_at:   hodCertAt,
+            });
+            Toast.success(res.message);
+            Modal.close('task-modal');
+            await this.loadMyTasks();
+          } catch (err) { Toast.error(err.message || 'Action failed.'); }
+        });
+        return;
+      }
+
+      // All other approver steps — generic signature capture modal
+      const stepLabels = {
+        'DEAN':                  'Dean',
+        'ICT_DIRECTOR':          'ICT Director',
+        'PROCUREMENT_MANAGER':   'Procurement Manager',
+        'VICE_CHANCELLOR':       'Vice Chancellor',
+        'ACCOUNTS_VERIFICATION': 'Accounts Officer',
+        'ACCOUNTS_PROCESSING':   'Accounts Officer',
+        'ACCOUNTS_PAYMENT':      'Accounts Officer',
+      };
+      const roleLabel = stepLabels[task.step_code] || 'Approver';
+
+      // Build / show the delegate sig modal
+      let delModal = document.getElementById('delegate-sig-modal');
+      if (!delModal) {
+        delModal = document.createElement('div');
+        delModal.id = 'delegate-sig-modal';
+        delModal.className = 'modal-overlay hidden';
+        delModal.innerHTML = `
+          <div class="modal" style="max-width:520px">
+            <div class="modal-header">
+              <span class="modal-title" id="del-modal-title">Approver Signature</span>
+            </div>
+            <div class="modal-body">
+              <p style="font-size:13px;color:var(--text-muted);margin-bottom:12px">
+                Please sign below to confirm your approval of this GE.
+              </p>
+              <div class="sig-field-wrap" id="del-sig-wrap">
+                <div class="sig-placeholder" id="del-sig-placeholder">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" opacity=".35"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+                  <span>Sign here</span>
+                </div>
+                <canvas id="del-sig-canvas" width="460" height="150"
+                  style="display:block;width:100%;touch-action:none"></canvas>
+              </div>
+              <div class="sig-field-footer">
+                <span class="sig-status" id="del-sig-status"></span>
+                <button type="button" id="btn-clear-del-sig" class="btn btn-ghost btn-sm">✏️ Clear</button>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button class="btn btn-secondary" id="btn-del-cancel">Cancel</button>
+              <button class="btn btn-primary" id="btn-del-confirm">✅ Confirm &amp; Approve</button>
+            </div>
+          </div>`;
+        document.body.appendChild(delModal);
+
+        // Init signature pad
+        const canvas = delModal.querySelector('#del-sig-canvas');
+        Workflow.delSigPad = new SignaturePad(canvas, { backgroundColor: 'rgb(255,255,255)' });
+        Workflow.delSigPad.addEventListener('beginStroke', () => {
+          delModal.querySelector('#del-sig-placeholder')?.classList.add('hidden');
+        });
+        Workflow.delSigPad.addEventListener('endStroke', () => {
+          if (!Workflow.delSigPad.isEmpty()) {
+            delModal.querySelector('#del-sig-wrap')?.classList.add('signed');
+            delModal.querySelector('#del-sig-status').textContent = '✅ Signature captured';
+          }
+        });
+        delModal.querySelector('#btn-clear-del-sig').addEventListener('click', () => {
+          Workflow.delSigPad.clear();
+          delModal.querySelector('#del-sig-placeholder')?.classList.remove('hidden');
+          delModal.querySelector('#del-sig-wrap')?.classList.remove('signed');
+          delModal.querySelector('#del-sig-status').textContent = '';
+        });
+        delModal.querySelector('#btn-del-cancel').addEventListener('click', () => {
+          delModal.classList.add('hidden');
+        });
+      }
+
+      // Reset and show
+      Workflow.delSigPad?.clear();
+      delModal.querySelector('#del-sig-placeholder')?.classList.remove('hidden');
+      delModal.querySelector('#del-sig-wrap')?.classList.remove('signed');
+      delModal.querySelector('#del-sig-status').textContent = '';
+      delModal.querySelector('#del-modal-title').textContent = `${roleLabel} Signature`;
+      delModal.classList.remove('hidden');
+
+      // Wire confirm button (clone to remove old listener)
+      const oldConfirm = delModal.querySelector('#btn-del-confirm');
+      const newConfirm = oldConfirm.cloneNode(true);
+      oldConfirm.parentNode.replaceChild(newConfirm, oldConfirm);
+
+      newConfirm.addEventListener('click', async () => {
+        if (!Workflow.delSigPad || Workflow.delSigPad.isEmpty()) {
+          Toast.warning('Please provide your signature before approving.'); return;
         }
-        const desig = document.getElementById('hod-designation')?.value?.trim();
-        if (!desig) { Toast.warning('Designation is required.'); return; }
-
-        modal.classList.add('hidden');
-
-        const hodSigData = Workflow.hodSigPad.toDataURL();
-        const hodCertAt  = new Date().toISOString();
-
-        const ok = await window.confirm('Are you sure you want to approve this GE?', 'Confirm Decision');
+        delModal.classList.add('hidden');
+        const delegateSig = Workflow.delSigPad.toDataURL();
+        const ok = await window.confirm('Are you sure you want to approve this GE?', 'Confirm Approval');
         if (!ok) return;
-
         try {
           const res = await API.taskApprove({
             task_id: task.task_id, action, comments,
-            hod_signature_data: hodSigData,
-            hod_designation:    desig,
-            hod_certified_at:   hodCertAt,
+            delegate_signature_data: delegateSig,
           });
           Toast.success(res.message);
           Modal.close('task-modal');
           await this.loadMyTasks();
-        } catch (err) {
-          Toast.error(err.message || 'Action failed.');
-        }
+        } catch (err) { Toast.error(err.message || 'Action failed.'); }
       });
-      return; // flow continues via modal
+      return;
     }
 
+    // REJECTED path — no signature needed
     const label = action === 'APPROVED' ? 'approve' : 'reject';
     const ok    = await window.confirm(`Are you sure you want to ${label} this GE?`, 'Confirm Decision');
     if (!ok) return;
-
     try {
       const res = await API.taskApprove({ task_id: task.task_id, action, comments });
       Toast.success(res.message);

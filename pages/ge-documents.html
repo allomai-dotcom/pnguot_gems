@@ -98,6 +98,10 @@ const REQUIRED_DOCS = [
   { type: 'QUOTATION_3',          label: 'Supplier Quotation 3' },
   { type: 'JUSTIFICATION_LETTER', label: 'Justification Letter' },
 ];
+// Sole-source: only 1 quotation required
+const REQUIRED_DOCS_SOLE = [
+  { type: 'QUOTATION_1', label: 'Supplier Quotation (at least one required)' },
+];
 const OPTIONAL_DOCS = [
   { type: 'PURCHASE_ORDER',    label: 'Purchase Order' },
   { type: 'REMITTANCE_ADVICE', label: 'Remittance Advice' },
@@ -130,7 +134,9 @@ async function loadDocuments() {
     const checks = readyRes.checks;
     const ready  = readyRes.ready;
 
-    const uploadedMap = {};
+    const isSoleSource = !!(ge.is_sole_source) && !!(ge.sole_source_justification);
+    const activeDocs   = isSoleSource ? REQUIRED_DOCS_SOLE : REQUIRED_DOCS;
+    const uploadedMap  = {};
     ge.documents?.forEach(d => { uploadedMap[d.document_type] = d; });
 
     const makeDocRow = (doc, required) => {
@@ -182,8 +188,32 @@ async function loadDocuments() {
       <div class="card mb-24">
         <div class="card-header"><span class="card-title">Required Documents</span></div>
         <div class="card-body"><div class="doc-list">
-          ${REQUIRED_DOCS.map(d => makeDocRow(d, true)).join('')}
+          ${activeDocs.map(d => makeDocRow(d, true)).join('')}
         </div></div>
+      </div>
+
+      <!-- Sole-source exemption -->
+      <div class="card mb-24" id="sole-source-card">
+        <div class="card-header" style="cursor:pointer" onclick="toggleSoleSource()">
+          <span class="card-title">Only one supplier available?</span>
+          <span style="font-size:12px;color:var(--text-muted)">Click to expand</span>
+        </div>
+        <div id="sole-source-body" class="card-body hidden">
+          <p style="font-size:13px;color:var(--text-muted);margin-bottom:12px">
+            If only one supplier is available for this item or software (sole source), you may submit with a single quotation instead of three. Explain your reason below.
+          </p>
+          <div class="form-group">
+            <label class="form-label" for="sole-source-text">Reason for single supplier <span class="required">*</span></label>
+            <textarea id="sole-source-text" name="sole-source-text" class="form-control" rows="3"
+              placeholder="e.g. Sole-source software licence — only available from one vendor. No alternative suppliers exist in PNG.">${ge.sole_source_justification || ''}</textarea>
+          </div>
+          <label style="display:flex;align-items:center;gap:8px;font-size:13px;margin-bottom:12px;cursor:pointer">
+            <input type="checkbox" id="sole-source-cb" ${ge.is_sole_source ? 'checked' : ''}>
+            I confirm this is a sole-source purchase and only one supplier is available.
+          </label>
+          <button class="btn btn-primary btn-sm" onclick="saveSoleSource()">Save Justification</button>
+          ${ge.is_sole_source ? '<span style="font-size:12px;color:var(--primary);margin-left:12px">✅ Sole-source exemption active — only 1 quotation required</span>' : ''}
+        </div>
       </div>
 
       <div class="card mb-24">
@@ -270,6 +300,25 @@ async function submitGE() {
     setTimeout(() => window.location.href = 'my-ges.html', 2000);
   } catch (err) {
     Toast.error(err.message || 'Submission failed.', 'Submission Error');
+  }
+}
+
+function toggleSoleSource() {
+  const body = document.getElementById('sole-source-body');
+  if (body) body.classList.toggle('hidden');
+}
+
+async function saveSoleSource() {
+  const text = document.getElementById('sole-source-text')?.value?.trim();
+  const cb   = document.getElementById('sole-source-cb')?.checked;
+  if (!text) { Toast.warning('Please explain why only one supplier is available.'); return; }
+  if (!cb)   { Toast.warning('Please tick the confirmation checkbox.'); return; }
+  try {
+    await API.geUpdate({ id: geId, is_sole_source: cb ? 1 : 0, sole_source_justification: text });
+    Toast.success('Sole-source justification saved. Reloading…');
+    setTimeout(() => loadDocuments(), 1000);
+  } catch (err) {
+    Toast.error(err.message || 'Failed to save.');
   }
 }
 </script>

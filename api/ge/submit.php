@@ -19,14 +19,20 @@ if ($ge['status'] !== 'READY_FOR_DOCUMENTS') {
     json_error('GE must be in READY_FOR_DOCUMENTS status to submit.');
 }
 
-// Check required documents
+// Check required documents — sole-source exemption applies
 $requiredTypes = ['QUOTATION_1','QUOTATION_2','QUOTATION_3','JUSTIFICATION_LETTER'];
 $docStmt = $db->prepare(
     'SELECT document_type FROM ge_documents WHERE ge_id = ? AND deleted_at IS NULL'
 );
 $docStmt->execute([$id]);
 $uploaded = array_column($docStmt->fetchAll(), 'document_type');
-$missing  = array_diff($requiredTypes, $uploaded);
+
+// Sole-source: only 1 quotation needed if justified
+if (!empty($ge['is_sole_source']) && !empty(trim($ge['sole_source_justification'] ?? ''))) {
+    $requiredTypes = ['QUOTATION_1'];
+}
+
+$missing = array_diff($requiredTypes, $uploaded);
 if ($missing) {
     json_error('Missing required documents: ' . implode(', ', $missing), 422,
                ['missing_documents' => array_values($missing)]);

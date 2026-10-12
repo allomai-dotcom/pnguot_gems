@@ -86,37 +86,42 @@ INSERT INTO workflow_definitions (code, label, description) VALUES
 
 -- ============================================================
 -- WORKFLOW STEPS — STANDARD_PURCHASE
+-- HOS → Dean → Procurement → Accounts Verification → VC → Accounts Processing
 -- ============================================================
 SET @wf_std = (SELECT id FROM workflow_definitions WHERE code = 'STANDARD_PURCHASE');
 INSERT INTO workflow_steps (workflow_id, step_order, step_code, label, role_required, requires_otp, ge_status_on_reach) VALUES
-(@wf_std, 1, 'HEAD_OF_SCHOOL',          'Head of School Approval',     'HEAD_OF_SCHOOL',      1, 'PENDING_HOS'),
-(@wf_std, 2, 'DEAN',                    'Dean Approval',                'DEAN',                1, 'PENDING_DEAN'),
-(@wf_std, 3, 'PROCUREMENT_MANAGER',     'Procurement Review',           'PROCUREMENT_MANAGER', 1, 'PENDING_PROCUREMENT'),
-(@wf_std, 4, 'ACCOUNTS_VERIFICATION',   'Accounts Verification',        'ACCOUNTS_OFFICER',    1, 'PENDING_ACCOUNTS_VERIFICATION'),
-(@wf_std, 5, 'ACCOUNTS_PROCESSING',     'Accounts Processing/Payment',  'ACCOUNTS_OFFICER',    1, 'PENDING_ACCOUNTS_PROCESSING');
+(@wf_std, 1, 'HEAD_OF_SCHOOL',        'Head of School Approval',      'HEAD_OF_SCHOOL',      0, 'PENDING_HOS'),
+(@wf_std, 2, 'DEAN',                  'Dean Approval',                 'DEAN',                0, 'PENDING_DEAN'),
+(@wf_std, 3, 'PROCUREMENT_MANAGER',   'Procurement Review',            'PROCUREMENT_MANAGER', 0, 'PENDING_PROCUREMENT'),
+(@wf_std, 4, 'ACCOUNTS_VERIFICATION', 'Accounts Verification',         'ACCOUNTS_OFFICER',    0, 'PENDING_ACCOUNTS_VERIFICATION'),
+(@wf_std, 5, 'VICE_CHANCELLOR',       'Vice Chancellor Approval',      'VICE_CHANCELLOR',     0, 'PENDING_VC'),
+(@wf_std, 6, 'ACCOUNTS_PROCESSING',   'Accounts Processing/Payment',   'ACCOUNTS_OFFICER',    0, 'PENDING_ACCOUNTS_PROCESSING');
 
 -- ============================================================
 -- WORKFLOW STEPS — ICT_PURCHASE
+-- HOS → Dean → ICT Director → Procurement → Accounts Verification → VC → Accounts Processing
 -- ============================================================
 SET @wf_ict = (SELECT id FROM workflow_definitions WHERE code = 'ICT_PURCHASE');
 INSERT INTO workflow_steps (workflow_id, step_order, step_code, label, role_required, requires_otp, ge_status_on_reach) VALUES
-(@wf_ict, 1, 'HEAD_OF_SCHOOL',          'Head of School Approval',     'HEAD_OF_SCHOOL',      1, 'PENDING_HOS'),
-(@wf_ict, 2, 'DEAN',                    'Dean Approval',                'DEAN',                1, 'PENDING_DEAN'),
-(@wf_ict, 3, 'ICT_DIRECTOR',            'ICT Director Verification',    'ICT_DIRECTOR',        1, 'PENDING_ICT'),
-(@wf_ict, 4, 'PROCUREMENT_MANAGER',     'Procurement Review',           'PROCUREMENT_MANAGER', 1, 'PENDING_PROCUREMENT'),
-(@wf_ict, 5, 'ACCOUNTS_VERIFICATION',   'Accounts Verification',        'ACCOUNTS_OFFICER',    1, 'PENDING_ACCOUNTS_VERIFICATION'),
-(@wf_ict, 6, 'ACCOUNTS_PROCESSING',     'Accounts Processing/Payment',  'ACCOUNTS_OFFICER',    1, 'PENDING_ACCOUNTS_PROCESSING');
+(@wf_ict, 1, 'HEAD_OF_SCHOOL',        'Head of School Approval',      'HEAD_OF_SCHOOL',      0, 'PENDING_HOS'),
+(@wf_ict, 2, 'DEAN',                  'Dean Approval',                 'DEAN',                0, 'PENDING_DEAN'),
+(@wf_ict, 3, 'ICT_DIRECTOR',          'ICT Director Verification',     'ICT_DIRECTOR',        0, 'PENDING_ICT'),
+(@wf_ict, 4, 'PROCUREMENT_MANAGER',   'Procurement Review',            'PROCUREMENT_MANAGER', 0, 'PENDING_PROCUREMENT'),
+(@wf_ict, 5, 'ACCOUNTS_VERIFICATION', 'Accounts Verification',         'ACCOUNTS_OFFICER',    0, 'PENDING_ACCOUNTS_VERIFICATION'),
+(@wf_ict, 6, 'VICE_CHANCELLOR',       'Vice Chancellor Approval',      'VICE_CHANCELLOR',     0, 'PENDING_VC'),
+(@wf_ict, 7, 'ACCOUNTS_PROCESSING',   'Accounts Processing/Payment',   'ACCOUNTS_OFFICER',    0, 'PENDING_ACCOUNTS_PROCESSING');
 
 -- ============================================================
 -- WORKFLOW STEPS — CAPITAL_ITEM
+-- HOS → Dean → Procurement → VC → Accounts Payment
 -- ============================================================
 SET @wf_cap = (SELECT id FROM workflow_definitions WHERE code = 'CAPITAL_ITEM');
 INSERT INTO workflow_steps (workflow_id, step_order, step_code, label, role_required, requires_otp, ge_status_on_reach) VALUES
-(@wf_cap, 1, 'HEAD_OF_SCHOOL',          'Head of School Approval',     'HEAD_OF_SCHOOL',      1, 'PENDING_HOS'),
-(@wf_cap, 2, 'DEAN',                    'Dean Approval',                'DEAN',                1, 'PENDING_DEAN'),
-(@wf_cap, 3, 'PROCUREMENT_MANAGER',     'Procurement Review',           'PROCUREMENT_MANAGER', 1, 'PENDING_PROCUREMENT'),
-(@wf_cap, 4, 'VICE_CHANCELLOR',         'Vice Chancellor Approval',     'VICE_CHANCELLOR',     1, 'PENDING_VC'),
-(@wf_cap, 5, 'ACCOUNTS_PAYMENT',        'Accounts Payment',             'ACCOUNTS_OFFICER',    1, 'PENDING_PAYMENT');
+(@wf_cap, 1, 'HEAD_OF_SCHOOL',        'Head of School Approval',      'HEAD_OF_SCHOOL',      0, 'PENDING_HOS'),
+(@wf_cap, 2, 'DEAN',                  'Dean Approval',                 'DEAN',                0, 'PENDING_DEAN'),
+(@wf_cap, 3, 'PROCUREMENT_MANAGER',   'Procurement Review',            'PROCUREMENT_MANAGER', 0, 'PENDING_PROCUREMENT'),
+(@wf_cap, 4, 'VICE_CHANCELLOR',       'Vice Chancellor Approval',      'VICE_CHANCELLOR',     0, 'PENDING_VC'),
+(@wf_cap, 5, 'ACCOUNTS_PAYMENT',      'Accounts Payment',              'ACCOUNTS_OFFICER',    0, 'PENDING_PAYMENT');
 
 -- ============================================================
 -- GE NUMBER SEQUENCE — initialise current year

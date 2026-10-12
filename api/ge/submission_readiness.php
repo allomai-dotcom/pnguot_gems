@@ -15,13 +15,24 @@ if (!$ge) json_error('GE not found.', 404);
 
 $checks = [];
 
+// Determine if sole-source exemption applies
+$isSoleSource = !empty($ge['is_sole_source']) && !empty(trim($ge['sole_source_justification'] ?? ''));
+
 // Required documents
-$requiredDocs = [
-    'QUOTATION_1'         => 'Supplier Quotation 1',
-    'QUOTATION_2'         => 'Supplier Quotation 2',
-    'QUOTATION_3'         => 'Supplier Quotation 3',
-    'JUSTIFICATION_LETTER'=> 'Justification Letter',
-];
+if ($isSoleSource) {
+    // Sole-source: only 1 quotation required
+    $requiredDocs = [
+        'QUOTATION_1' => 'Supplier Quotation (at least one required)',
+    ];
+} else {
+    $requiredDocs = [
+        'QUOTATION_1'          => 'Supplier Quotation 1',
+        'QUOTATION_2'          => 'Supplier Quotation 2',
+        'QUOTATION_3'          => 'Supplier Quotation 3',
+        'JUSTIFICATION_LETTER' => 'Justification Letter',
+    ];
+}
+
 $docStmt = $db->prepare(
     'SELECT document_type FROM ge_documents WHERE ge_id = ? AND deleted_at IS NULL'
 );
@@ -30,18 +41,36 @@ $uploaded = array_column($docStmt->fetchAll(), 'document_type');
 
 foreach ($requiredDocs as $type => $label) {
     $checks[] = [
-        'key'     => $type,
-        'label'   => $label,
-        'passed'  => in_array($type, $uploaded),
-        'required'=> true,
+        'key'      => $type,
+        'label'    => $label,
+        'passed'   => in_array($type, $uploaded),
+        'required' => true,
+    ];
+}
+
+// If sole-source, add a check for the justification text itself
+if ($isSoleSource) {
+    $checks[] = [
+        'key'      => 'SOLE_SOURCE_JUSTIFICATION',
+        'label'    => 'Sole-source justification provided',
+        'passed'   => true,
+        'required' => true,
+    ];
+} else {
+    // Indicate optional sole-source path
+    $checks[] = [
+        'key'      => 'SOLE_SOURCE_JUSTIFICATION',
+        'label'    => 'Sole-source justification (optional — waives 3-quotation requirement)',
+        'passed'   => false,
+        'required' => false,
     ];
 }
 
 // GE validated (status check)
 $checks[] = [
-    'key'    => 'FORM_VALIDATED',
-    'label'  => 'GE Form Validated',
-    'passed' => in_array($ge['status'], ['READY_FOR_DOCUMENTS','SUBMITTED','QUERIED']),
+    'key'     => 'FORM_VALIDATED',
+    'label'   => 'GE Form Validated',
+    'passed'  => in_array($ge['status'], ['READY_FOR_DOCUMENTS','SUBMITTED','QUERIED']),
     'required'=> true,
 ];
 
@@ -57,4 +86,8 @@ $allPassed = !in_array(false, array_column(
     array_filter($checks, fn($c) => $c['required']), 'passed'
 ));
 
-json_success('OK', ['ready' => $allPassed, 'checks' => $checks]);
+json_success('OK', [
+    'ready'        => $allPassed,
+    'checks'       => $checks,
+    'is_sole_source' => (bool)$ge['is_sole_source'],
+]);

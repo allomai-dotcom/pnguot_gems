@@ -50,7 +50,10 @@ if ($financeOnlyEdit) {
                 'description','expense_category','procurement_type','is_capital_item',
                 'claimant_full_name','claimant_declaration_date',
                 'department_id','cfc_number','commitment_number',
-                'hod_name','hod_designation','hod_certification_date'];
+                'hod_name','hod_designation','hod_certification_date',
+                'is_sole_source','sole_source_justification',
+                'dean_signature_data','ict_signature_data',
+                'procurement_signature_data','vc_signature_data','accounts_signature_data'];
 }
 
 foreach ($allowed as $f) {

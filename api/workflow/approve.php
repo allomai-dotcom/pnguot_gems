@@ -43,11 +43,26 @@ $hodSigData = trim($b['hod_signature_data'] ?? '');
 $hodDesig   = trim($b['hod_designation']    ?? '');
 $hodCertAt  = trim($b['hod_certified_at']   ?? '');
 
+// Delegate signature (for non-HOS approvers)
+$delegateSigData = trim($b['delegate_signature_data'] ?? '');
+
 if ($task['step_code'] === 'HEAD_OF_SCHOOL' && $action === 'APPROVED') {
     if ($hodSigData === '' || $hodDesig === '') {
         json_error('HOD signature and designation are required for this step.', 400);
     }
 }
+
+// Map step_code to the signature column on general_expenses
+$sigColumnMap = [
+    'DEAN'                  => 'dean_signature_data',
+    'ICT_DIRECTOR'          => 'ict_signature_data',
+    'PROCUREMENT_MANAGER'   => 'procurement_signature_data',
+    'VICE_CHANCELLOR'       => 'vc_signature_data',
+    'ACCOUNTS_VERIFICATION' => 'accounts_signature_data',
+    'ACCOUNTS_PROCESSING'   => 'accounts_signature_data',
+    'ACCOUNTS_PAYMENT'      => 'accounts_signature_data',
+];
+$sigColumn = $sigColumnMap[$task['step_code']] ?? null;
 
 // Complete task
 $db->prepare(
@@ -64,6 +79,12 @@ $db->prepare(
     ($hodCertAt  !== '' ? $hodCertAt  : (($hodSigData !== '') ? date('Y-m-d H:i:s') : null)),
     $taskId,
 ]);
+
+// Save delegate signature to general_expenses for audit/print purposes
+if ($action === 'APPROVED' && $sigColumn && $delegateSigData !== '') {
+    $db->prepare("UPDATE general_expenses SET `$sigColumn` = ? WHERE id = ?")
+       ->execute([$delegateSigData, $task['ge_id']]);
+}
 
 if ($action === 'REJECTED') {
     try {
