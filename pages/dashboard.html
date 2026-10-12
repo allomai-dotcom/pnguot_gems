@@ -203,6 +203,14 @@ function formatGENumber(geNum) {
   const ok = await requireAuth();
   if (!ok) return;
 
+  // Pure approvers (no CLAIMANT role) don't belong on the claimant dashboard
+  // — redirect them to their approvals page
+  const isPureApprover = Auth.isApprover() && !Auth.hasRole('CLAIMANT') && !Auth.isAdmin();
+  if (isPureApprover) {
+    window.location.href = 'approvals.html';
+    return;
+  }
+
   Sidebar.setActive('dashboard.html');
 
   const isAdmin    = Auth.hasAnyRole(['SYSTEM_ADMIN', 'ACCOUNTS_OFFICER']);

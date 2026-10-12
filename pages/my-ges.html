@@ -283,6 +283,11 @@ function fmtCountdown(ms) {
 (async () => {
   const ok = await requireAuth();
   if (!ok) return;
+  // Redirect pure approvers (no CLAIMANT role) to their approvals page
+  if (Auth.isApprover() && !Auth.hasRole('CLAIMANT') && !Auth.isAdmin()) {
+    window.location.href = 'approvals.html';
+    return;
+  }
 
   const params = new URLSearchParams(window.location.search);
   const statusParam = params.get('status');
@@ -556,6 +561,11 @@ async function loadUploadedForms() {
 async function deleteUploadedForm(id, btn) {
   const ok = await window.confirm('Delete this uploaded GE form? This cannot be undone.', 'Delete');
   if (!ok) return;
+  // Redirect pure approvers (no CLAIMANT role) to their approvals page
+  if (Auth.isApprover() && !Auth.hasRole('CLAIMANT') && !Auth.isAdmin()) {
+    window.location.href = 'approvals.html';
+    return;
+  }
   btn.disabled = true;
   try {
     await API.deleteUploadedForm({ id });

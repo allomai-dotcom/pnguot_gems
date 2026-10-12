@@ -468,6 +468,11 @@
 (async () => {
   const ok = await requireAuth();
   if (!ok) return;
+  // Redirect pure approvers to approvals page
+  if (Auth.isApprover() && !Auth.hasRole('CLAIMANT') && !Auth.isAdmin()) {
+    window.location.href = 'approvals.html';
+    return;
+  }
   Sidebar.setActive('ge-form.html');
 
   const params = new URLSearchParams(window.location.search);

@@ -18,11 +18,11 @@
       <a class="nav-item" href="dashboard.html" data-page="dashboard.html"><span class="nav-icon">🏠</span><span class="nav-label">Overview</span></a>
       <a class="nav-item" href="notifications.html" data-page="notifications.html"><span class="nav-icon">🔔</span><span class="nav-label">Notifications</span><span class="nav-badge hidden notif-badge">0</span></a>
       <div class="sidebar-section-label claimant-only hidden">Expenses</div>
-      <a class="nav-item" href="ge-form.html"  data-page="ge-form.html"><span class="nav-icon">➕</span><span class="nav-label">New GE</span></a>
+      <a class="nav-item claimant-only hidden" href="ge-form.html" data-page="ge-form.html"><span class="nav-icon">➕</span><span class="nav-label">New GE</span></a>
       <a class="nav-item" href="my-ges.html"   data-page="my-ges.html"><span class="nav-icon">📋</span><span class="nav-label">My GE Forms</span></a>
       <a class="nav-item claimant-only hidden" data-page="my-ges.html?status=DRAFT" href="my-ges.html?status=DRAFT"><span class="nav-icon">📝</span><span class="nav-label">Drafts</span><span class="nav-badge hidden draft-count">0</span></a>
-      <a class="nav-item" href="quotation-tracker.html" data-page="quotation-tracker.html"><span class="nav-icon">📊</span><span class="nav-label">Quotation Tracker</span></a>
-      <a class="nav-item" href="my-reports.html" data-page="my-reports.html"><span class="nav-icon">📈</span><span class="nav-label">Reports</span></a>
+      <a class="nav-item claimant-only hidden" href="quotation-tracker.html" data-page="quotation-tracker.html"><span class="nav-icon">📊</span><span class="nav-label">Quotation Tracker</span></a>
+      <a class="nav-item claimant-only hidden" href="my-reports.html" data-page="my-reports.html"><span class="nav-icon">📈</span><span class="nav-label">Reports</span></a>
       <div class="sidebar-section-label approver-only hidden">Approvals</div>
       <a class="nav-item approver-only hidden" href="approvals.html" data-page="approvals.html"><span class="nav-icon">✅</span><span class="nav-label">Pending Approvals</span></a>
     </nav>
@@ -110,6 +110,11 @@ let geId, currentUploadType, selectedFile;
 (async () => {
   const ok = await requireAuth();
   if (!ok) return;
+  // Redirect pure approvers to approvals page
+  if (Auth.isApprover() && !Auth.hasRole('CLAIMANT') && !Auth.isAdmin()) {
+    window.location.href = 'approvals.html';
+    return;
+  }
   const params = new URLSearchParams(window.location.search);
   geId = parseInt(params.get('id'));
   if (!geId) { window.location.href = 'my-ges.html'; return; }
