@@ -55,7 +55,20 @@ const GEForm = {
     // Claimant signature pad
     const sigCanvas = document.getElementById('claimant-sig-canvas');
     if (sigCanvas && typeof SignaturePad !== 'undefined') {
+      // Resize canvas to match actual CSS dimensions (fixes offset/DPI issue)
+      const resizeSigCanvas = () => {
+        const ratio   = Math.max(window.devicePixelRatio || 1, 1);
+        const rect    = sigCanvas.getBoundingClientRect();
+        sigCanvas.width  = rect.width  * ratio;
+        sigCanvas.height = rect.height * ratio;
+        const ctx = sigCanvas.getContext('2d');
+        ctx.scale(ratio, ratio);
+        if (this.signaturePad) this.signaturePad.clear();
+      };
+
       this.signaturePad = new SignaturePad(sigCanvas, { backgroundColor: 'rgb(255,255,255)' });
+      resizeSigCanvas();
+      window.addEventListener('resize', () => resizeSigCanvas());
 
       // Hide placeholder when user starts drawing, show signed status
       this.signaturePad.addEventListener('beginStroke', () => {
@@ -81,7 +94,18 @@ const GEForm = {
     // HOD signature pad
     const hodCanvas = document.getElementById('hod-sig-canvas');
     if (hodCanvas && typeof SignaturePad !== 'undefined') {
+      const resizeHodCanvas = () => {
+        const ratio   = Math.max(window.devicePixelRatio || 1, 1);
+        const rect    = hodCanvas.getBoundingClientRect();
+        hodCanvas.width  = rect.width  * ratio;
+        hodCanvas.height = rect.height * ratio;
+        const ctx = hodCanvas.getContext('2d');
+        ctx.scale(ratio, ratio);
+        if (this.hodSignaturePad) this.hodSignaturePad.clear();
+      };
       this.hodSignaturePad = new SignaturePad(hodCanvas, { backgroundColor: 'rgb(255,255,255)' });
+      resizeHodCanvas();
+      window.addEventListener('resize', () => resizeHodCanvas());
       document.getElementById('btn-clear-hod-sig')?.addEventListener('click', () => this.hodSignaturePad.clear());
     }
 

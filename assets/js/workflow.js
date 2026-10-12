@@ -287,8 +287,8 @@ const Workflow = {
                   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" opacity=".35"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
                   <span>Sign here</span>
                 </div>
-                <canvas id="del-sig-canvas" width="460" height="150"
-                  style="display:block;width:100%;touch-action:none"></canvas>
+                <canvas id="del-sig-canvas"
+                  style="display:block;width:100%;height:150px;touch-action:none"></canvas>
               </div>
               <div class="sig-field-footer">
                 <span class="sig-status" id="del-sig-status"></span>
@@ -302,9 +302,21 @@ const Workflow = {
           </div>`;
         document.body.appendChild(delModal);
 
-        // Init signature pad
+        // Init signature pad — resize to fix offset/DPI issue
         const canvas = delModal.querySelector('#del-sig-canvas');
+        const resizeDelCanvas = () => {
+          const ratio = Math.max(window.devicePixelRatio || 1, 1);
+          const rect  = canvas.getBoundingClientRect();
+          if (rect.width === 0) return; // not visible yet
+          canvas.width  = rect.width  * ratio;
+          canvas.height = rect.height * ratio;
+          canvas.getContext('2d').scale(ratio, ratio);
+          if (Workflow.delSigPad) Workflow.delSigPad.clear();
+        };
         Workflow.delSigPad = new SignaturePad(canvas, { backgroundColor: 'rgb(255,255,255)' });
+        // Resize after modal is visible
+        setTimeout(resizeDelCanvas, 50);
+        window.addEventListener('resize', resizeDelCanvas);
         Workflow.delSigPad.addEventListener('beginStroke', () => {
           delModal.querySelector('#del-sig-placeholder')?.classList.add('hidden');
         });
@@ -395,6 +407,18 @@ document.addEventListener('DOMContentLoaded', () => {
   const hodCanvas = document.getElementById('hod-sig-canvas');
   if (hodCanvas && typeof SignaturePad !== 'undefined') {
     Workflow.hodSigPad = new SignaturePad(hodCanvas, { backgroundColor: 'rgb(255,255,255)' });
+    // Resize to fix pen offset issue
+    const resizeHod = () => {
+      const ratio = Math.max(window.devicePixelRatio || 1, 1);
+      const rect  = hodCanvas.getBoundingClientRect();
+      if (rect.width === 0) return;
+      hodCanvas.width  = rect.width  * ratio;
+      hodCanvas.height = rect.height * ratio;
+      hodCanvas.getContext('2d').scale(ratio, ratio);
+      Workflow.hodSigPad.clear();
+    };
+    resizeHod();
+    window.addEventListener('resize', resizeHod);
   }
 
   // Pre-fill today's date
