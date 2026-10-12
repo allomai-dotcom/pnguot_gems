@@ -102,6 +102,7 @@ if (!$financeOnlyEdit && isset($b['line_items']) && is_array($b['line_items'])) 
         $liStmt->execute([$id, $i, trim($li['description'] ?? ''), $qty, $price, $gst]);
         $total += $qty * $price * (1 + $gst / 100);
     }
+    // Save GST-inclusive grand total
     $db->prepare('UPDATE general_expenses SET total_amount = ? WHERE id = ?')->execute([$total, $id]);
 }
 

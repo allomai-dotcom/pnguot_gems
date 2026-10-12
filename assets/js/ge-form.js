@@ -324,6 +324,9 @@ const GEForm = {
     const gstAmount  = included ? subtotal * 0.10 : 0;
     const grandTotal = subtotal + gstAmount;
 
+    // Store grandTotal so updateAcctTotal can use the same value
+    this._grandTotal = grandTotal;
+
     // Subtotal display
     document.querySelectorAll('.ge-subtotal-display').forEach(el => {
       el.textContent = Fmt.currency(subtotal);
@@ -336,7 +339,7 @@ const GEForm = {
       gstEl.style.color = included ? 'var(--text-primary)' : 'var(--text-muted)';
     }
 
-    // Grand total display
+    // Grand total display — this is the authoritative total (incl. GST)
     document.querySelectorAll('.ge-total-display').forEach(el => {
       el.textContent = grandTotal.toFixed(2);
       el.dataset.raw = grandTotal;
@@ -350,12 +353,12 @@ const GEForm = {
   },
 
   updateAcctTotal() {
-    const total = this.acctLines.reduce((s, al) => s + parseFloat(al.amount || 0), 0);
-    document.querySelectorAll('.acct-total-display').forEach(el => el.textContent = Fmt.currency(total));
+    const acctTotal  = this.acctLines.reduce((s, al) => s + parseFloat(al.amount || 0), 0);
+    document.querySelectorAll('.acct-total-display').forEach(el => el.textContent = Fmt.currency(acctTotal));
 
-    // Compare against the raw subtotal (sum of line amounts) — this matches what the
-    // server stores as total_amount, so the balance indicator agrees with server validation.
-    const subtotal = this.lineItems.reduce((s, li) => {
+    // Compare accounting lines total against the grand total (subtotal + GST)
+    // so both totals are always in sync
+    const grandTotal = this._grandTotal ?? this.lineItems.reduce((s, li) => {
       const amt = li.amount !== '' && li.amount !== undefined
         ? parseFloat(li.amount) || 0
         : (parseFloat(li.quantity) || 0) * (parseFloat(li.unit_price) || 0);
@@ -364,8 +367,10 @@ const GEForm = {
 
     const diffEl = document.getElementById('acct-diff');
     if (diffEl) {
-      const diff = total - subtotal;
-      diffEl.textContent = Math.abs(diff) < 0.01 ? '✅ Balanced' : `⚠️ Difference: ${Fmt.currency(Math.abs(diff))}`;
+      const diff = acctTotal - grandTotal;
+      diffEl.textContent = Math.abs(diff) < 0.01
+        ? '✅ Balanced'
+        : `⚠️ Difference: ${Fmt.currency(Math.abs(diff))}`;
       diffEl.style.color = Math.abs(diff) < 0.01 ? 'var(--primary)' : 'var(--danger)';
     }
   },
