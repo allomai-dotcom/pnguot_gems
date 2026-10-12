@@ -77,15 +77,14 @@
 
 <script src="assets/js/api.js?v=7"></script>
 <script>
-  // Redirect if already logged in
+  // Always log out any existing session when the login page loads
+  // so a new user can enter their own credentials
   (async () => {
     try {
       const res = await API.me();
       if (res.user) {
-        const roles = res.user.roles || [];
-        window.location.href = roles.includes('SYSTEM_ADMIN')
-          ? 'pages/admin-panel.html'
-          : 'pages/dashboard.html';
+        // A session exists — destroy it silently so the login form is shown fresh
+        await API.logout().catch(() => {});
       }
     } catch {}
   })();
