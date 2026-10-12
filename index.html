@@ -119,11 +119,20 @@
       alertEl.classList.remove('hidden');
       btn.innerHTML = '<span class="spinner" style="width:16px;height:16px;border-width:2px;border-color:#fff transparent #fff transparent"></span> Redirecting…';
 
-      setTimeout(() => {
-        window.location.href = roles.includes('SYSTEM_ADMIN')
-          ? 'pages/admin-panel.html'
-          : 'pages/dashboard.html';
-      }, 1200);
+      // Route by role:
+      // SYSTEM_ADMIN → admin panel
+      // Pure approver (no CLAIMANT role) → approvals page
+      // Everyone else (claimant) → dashboard
+      const approverRoles = ['HEAD_OF_SCHOOL','DEAN','ICT_DIRECTOR','PROCUREMENT_MANAGER','ACCOUNTS_OFFICER','VICE_CHANCELLOR'];
+      const isAdmin       = roles.includes('SYSTEM_ADMIN');
+      const isClaimant    = roles.includes('CLAIMANT');
+      const isPureApprover = !isAdmin && !isClaimant && roles.some(r => approverRoles.includes(r));
+
+      const dest = isAdmin ? 'pages/admin-panel.html'
+                 : isPureApprover ? 'pages/approvals.html'
+                 : 'pages/dashboard.html';
+
+      setTimeout(() => { window.location.href = dest; }, 1200);
     } catch (err) {
       const status = err.status || 0;
       const msg    = (err.message || '').toLowerCase();

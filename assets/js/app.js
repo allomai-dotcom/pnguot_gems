@@ -177,13 +177,20 @@ function renderTopbarUser(user) {
     }).catch(() => {});
   }
 
-  // Show/hide admin nav items
+  // Show/hide nav items by role
+  const isClaimant = user.roles?.some(r => ['CLAIMANT','SYSTEM_ADMIN'].includes(r));
+  const isApprover = user.roles?.some(r => ['HEAD_OF_SCHOOL','DEAN','ICT_DIRECTOR',
+      'PROCUREMENT_MANAGER','ACCOUNTS_OFFICER','VICE_CHANCELLOR'].includes(r));
+
   if (user.roles?.includes('SYSTEM_ADMIN')) {
     document.querySelectorAll('.admin-only').forEach(e => e.classList.remove('hidden'));
   }
-  if (user.roles?.some(r => ['HEAD_OF_SCHOOL','DEAN','ICT_DIRECTOR',
-      'PROCUREMENT_MANAGER','ACCOUNTS_OFFICER','VICE_CHANCELLOR'].includes(r))) {
+  if (isApprover) {
     document.querySelectorAll('.approver-only').forEach(e => e.classList.remove('hidden'));
+  }
+  // Expenses section only for claimants (and admins)
+  if (isClaimant) {
+    document.querySelectorAll('.claimant-only').forEach(e => e.classList.remove('hidden'));
   }
 }
 
@@ -261,14 +268,16 @@ function confirm(message, title = 'Confirm') {
 async function requireAuth(allowedRoles = []) {
   const ok = await Auth.init();
   if (!ok) {
-    // Redirect to login — go up to app root if we're in pages/
     const inPages = window.location.pathname.includes('/pages/');
     window.location.href = inPages ? '../index.html' : 'index.html';
     return false;
   }
   if (allowedRoles.length && !Auth.hasAnyRole(allowedRoles)) {
     Toast.error('You do not have permission to view this page.');
-    window.location.href = 'dashboard.html';
+    // Redirect approvers to approvals, others to dashboard
+    const dest = Auth.isApprover() && !Auth.hasRole('CLAIMANT') && !Auth.isAdmin()
+      ? 'approvals.html' : 'dashboard.html';
+    window.location.href = dest;
     return false;
   }
   renderTopbarUser(Auth.user);
