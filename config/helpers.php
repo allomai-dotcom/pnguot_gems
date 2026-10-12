@@ -47,23 +47,30 @@ function start_session(): void {
 function get_authenticated_user(): ?array {
     start_session();
     if (empty($_SESSION['user_id'])) return null;
-    $db = Database::getInstance();
-    $stmt = $db->prepare(
-        'SELECT u.id, u.staff_id, u.first_name, u.last_name, u.email,
-                u.phone, u.avatar_path, u.department_id, d.code AS dept_code, d.name AS dept_name,
-                GROUP_CONCAT(r.code ORDER BY r.code SEPARATOR ",") AS roles
-         FROM users u
-         LEFT JOIN departments d ON d.id = u.department_id
-         LEFT JOIN user_roles ur ON ur.user_id = u.id
-         LEFT JOIN roles r ON r.id = ur.role_id
-         WHERE u.id = ? AND u.is_active = 1
-         GROUP BY u.id'
-    );
-    $stmt->execute([$_SESSION['user_id']]);
-    $user = $stmt->fetch();
-    if (!$user) return null;
-    $user['roles'] = $user['roles'] ? explode(',', $user['roles']) : [];
-    return $user;
+    try {
+        $db = Database::getInstance();
+        $stmt = $db->prepare(
+            'SELECT u.id, u.staff_id, u.first_name, u.last_name, u.email,
+                    u.phone, u.avatar_path, u.department_id, d.code AS dept_code, d.name AS dept_name,
+                    GROUP_CONCAT(r.code ORDER BY r.code SEPARATOR ",") AS roles
+             FROM users u
+             LEFT JOIN departments d ON d.id = u.department_id
+             LEFT JOIN user_roles ur ON ur.user_id = u.id
+             LEFT JOIN roles r ON r.id = ur.role_id
+             WHERE u.id = ? AND u.is_active = 1
+             GROUP BY u.id'
+        );
+        $stmt->execute([$_SESSION['user_id']]);
+        $user = $stmt->fetch();
+        if (!$user) return null;
+        $user['roles']     = $user['roles'] ? explode(',', $user['roles']) : [];
+        $user['avatar_url'] = !empty($user['avatar_path']) ? '/uploads/avatars/' . $user['avatar_path'] : null;
+        return $user;
+    } catch (Throwable $e) {
+        // DB unavailable — treat as unauthenticated so the app doesn't hang
+        error_log('get_authenticated_user DB error: ' . $e->getMessage());
+        return null;
+    }
 }
 
 function require_auth(): array {

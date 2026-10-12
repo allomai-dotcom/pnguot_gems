@@ -18,6 +18,7 @@ class Database {
                     PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,
                     PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
                     PDO::ATTR_EMULATE_PREPARES   => false,
+                    PDO::ATTR_TIMEOUT            => 5,  // fail fast if DB is down
                 ]);
             } catch (PDOException $e) {
                 http_response_code(500);
@@ -31,4 +32,7 @@ class Database {
     // Prevent cloning / unserialization
     private function __clone() {}
     public function __wakeup() {}
+
+    // Reset connection (e.g. after "MySQL server has gone away")
+    public static function reset(): void { self::$instance = null; }
 }
