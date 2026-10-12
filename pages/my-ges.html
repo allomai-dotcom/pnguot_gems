@@ -232,26 +232,10 @@
     </div>
     <div class="modal-body">
       <div class="form-group">
-        <label class="form-label" for="uf-title">Title / Description <span class="required">*</span></label>
-        <input id="uf-title" name="uf-title" type="text" class="form-control"
-          placeholder="e.g. Office Supplies GE — Oct 2026">
-      </div>
-      <div class="form-group">
-        <label class="form-label" for="uf-reference">GE Reference Number <span style="font-weight:400;color:var(--text-muted)">(optional)</span></label>
-        <input id="uf-reference" name="uf-reference" type="text" class="form-control font-mono"
-          placeholder="e.g. GE-2026-000042">
-      </div>
-      <div class="form-group">
-        <label class="form-label" for="uf-notes">Notes <span style="font-weight:400;color:var(--text-muted)">(optional)</span></label>
-        <textarea id="uf-notes" name="uf-notes" class="form-control" rows="2"
-          placeholder="Any additional notes…"></textarea>
-      </div>
-      <div class="form-group">
-        <label class="form-label">File <span class="required">*</span></label>
         <div class="upload-zone" id="uf-drop-zone" style="cursor:pointer">
           <div class="uz-icon">📁</div>
           <div class="uz-title" id="uf-zone-title">Drop file here or click to browse</div>
-          <div class="uz-sub">Accepted: <strong>PDF, JPEG, PNG</strong> &nbsp;&middot;&nbsp; Max file size: <strong>10 MB</strong></div>
+          <div class="uz-sub">Accepted: <strong>PDF, Word, Excel, PowerPoint, Images</strong> &nbsp;&middot;&nbsp; Max file size: <strong>10 MB</strong></div>
           <input type="file" id="uf-file-input" style="display:none"
             accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt,.jpg,.jpeg,.png,.gif,.webp,.bmp,.tiff">
         </div>
@@ -609,8 +593,6 @@ function handleUFFile(file) {
 }
 
 async function doUploadForm() {
-  const title = document.getElementById('uf-title').value.trim();
-  if (!title)   { Toast.warning('Please enter a title.'); return; }
   if (!_ufFile) { Toast.warning('Please select a file.'); return; }
 
   const btn = document.getElementById('btn-do-upload-form');
@@ -618,25 +600,17 @@ async function doUploadForm() {
   btn.textContent = 'Uploading…';
 
   try {
-    await API.uploadForm(
-      title,
-      document.getElementById('uf-reference').value.trim(),
-      document.getElementById('uf-notes').value.trim(),
-      null,
-      _ufFile
-    );
+    // Use the filename (without extension) as the title automatically
+    const autoTitle = _ufFile.name.replace(/\.[^/.]+$/, '');
+    await API.uploadForm(autoTitle, '', '', null, _ufFile);
+
     Toast.success('GE form uploaded and archived successfully.');
     Modal.close('upload-form-modal');
-    // Reset form
-    document.getElementById('uf-title').value     = '';
-    document.getElementById('uf-reference').value = '';
-    document.getElementById('uf-notes').value     = '';
+    // Reset
     document.getElementById('uf-file-input').value = '';
     document.getElementById('uf-zone-title').textContent = 'Drop file here or click to browse';
     _ufFile = null;
-    // Refresh uploaded tab
     loadUploadedForms();
-    // Switch to uploaded tab to show result
     switchTab('uploaded');
   } catch (err) {
     Toast.error(err.message || 'Upload failed.');
